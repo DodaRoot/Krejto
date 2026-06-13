@@ -1,0 +1,26 @@
+{
+  "en": {
+    "translation": {
+      "Title": "Krejto.com",
+      "Banner Text": "Trade confidently with powerful anti-fraud security.",
+      "Profile": "Profile",
+      "Messages": "Messages",
+      "Liked": "Liked",
+      "Notifications": "Notifications",
+      "Post": "Post",
+      "MyPosts": "My Posts"
+    }
+  },
+  "al": {
+    "translation": {
+      "Title": "Krejto.com",
+      "Banner Text": "Tregtoni me besim me siguri të fuqishme kundër mashtrimit.",
+      "Profile": "Profili",
+      "Messages": "Mesazhet",
+      "Liked": "Pelqimet",
+      "Notifications": "Lajme",
+      "Post": "Posto",
+      "MyPosts": "Postimet"
+    }
+  }
+}

@@ -1,31 +1,82 @@
-import { Form, useNavigation } from "react-router";
-import Navbar from "../components/feature/Navbar/Navbar";
-import Banner from "../components/feature/Banner/Banner";
+import { useTranslation } from "react-i18next";
 
-export default function Index() {
-  const navigation = useNavigation();
+import { Search } from "lucide-react";
 
-  if (navigation.state === "loading") {
-    return (
-      <div>
-        <h1>Loading...</h1>
-      </div>
-    );
-  }
+import {
+  InputGroup,
+  InputGroupInput,
+  InputGroupAddon,
+} from "../components/ui/input-group";
 
+import {
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+} from "../components/ui/combobox";
+
+import { Button } from "../components/ui/button";
+
+const cities = ["Prishtine", "Peje", "Gjilan", "Ferizaj"];
+const categories = ["Cars", "Bikes", "Clothing", "Building Material"];
+const distance = ["+1km", "+2km", "+3km", "+5km", "+10km"];
+
+export default function Dashboard() {
+  const { t } = useTranslation();
   return (
-    <>
-      <Banner />
-      <Navbar />
-      <div className="w-full justify-center items-center flex">
-        <div className="w-5xl flex justify-center items-center md:justify-between">
-          <h1>Dashboard</h1>
-          <Form method="get" action="/search">
-            <input type="text" placeholder="Search" name="query" />
-            <button type="submit">Search</button>
-          </Form>
-        </div>
+    <div className="flex gap-3 flex-col md:flex-row">
+      <InputGroup className="md:max-w-xs">
+        <InputGroupInput placeholder="Search..." />
+        <InputGroupAddon>
+          <Search />
+        </InputGroupAddon>
+        <InputGroupAddon align="inline-end"></InputGroupAddon>
+      </InputGroup>
+      <Combobox items={categories}>
+        <ComboboxInput placeholder="Select a category" />
+        <ComboboxContent>
+          <ComboboxEmpty>No items found.</ComboboxEmpty>
+          <ComboboxList>
+            {(item) => (
+              <ComboboxItem key={item} value={item}>
+                {item}
+              </ComboboxItem>
+            )}
+          </ComboboxList>
+        </ComboboxContent>
+      </Combobox>
+      <div className="flex gap-3">
+        <Combobox items={cities}>
+          <ComboboxInput placeholder="Select a city" />
+          <ComboboxContent>
+            <ComboboxEmpty>No items found.</ComboboxEmpty>
+            <ComboboxList>
+              {(item) => (
+                <ComboboxItem key={item} value={item}>
+                  {item}
+                </ComboboxItem>
+              )}
+            </ComboboxList>
+          </ComboboxContent>
+        </Combobox>
+        <Combobox items={distance}>
+          <ComboboxInput placeholder="Select distance" />
+          <ComboboxContent>
+            <ComboboxEmpty>No items found.</ComboboxEmpty>
+            <ComboboxList>
+              {(item) => (
+                <ComboboxItem key={item} value={item}>
+                  {item}
+                </ComboboxItem>
+              )}
+            </ComboboxList>
+          </ComboboxContent>
+        </Combobox>
       </div>
-    </>
+
+      <Button>Search</Button>
+    </div>
   );
 }
