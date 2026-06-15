@@ -8,7 +8,15 @@
       "Liked": "Liked",
       "Notifications": "Notifications",
       "Post": "Post",
-      "MyPosts": "My Posts"
+      "MyPosts": "My Posts",
+      "Language": "Language",
+      "En": "English",
+      "Al": "Albanian",
+      "Theme": "Theme",
+      "Appearance": "Appearance",
+      "Dark": "Dark",
+      "Light": "Light",
+      "System": "System"
     }
   },
   "al": {
@@ -20,7 +28,15 @@
       "Liked": "Pelqimet",
       "Notifications": "Lajme",
       "Post": "Posto",
-      "MyPosts": "Postimet"
+      "MyPosts": "Postimet",
+      "Language": "Gjuha",
+      "En": "Anglisht",
+      "Al": "Shqipe",
+      "Theme": "Moda",
+      "Appearance": "Shfaqja",
+      "Dark": "Nate",
+      "Light": "Dite",
+      "System": "Sistem"
     }
   }
 }

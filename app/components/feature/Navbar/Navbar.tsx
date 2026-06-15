@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-
-import { Link } from "react-router";
+import { Link, Form, useFetcher } from "react-router";
 import { useTranslation } from "react-i18next";
 import {
   MessageCircleCheck,
@@ -116,33 +115,14 @@ export function ProfileMenu({
   icon,
   label,
   t,
-  i18n,
+  preferences,
 }: {
   icon: React.ReactNode;
   label: string;
   t: any;
-  i18n: any;
+  preferences?: preferencesTypes;
 }) {
-  const [theme, setTheme] = useState("light");
-  const [lang, setLang] = useState("al");
-
-  useEffect(() => {
-    i18n.changeLanguage(lang);
-  });
-
-  useEffect(() => {
-    if (theme == "system" && typeof window !== "undefined") {
-      let systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
-        .matches
-        ? "dark"
-        : "light";
-      document.documentElement.setAttribute("data-theme", systemTheme);
-    } else {
-      document.documentElement.setAttribute("data-theme", theme);
-    }
-    console.log("theme set to " + theme);
-  }, [theme]);
-
+  const fetcher = useFetcher();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -191,29 +171,36 @@ export function ProfileMenu({
           <DropdownMenuSub>
             <DropdownMenuSubTrigger>
               <PaletteIcon />
-              Theme
+              {t("Theme")}
             </DropdownMenuSubTrigger>
             <DropdownMenuPortal>
               <DropdownMenuSubContent className="ml-2">
                 <DropdownMenuGroup>
-                  <DropdownMenuLabel>Appearance</DropdownMenuLabel>
-                  <DropdownMenuRadioGroup
-                    value={theme}
-                    onValueChange={setTheme}
-                  >
-                    <DropdownMenuRadioItem value="light">
-                      <SunIcon />
-                      Light
-                    </DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="dark">
-                      <MoonIcon />
-                      Dark
-                    </DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="system">
-                      <MonitorIcon />
-                      System
-                    </DropdownMenuRadioItem>
-                  </DropdownMenuRadioGroup>
+                  <DropdownMenuLabel>{t("Appearance")}</DropdownMenuLabel>
+                  <Form method="post">
+                    <DropdownMenuRadioGroup
+                      value={preferences?.theme ?? "light"}
+                      onValueChange={(value) => {
+                        fetcher.submit(
+                          { theme: value },
+                          { method: "POST", action: "/preferences" }, // or "/preferences"
+                        );
+                      }}
+                    >
+                      <DropdownMenuRadioItem value="light">
+                        <SunIcon />
+                        {t("Light")}
+                      </DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem value="dark">
+                        <MoonIcon />
+                        {t("Dark")}
+                      </DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem value="system">
+                        <MonitorIcon />
+                        {t("System")}
+                      </DropdownMenuRadioItem>
+                    </DropdownMenuRadioGroup>
+                  </Form>
                 </DropdownMenuGroup>
               </DropdownMenuSubContent>
             </DropdownMenuPortal>
@@ -221,20 +208,30 @@ export function ProfileMenu({
           <DropdownMenuSub>
             <DropdownMenuSubTrigger>
               <Languages />
-              Language
+              {t("Language")}
             </DropdownMenuSubTrigger>
             <DropdownMenuPortal>
               <DropdownMenuSubContent className="ml-2">
                 <DropdownMenuGroup>
-                  <DropdownMenuLabel>Language</DropdownMenuLabel>
-                  <DropdownMenuRadioGroup value={lang} onValueChange={setLang}>
-                    <DropdownMenuRadioItem value="en">
-                      English
-                    </DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="al">
-                      Albanian
-                    </DropdownMenuRadioItem>
-                  </DropdownMenuRadioGroup>
+                  <DropdownMenuLabel>{t("Language")}</DropdownMenuLabel>
+                  <Form method="post">
+                    <DropdownMenuRadioGroup
+                      value={preferences?.lang ?? "al"}
+                      onValueChange={(value) => {
+                        fetcher.submit(
+                          { lang: value },
+                          { method: "POST", action: "/preferences" }, // or "/preferences"
+                        );
+                      }}
+                    >
+                      <DropdownMenuRadioItem value="en">
+                        {t("En")}
+                      </DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem value="al">
+                        {t("Al")}
+                      </DropdownMenuRadioItem>
+                    </DropdownMenuRadioGroup>
+                  </Form>
                 </DropdownMenuGroup>
               </DropdownMenuSubContent>
             </DropdownMenuPortal>
@@ -245,9 +242,13 @@ export function ProfileMenu({
   );
 }
 
-export default function Navbar() {
-  const [t, i18n] = useTranslation();
+type preferencesTypes = {
+  theme: any;
+  lang: any;
+};
 
+export default function Navbar(preferences: preferencesTypes) {
+  const [t] = useTranslation();
   return (
     <nav className="py-2 px-5 w-full h-15 justify-center items-center flex shadow-md">
       <div className="text-lg font-bold w-5xl flex justify-center items-center md:justify-between">
@@ -269,7 +270,6 @@ export default function Navbar() {
             label={t("Notifications")}
             t={t}
           />
-          {/* <NavItem icon={<Heart />} label={t("Liked")} /> */}
           <NavItem
             link={"messages"}
             icon={<MessageCircleCheck />}
@@ -279,7 +279,7 @@ export default function Navbar() {
             icon={<UserRound />}
             label={t("Profile")}
             t={t}
-            i18n={i18n}
+            preferences={preferences}
           />
         </div>
       </div>

@@ -15,5 +15,7 @@ export default [
     route("my-posts", "routes/MyPosts.tsx"),
     route("search", "routes/SearchPage.tsx"),
     route("itemPage/:id", "routes/ItemPage.tsx"),
+    route("preferences", "routes/Preferences.tsx"),
   ]),
+  route("*", "routes/NotFound.tsx"),
 ] satisfies RouteConfig;
