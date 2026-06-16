@@ -2,6 +2,7 @@
 .env
 /node_modules/
 /app/assets
+/app/mock
 
 # React Router
 /.react-router/
