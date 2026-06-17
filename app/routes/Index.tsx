@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 
 import Navbar from "../components/feature/Navbar/Navbar";
 import Banner from "../components/feature/Banner/Banner";
+import Footer from "../components/feature/Footer/Footer";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const cookieHeader = request.headers.get("Cookie");
@@ -52,6 +53,7 @@ export default function Index({ loaderData }: Route.ComponentProps) {
           <Outlet />
         </div>
       </div>
+      <Footer />
     </>
   );
 }

@@ -2,6 +2,9 @@
   "en": {
     "translation": {
       "Title": "Krejto.com",
+      "Header": "Find Local Services",
+      "Header Description": "Hire painters, electricians, mechanics and other skilled professionals near you.",
+      "Most Searched": "Most Searched Categories",
       "Banner Text": "Trade confidently with powerful anti-fraud security.",
       "Profile": "Profile",
       "Messages": "Messages",
@@ -22,21 +25,24 @@
   "al": {
     "translation": {
       "Title": "Krejto.com",
-      "Banner Text": "Tregtoni me besim me siguri të fuqishme kundër mashtrimit.",
+      "Header": "Gjeni Shërbime Lokale",
+      "Header Description": "Punësoni bojaxhinj, elektricistë, mekanikë dhe profesionistë të tjerë të kualifikuar pranë jush.",
+      "Most Searched": "Kategoritë më të Kërkuara",
+      "Banner Text": "Tregtoni me besim falë sigurisë së avancuar kundër mashtrimit.",
       "Profile": "Profili",
       "Messages": "Mesazhet",
-      "Liked": "Pelqimet",
-      "Notifications": "Lajme",
-      "Post": "Posto",
-      "MyPosts": "Postimet",
+      "Liked": "Të Pëlqyera",
+      "Notifications": "Njoftime",
+      "Post": "Publiko",
+      "MyPosts": "Postimet e Mia",
       "Language": "Gjuha",
       "En": "Anglisht",
-      "Al": "Shqipe",
-      "Theme": "Moda",
-      "Appearance": "Shfaqja",
-      "Dark": "Nate",
-      "Light": "Dite",
-      "System": "Sistem"
+      "Al": "Shqip",
+      "Theme": "Tema",
+      "Appearance": "Pamja",
+      "Dark": "E Errët",
+      "Light": "E Çelët",
+      "System": "Sistemi"
     }
   }
 }
