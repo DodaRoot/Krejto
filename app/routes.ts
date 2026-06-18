@@ -7,7 +7,7 @@ import {
 
 export default [
   layout("routes/Index.tsx", [
-    index("routes/Dashboard.tsx"),
+    index("routes/Landing.tsx"),
     route("profile", "routes/Profile.tsx"),
     route("liked", "routes/Liked.tsx"),
     route("messages", "routes/Messages.tsx"),

@@ -1,5 +1,5 @@
 import Autoplay from "embla-carousel-autoplay";
-import { ArrowUp, Search } from "lucide-react";
+import { ArrowUp, Search, Star } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import data from "../mock/data.json";
@@ -12,7 +12,7 @@ import headerSvg from "../assets/images/Header.svg";
 
 import { Button } from "../components/ui/button";
 
-import { Card } from "../components/ui/card";
+import { Card, CardContent } from "../components/ui/card";
 
 import {
   Carousel,
@@ -21,7 +21,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "../components/ui/carousel";
-
+import { Avatar, AvatarFallback } from "../components/ui/avatar";
 import {
   Combobox,
   ComboboxContent,
@@ -36,23 +36,90 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "../components/ui/input-group";
+import type {
+  CardComponentProps,
+  SearchComboboxProps,
+  ReviewProps,
+} from "../types/landing";
 
 const CITIES = ["Prishtine", "Peje", "Gjilan", "Ferizaj"];
 
 const CAROUSEL_ITEMS = [bannerOne, bannerTwo, bannerThree, bannerFour];
-
+const REVIEWS = [
+  {
+    name: "Dode Doda",
+    comment: "Hello this is great",
+    stars: 5,
+  },
+  {
+    name: "Dode Doda",
+    comment:
+      "isPlayingisPlayingisPlayingisPlayingisPlayingisPlayingisPlayingisPlayingisPlayingisPlayingisPlayingisPlayingisPlayingisPlaying",
+    stars: 5,
+  },
+  {
+    name: "Dode Doda",
+    comment: "Hello this is great",
+    stars: 5,
+  },
+  {
+    name: "Dode Doda",
+    comment: "Hello this is great",
+    stars: 5,
+  },
+  {
+    name: "Dode Doda",
+    comment: "Hello this is great",
+    stars: 5,
+  },
+  {
+    name: "Dode Doda",
+    comment: "Hello this is great",
+    stars: 5,
+  },
+  {
+    name: "Dode Doda",
+    comment: "Hello this is great",
+    stars: 5,
+  },
+  {
+    name: "Dode Doda",
+    comment:
+      "isPlayingisPlayingisPlayingisPlayingisPlayingisPlayingisPlayingisPlaying",
+    stars: 5,
+  },
+  {
+    name: "Dode Doda",
+    comment: "Hello this is great",
+    stars: 5,
+  },
+  {
+    name: "Dode Doda",
+    comment: "Hello this is great",
+    stars: 5,
+  },
+  {
+    name: "Dode Doda",
+    comment: "Hello this is great",
+    stars: 5,
+  },
+  {
+    name: "Dode Doda",
+    comment: "Hello this is great",
+    stars: 5,
+  },
+  {
+    name: "Dode Doda",
+    comment: "Hello this is great",
+    stars: 5,
+  },
+  {
+    name: "Dode Doda",
+    comment: "Hello this is great",
+    stars: 5,
+  },
+];
 const CATEGORIES = data.categories.map((category) => category.name);
-
-interface CardComponentProps {
-  name: string;
-  description: string;
-  image: string;
-}
-
-interface SearchComboboxProps {
-  items: string[];
-  placeholder: string;
-}
 
 function SearchCombobox({ items, placeholder }: SearchComboboxProps) {
   return (
@@ -117,11 +184,59 @@ function CardComponent({ name, description, image }: CardComponentProps) {
   );
 }
 
-export default function Dashboard() {
+function Review({ name, comment, stars }: ReviewProps) {
+  const initials = name
+    .split(" ")
+    .map((word) => word[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
+  return (
+    <Card className="m-2 w-full">
+      <CardContent className="flex flex-col p-3">
+        {/* Stars */}
+        <div className="mb-5 flex gap-1 items-center justify-center">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Star
+              key={i}
+              className={`h-6 w-6 ${
+                i < stars
+                  ? "fill-yellow-400 text-yellow-400"
+                  : "text-muted-foreground/30"
+              }`}
+            />
+          ))}
+        </div>
+
+        {/* Review */}
+        <blockquote className="flex-1 break-words whitespace-normal text-sm text-center leading-7 text-muted-foreground">
+          “{comment}”
+        </blockquote>
+
+        {/* Reviewer */}
+        <div className="mt-6 flex items-center gap-3 border-t pt-4">
+          <Avatar className="h-10 w-10">
+            <AvatarFallback>{initials}</AvatarFallback>
+          </Avatar>
+
+          <div>
+            <p className="font-medium leading-none">{name}</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Verified Customer
+            </p>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+export default function Landing() {
   const [t] = useTranslation();
 
   return (
-    <div className="mt-1 flex flex-col gap-10">
+    <div className="mt-1 flex flex-col gap-10 justify-center items-center">
       <section className="w-full py-8">
         <div
           className="
@@ -145,7 +260,7 @@ export default function Dashboard() {
         </div>
       </section>
 
-      <section className="searchBar flex flex-col gap-3 md:flex-row">
+      <section className="searchBar flex flex-col gap-3 md:flex-row w-full">
         <InputGroup className="min-w-1/5">
           <InputGroupInput placeholder="Search..." />
 
@@ -183,8 +298,30 @@ export default function Dashboard() {
         <CarouselNext />
       </Carousel>
 
-      <p>{t("Most Searched")}</p>
+      <Carousel
+        opts={{
+          align: "center",
+          loop: true,
+        }}
+        className="max-w-xs lg:max-w-5xl overflow-hidden rounded-xl"
+      >
+        <CarouselContent className="flex gap-5">
+          {REVIEWS.map((review, index) => (
+            <CarouselItem key={index} className="basis-full lg:basis-1/3 ">
+              <Review
+                name={review.name}
+                comment={review.comment}
+                stars={review.stars}
+              />
+            </CarouselItem>
+          ))}
+        </CarouselContent>
 
+        <CarouselPrevious />
+        <CarouselNext />
+      </Carousel>
+
+      <p className="font-bold text-sm -mb-8">{t("Most Searched")}</p>
       <section className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {data.categories.map((category) => (
           <CardComponent
