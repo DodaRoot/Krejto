@@ -1,6 +1,11 @@
-import { useState, useEffect } from "react";
 import { Link, Form, useFetcher } from "react-router";
 import { useTranslation } from "react-i18next";
+import type {
+  NavItemTypes,
+  NotificationsDropdownTypes,
+  ProfileMenuTypes,
+  preferencesTypes,
+} from "../../../types/navbar";
 import {
   MessageCircleCheck,
   UserRound,
@@ -31,17 +36,7 @@ import {
   DropdownMenuLabel,
 } from "../../../components/ui/dropdown-menu";
 
-export function NavItem({
-  icon,
-  label,
-  link,
-  className,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  link: string;
-  className?: string;
-}) {
+function NavItem({ icon, label, link, className }: NavItemTypes) {
   return (
     <Link
       to={link}
@@ -60,15 +55,7 @@ export function NavItem({
   );
 }
 
-export function NotificationsDropdown({
-  icon,
-  label,
-  t,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  t: any;
-}) {
+function NotificationsDropdown({ icon, label, t }: NotificationsDropdownTypes) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -111,17 +98,7 @@ export function NotificationsDropdown({
   );
 }
 
-export function ProfileMenu({
-  icon,
-  label,
-  t,
-  preferences,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  t: any;
-  preferences?: preferencesTypes;
-}) {
+function ProfileMenu({ icon, label, t, preferences }: ProfileMenuTypes) {
   const fetcher = useFetcher();
   return (
     <DropdownMenu>
@@ -156,18 +133,18 @@ export function ProfileMenu({
       >
         <DropdownMenuGroup>
           <DropdownMenuLabel>{t("Profile")}</DropdownMenuLabel>
-          <DropdownMenuItem>
-            {icon}
-            <Link to="profile">{t("Profile")}</Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Heart />
-            <Link to="liked">{t("Liked")}</Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Box />
-            <Link to="my-posts">{t("MyPosts")}</Link>
-          </DropdownMenuItem>
+          <Link to="profile">
+            <DropdownMenuItem className="cursor-pointer">
+              {icon}
+              <p>{t("Profile")}</p>
+            </DropdownMenuItem>
+          </Link>
+          <Link to="liked">
+            <DropdownMenuItem className="cursor-pointer">
+              <Heart />
+              <p>{t("Liked")}</p>
+            </DropdownMenuItem>
+          </Link>
           <DropdownMenuSub>
             <DropdownMenuSubTrigger>
               <PaletteIcon />
@@ -242,11 +219,6 @@ export function ProfileMenu({
   );
 }
 
-type preferencesTypes = {
-  theme: any;
-  lang: any;
-};
-
 export default function Navbar(preferences: preferencesTypes) {
   const [t] = useTranslation();
   return (
@@ -264,7 +236,7 @@ export default function Navbar(preferences: preferencesTypes) {
             label={t("Home")}
             link=""
           />
-          <NavItem link="my-posts" icon={<SquarePlus />} label={t("Post")} />
+          {/* <NavItem link="my-posts" icon={<SquarePlus />} label={t("Post")} /> */}
           <NotificationsDropdown
             icon={<Bell />}
             label={t("Notifications")}

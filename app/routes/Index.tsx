@@ -1,4 +1,4 @@
-import { Outlet, useNavigation } from "react-router";
+import { Outlet, useNavigation, useLocation } from "react-router";
 import type { Route } from "./+types/Index";
 import { userPrefs } from "../cookies.server";
 import { useEffect } from "react";
@@ -17,6 +17,8 @@ export async function loader({ request }: Route.LoaderArgs) {
 export default function Index({ loaderData }: Route.ComponentProps) {
   const [t, i18n] = useTranslation();
   const { theme, lang } = loaderData;
+  const location = useLocation();
+  const hideFooterRoutes = ["/messages"];
 
   useEffect(() => {
     i18n.changeLanguage(lang);
@@ -53,7 +55,7 @@ export default function Index({ loaderData }: Route.ComponentProps) {
           <Outlet />
         </div>
       </div>
-      <Footer />
+      {!hideFooterRoutes.includes(location.pathname) && <Footer />}
     </>
   );
 }

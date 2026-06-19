@@ -2,7 +2,7 @@ import Autoplay from "embla-carousel-autoplay";
 import { ArrowUp, Search, Star } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import data from "../mock/data.json";
+import { getCategories, getCities, getReviews } from "../mock/index";
 
 import bannerOne from "../assets/images/Banner.png";
 import bannerTwo from "../assets/images/Banner2.png";
@@ -42,92 +42,20 @@ import type {
   ReviewProps,
 } from "../types/landing";
 
-const CITIES = ["Prishtine", "Peje", "Gjilan", "Ferizaj"];
-
 const CAROUSEL_ITEMS = [bannerOne, bannerTwo, bannerThree, bannerFour];
-const REVIEWS = [
-  {
-    name: "Dode Doda",
-    comment: "Hello this is great",
-    stars: 5,
-  },
-  {
-    name: "Dode Doda",
-    comment:
-      "isPlayingisPlayingisPlayingisPlayingisPlayingisPlayingisPlayingisPlayingisPlayingisPlayingisPlayingisPlayingisPlayingisPlaying",
-    stars: 5,
-  },
-  {
-    name: "Dode Doda",
-    comment: "Hello this is great",
-    stars: 5,
-  },
-  {
-    name: "Dode Doda",
-    comment: "Hello this is great",
-    stars: 5,
-  },
-  {
-    name: "Dode Doda",
-    comment: "Hello this is great",
-    stars: 5,
-  },
-  {
-    name: "Dode Doda",
-    comment: "Hello this is great",
-    stars: 5,
-  },
-  {
-    name: "Dode Doda",
-    comment: "Hello this is great",
-    stars: 5,
-  },
-  {
-    name: "Dode Doda",
-    comment:
-      "isPlayingisPlayingisPlayingisPlayingisPlayingisPlayingisPlayingisPlaying",
-    stars: 5,
-  },
-  {
-    name: "Dode Doda",
-    comment: "Hello this is great",
-    stars: 5,
-  },
-  {
-    name: "Dode Doda",
-    comment: "Hello this is great",
-    stars: 5,
-  },
-  {
-    name: "Dode Doda",
-    comment: "Hello this is great",
-    stars: 5,
-  },
-  {
-    name: "Dode Doda",
-    comment: "Hello this is great",
-    stars: 5,
-  },
-  {
-    name: "Dode Doda",
-    comment: "Hello this is great",
-    stars: 5,
-  },
-  {
-    name: "Dode Doda",
-    comment: "Hello this is great",
-    stars: 5,
-  },
-];
-const CATEGORIES = data.categories.map((category) => category.name);
+const CATEGORIES_LIST = getCategories().map((category) => category.name);
+const CITIES_LIST = getCities();
+const REVIEWS_LIST = getReviews();
 
 function SearchCombobox({ items, placeholder }: SearchComboboxProps) {
+  const [t] = useTranslation();
+
   return (
     <Combobox items={items}>
       <ComboboxInput placeholder={placeholder} className="min-w-1/5" />
 
       <ComboboxContent>
-        <ComboboxEmpty>No items found.</ComboboxEmpty>
+        <ComboboxEmpty>{t("No items found")}</ComboboxEmpty>
 
         <ComboboxList>
           {(item) => (
@@ -141,7 +69,7 @@ function SearchCombobox({ items, placeholder }: SearchComboboxProps) {
   );
 }
 
-function CardComponent({ name, description, image }: CardComponentProps) {
+function CategoryCard({ name, description, image }: CardComponentProps) {
   return (
     <Card
       className="
@@ -184,7 +112,8 @@ function CardComponent({ name, description, image }: CardComponentProps) {
   );
 }
 
-function Review({ name, comment, stars }: ReviewProps) {
+function ReviewCard({ name, comment, stars }: ReviewProps) {
+  const [t] = useTranslation();
   const initials = name
     .split(" ")
     .map((word) => word[0])
@@ -223,7 +152,7 @@ function Review({ name, comment, stars }: ReviewProps) {
           <div>
             <p className="font-medium leading-none">{name}</p>
             <p className="mt-1 text-xs text-muted-foreground">
-              Verified Customer
+              {t("Verified Customer")}
             </p>
           </div>
         </div>
@@ -262,7 +191,7 @@ export default function Landing() {
 
       <section className="searchBar flex flex-col gap-3 md:flex-row w-full">
         <InputGroup className="min-w-1/5">
-          <InputGroupInput placeholder="Search..." />
+          <InputGroupInput placeholder={t("Search placeholder")} />
 
           <InputGroupAddon>
             <Search />
@@ -271,11 +200,14 @@ export default function Landing() {
           <InputGroupAddon align="inline-end" />
         </InputGroup>
 
-        <SearchCombobox items={CATEGORIES} placeholder="Select a category" />
+        <SearchCombobox
+          items={CATEGORIES_LIST}
+          placeholder={t("Select a category")}
+        />
 
-        <SearchCombobox items={CITIES} placeholder="Select a city" />
+        <SearchCombobox items={CITIES_LIST} placeholder={t("Select a city")} />
 
-        <Button>Search</Button>
+        <Button>{t("Search")}</Button>
       </section>
 
       <Carousel
@@ -299,16 +231,24 @@ export default function Landing() {
       </Carousel>
 
       <Carousel
+        plugins={[
+          Autoplay({
+            delay: 1500,
+          }),
+        ]}
         opts={{
           align: "center",
           loop: true,
         }}
-        className="max-w-xs lg:max-w-5xl overflow-hidden rounded-xl"
+        className="max-w-xs sm:max-w-md lg:max-w-5xl overflow-hidden rounded-xl"
       >
         <CarouselContent className="flex gap-5">
-          {REVIEWS.map((review, index) => (
-            <CarouselItem key={index} className="basis-full lg:basis-1/3 ">
-              <Review
+          {REVIEWS_LIST.map((review, index) => (
+            <CarouselItem
+              key={index}
+              className="basis-full sm:basis-2/3 lg:basis-1/3"
+            >
+              <ReviewCard
                 name={review.name}
                 comment={review.comment}
                 stars={review.stars}
@@ -321,10 +261,12 @@ export default function Landing() {
         <CarouselNext />
       </Carousel>
 
-      <p className="font-bold text-sm -mb-8">{t("Most Searched")}</p>
+      <p className="sm:w-max lg:w-full font-bold text-sm -mb-8">
+        {t("Most Searched")}
+      </p>
       <section className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {data.categories.map((category) => (
-          <CardComponent
+        {getCategories().map((category) => (
+          <CategoryCard
             key={category.id}
             name={category.name}
             description={category.description}
