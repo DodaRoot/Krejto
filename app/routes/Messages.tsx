@@ -235,7 +235,7 @@ export default function Messages() {
         }`}
       >
         <ChatView
-          conversation={selectedConversation}
+          conversation={selectedConversation ?? null}
           onBack={handleBackToConversations}
         />
       </div>

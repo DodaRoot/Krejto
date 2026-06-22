@@ -1,5 +1,6 @@
 import Autoplay from "embla-carousel-autoplay";
 import { ArrowUp, Search, Star } from "lucide-react";
+import { Form } from "react-router";
 import { useTranslation } from "react-i18next";
 
 import { getCategories, getCities, getReviews } from "../mock/index";
@@ -139,7 +140,7 @@ function ReviewCard({ name, comment, stars }: ReviewProps) {
         </div>
 
         {/* Review */}
-        <blockquote className="flex-1 break-words whitespace-normal text-sm text-center leading-7 text-muted-foreground">
+        <blockquote className="flex-1 wrap-break-word whitespace-normal text-sm text-center leading-7 text-muted-foreground">
           “{comment}”
         </blockquote>
 
@@ -189,9 +190,13 @@ export default function Landing() {
         </div>
       </section>
 
-      <section className="searchBar flex flex-col gap-3 md:flex-row w-full">
+      <Form
+        method="get"
+        action="/search"
+        className="searchBar flex flex-col gap-3 md:flex-row w-full"
+      >
         <InputGroup className="min-w-1/5">
-          <InputGroupInput placeholder={t("Search placeholder")} />
+          <InputGroupInput name="query" placeholder={t("Search placeholder")} />
 
           <InputGroupAddon>
             <Search />
@@ -207,8 +212,8 @@ export default function Landing() {
 
         <SearchCombobox items={CITIES_LIST} placeholder={t("Select a city")} />
 
-        <Button>{t("Search")}</Button>
-      </section>
+        <Button type="submit">{t("Search")}</Button>
+      </Form>
 
       <Carousel
         plugins={[
