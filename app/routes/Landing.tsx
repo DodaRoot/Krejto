@@ -1,9 +1,9 @@
 import Autoplay from "embla-carousel-autoplay";
-import { ArrowUp, Search, Star } from "lucide-react";
-import { Form } from "react-router";
+import { ArrowUp, Star } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { getCategories, getCities, getReviews } from "../mock/index";
+import { getCategories, getReviews } from "../mock/index";
+import SearchBar from "../components/feature/SearchBar/SearchBar";
 
 import bannerOne from "../assets/images/Banner.png";
 import bannerTwo from "../assets/images/Banner2.png";
@@ -13,7 +13,13 @@ import headerSvg from "../assets/images/Header.svg";
 
 import { Button } from "../components/ui/button";
 
-import { Card, CardContent } from "../components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "../components/ui/card";
 
 import {
   Carousel,
@@ -23,52 +29,18 @@ import {
   CarouselPrevious,
 } from "../components/ui/carousel";
 import { Avatar, AvatarFallback } from "../components/ui/avatar";
-import {
-  Combobox,
-  ComboboxContent,
-  ComboboxEmpty,
-  ComboboxInput,
-  ComboboxItem,
-  ComboboxList,
-} from "../components/ui/combobox";
+import type { CardComponentProps, ReviewProps } from "../types/landing";
 
 import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "../components/ui/input-group";
-import type {
-  CardComponentProps,
-  SearchComboboxProps,
-  ReviewProps,
-} from "../types/landing";
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "../components/ui/accordion";
 
 const CAROUSEL_ITEMS = [bannerOne, bannerTwo, bannerThree, bannerFour];
 const CATEGORIES_LIST = getCategories().map((category) => category.name);
-const CITIES_LIST = getCities();
 const REVIEWS_LIST = getReviews();
-
-function SearchCombobox({ items, placeholder }: SearchComboboxProps) {
-  const [t] = useTranslation();
-
-  return (
-    <Combobox items={items}>
-      <ComboboxInput placeholder={placeholder} className="min-w-1/5" />
-
-      <ComboboxContent>
-        <ComboboxEmpty>{t("No items found")}</ComboboxEmpty>
-
-        <ComboboxList>
-          {(item) => (
-            <ComboboxItem key={item} value={item}>
-              {item}
-            </ComboboxItem>
-          )}
-        </ComboboxList>
-      </ComboboxContent>
-    </Combobox>
-  );
-}
 
 function CategoryCard({ name, description, image }: CardComponentProps) {
   return (
@@ -76,7 +48,7 @@ function CategoryCard({ name, description, image }: CardComponentProps) {
       className="
         group mx-auto w-full max-w-sm overflow-hidden rounded-2xl
         border bg-card p-0 transition-all duration-300
-        hover:shadow-xl sm:max-w-none
+        hover:shadow-xl sm:max-w-none gap-3
       "
     >
       <div className="aspect-video overflow-hidden">
@@ -91,7 +63,7 @@ function CategoryCard({ name, description, image }: CardComponentProps) {
         />
       </div>
 
-      <div className="space-y-3 p-4 sm:p-5">
+      <div className="space-y-3 p-3 sm:p-4">
         <div className="flex items-start justify-between">
           <h3 className="text-base font-semibold sm:text-lg">{name}</h3>
 
@@ -123,7 +95,7 @@ function ReviewCard({ name, comment, stars }: ReviewProps) {
     .toUpperCase();
 
   return (
-    <Card className="m-2 w-full">
+    <Card className="m-2 w-full select-none">
       <CardContent className="flex flex-col p-3">
         {/* Stars */}
         <div className="mb-5 flex gap-1 items-center justify-center">
@@ -190,30 +162,7 @@ export default function Landing() {
         </div>
       </section>
 
-      <Form
-        method="get"
-        action="/search"
-        className="searchBar flex flex-col gap-3 md:flex-row w-full"
-      >
-        <InputGroup className="min-w-1/5">
-          <InputGroupInput name="query" placeholder={t("Search placeholder")} />
-
-          <InputGroupAddon>
-            <Search />
-          </InputGroupAddon>
-
-          <InputGroupAddon align="inline-end" />
-        </InputGroup>
-
-        <SearchCombobox
-          items={CATEGORIES_LIST}
-          placeholder={t("Select a category")}
-        />
-
-        <SearchCombobox items={CITIES_LIST} placeholder={t("Select a city")} />
-
-        <Button type="submit">{t("Search")}</Button>
-      </Form>
+      <SearchBar />
 
       <Carousel
         plugins={[
@@ -221,7 +170,7 @@ export default function Landing() {
             delay: 3000,
           }),
         ]}
-        className="w-full overflow-hidden rounded-xl"
+        className="w-full overflow-clip rounded-xl"
       >
         <CarouselContent>
           {CAROUSEL_ITEMS.map((banner, index) => (
@@ -245,7 +194,7 @@ export default function Landing() {
           align: "center",
           loop: true,
         }}
-        className="max-w-xs sm:max-w-md lg:max-w-5xl overflow-hidden rounded-xl"
+        className="max-w-xs sm:max-w-md lg:max-w-5xl overflow-clip rounded-xl"
       >
         <CarouselContent className="flex gap-5">
           {REVIEWS_LIST.map((review, index) => (
@@ -278,6 +227,53 @@ export default function Landing() {
             image={category.image}
           />
         ))}
+      </section>
+      <section className="w-full flex gap-5">
+        <Card className="w-full h-full">
+          <CardHeader>
+            <CardTitle>Si ta perdori Krejto.com</CardTitle>
+            <CardDescription>
+              Ketu mund te gjeni informate reth Krejto.com dhe perdorimit te tij
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Accordion type="single" collapsible defaultValue="item-1">
+              <AccordionItem value="item-1">
+                <AccordionTrigger>Is it accessible?</AccordionTrigger>
+                <AccordionContent>
+                  Yes. It adheres to the WAI-ARIA design pattern.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-2">
+                <AccordionTrigger>Is it accessible?</AccordionTrigger>
+                <AccordionContent>
+                  Yes. It adheres to the WAI-ARIA design pattern.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-3">
+                <AccordionTrigger>Is it accessible?</AccordionTrigger>
+                <AccordionContent>
+                  Yes. It adheres to the WAI-ARIA design pattern.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-4">
+                <AccordionTrigger>Is it accessible?</AccordionTrigger>
+                <AccordionContent>
+                  Yes. It adheres to the WAI-ARIA design pattern.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-5">
+                <AccordionTrigger>Is it accessible?</AccordionTrigger>
+                <AccordionContent>
+                  Yes. It adheres to the WAI-ARIA design pattern.
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </CardContent>
+        </Card>
+        {/* <div className="image w-1/2">
+          <img src={bannerOne}></img>
+        </div> */}
       </section>
     </div>
   );

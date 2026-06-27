@@ -10,8 +10,7 @@ import {
 import { Input } from "../components/ui/input";
 import { Switch } from "../components/ui/switch";
 import { Button } from "../components/ui/button";
-import { mockServices, type Service } from "../mock/services";
-import { getUserData, type MockUser } from "../mock/index";
+import { getMockServices, getUserData } from "../mock/index";
 
 const USER_DATA = getUserData();
 
@@ -68,11 +67,11 @@ function ProfileHeader({
 
 interface ProfileFormProps {
   name: string;
-  location: string;
+  number: string;
   email: string;
 }
 
-function ProfileForm({ name, location, email }: ProfileFormProps) {
+function ProfileForm({ name, number, email }: ProfileFormProps) {
   const [t] = useTranslation();
 
   return (
@@ -99,12 +98,12 @@ function ProfileForm({ name, location, email }: ProfileFormProps) {
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="location">{t("Location")}</FieldLabel>
+              <FieldLabel htmlFor="number">{t("Number")}</FieldLabel>
               <Input
-                id="location"
-                value={location}
+                id="number"
+                value={number}
                 readOnly
-                placeholder={t("City, Country")}
+                placeholder={t("Number")}
               />
             </Field>
           </div>
@@ -181,7 +180,7 @@ function AddServiceCard() {
 }
 
 interface ServiceCardProps {
-  service: Service;
+  service: any;
 }
 
 function ServiceCard({ service }: ServiceCardProps) {
@@ -219,7 +218,7 @@ function ServicesSection() {
       </div>
 
       <div className="grid grid-cols-1 gap-4">
-        {mockServices.map((service) => (
+        {getMockServices.map((service) => (
           <ServiceCard key={service.id} service={service} />
         ))}
       </div>
@@ -229,7 +228,7 @@ function ServicesSection() {
 
 export default function Profile() {
   return (
-    <div className="space-y-6 p-2">
+    <div className="space-y-6 p-2 w-full">
       <div className="grid grid-cols-1 md:grid-cols-3 md:gap-8">
         <ProfileHeader
           name={USER_DATA.name}
@@ -241,7 +240,7 @@ export default function Profile() {
         <main className="col-span-2 space-y-6">
           <ProfileForm
             name={USER_DATA.name}
-            location={USER_DATA.location}
+            number={USER_DATA.number}
             email={USER_DATA.email}
           />
         </main>

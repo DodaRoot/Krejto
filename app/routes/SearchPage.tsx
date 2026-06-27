@@ -1,45 +1,82 @@
-import { Link } from "react-router";
-import { ChevronDown, SlidersHorizontal } from "lucide-react";
+import { useState } from "react";
+
+import { SlidersHorizontal } from "lucide-react";
 import { useTranslation } from "react-i18next";
+
+import type { SearchComboboxProps } from "../types/landing";
 
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
+import { Label } from "../components/ui/label";
+
 import {
   Card,
   CardContent,
   CardTitle,
   CardDescription,
 } from "../components/ui/card";
-import { mockServices } from "../mock/services";
+
+import {
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+} from "../components/ui/combobox";
+
+import { Slider } from "../components/ui/slider";
+
+import { getMockServices } from "../mock";
+
+const typeOfProvider = ["Kompani", "Individ"];
+
+function SearchCombobox({ items, placeholder }: SearchComboboxProps) {
+  const [t] = useTranslation();
+
+  return (
+    <Combobox items={items}>
+      <ComboboxInput placeholder={placeholder} className="min-w-1/5" />
+
+      <ComboboxContent>
+        <ComboboxEmpty>{t("No items found")}</ComboboxEmpty>
+
+        <ComboboxList>
+          {(item) => (
+            <ComboboxItem key={item} value={item}>
+              {item}
+            </ComboboxItem>
+          )}
+        </ComboboxList>
+      </ComboboxContent>
+    </Combobox>
+  );
+}
 
 export default function SearchPage() {
+  const [value, setValue] = useState([0, 100]);
   const [t] = useTranslation();
 
   return (
     <div className="mt-4 w-full">
       <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div className="space-y-2">
-          <p className="text-sm text-muted-foreground">
-            {t("Showing results for")}{" "}
-            <span className="font-semibold text-foreground">“services”</span>
-          </p>
           <h1 className="text-2xl font-semibold tracking-tight text-foreground">
             {t("Search Results")}
           </h1>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2">
-          <Button variant="outline" disabled>
-            {t("Clear filters")}
-          </Button>
-          <Link to="/" className="text-sm text-primary hover:underline">
-            {t("Back to Home")}
-          </Link>
+          <div className="flex gap-3">
+            <p className="text-sm">
+              {getMockServices.length} {t("Results")}
+            </p>
+            <p className="text-sm text-muted-foreground">
+              {t("Showing results for")} {" Electricist"}
+            </p>
+          </div>
         </div>
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[300px_minmax(0,1fr)]">
-        <aside className="rounded-3xl border border-border bg-card p-5 shadow-sm">
+        <aside className="rounded-3xl border border-border bg-card p-5 shadow-sm h-fit md:sticky md:top-8">
           <div className="mb-5 flex items-center gap-3">
             <div className="rounded-2xl bg-primary/10 p-2 text-primary">
               <SlidersHorizontal className="h-4 w-4" />
@@ -53,78 +90,64 @@ export default function SearchPage() {
           </div>
 
           <div className="space-y-4">
+            <div className="space-y-2"></div>
+
             <div className="space-y-2">
-              <label className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                {t("Category")}
-              </label>
-              <Input readOnly placeholder={t("Select a category")} />
+              <Label className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                {t("Price")}:<span>{value.join(" - ")}</span>
+              </Label>
+              <Slider
+                id="slider-demo-temperature"
+                value={value}
+                onValueChange={setValue}
+                min={0}
+                max={100}
+                step={1}
+              />
             </div>
 
             <div className="space-y-2">
-              <label className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                {t("Location")}
-              </label>
-              <Input readOnly placeholder={t("City, Country")} />
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+              <Label className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
                 {t("Sort by")}
-              </label>
-              <Button
-                variant="outline"
-                className="w-full justify-between"
-                disabled
-              >
-                {t("Relevance")}
-                <ChevronDown className="h-4 w-4" />
+              </Label>
+              <SearchCombobox items={[]} placeholder="" />
+            </div>
+            <div className="space-y-2 flex gap-4">
+              <Button variant="outline">{t("Filter")}</Button>
+              <Button variant="outline" disabled>
+                {t("Clear filters")}
               </Button>
             </div>
           </div>
         </aside>
 
         <section className="space-y-6">
-          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-            <div>
-              <p className="text-sm text-muted-foreground">
-                {mockServices.length} {t("Results")}
-              </p>
-              <h2 className="text-lg font-semibold text-foreground">
-                {t("Service offers")}
-              </h2>
-            </div>
-            <div className="hidden md:flex items-center gap-2">
-              <Input
-                readOnly
-                placeholder={t("Search placeholder")}
-                className="w-60"
-              />
-            </div>
-          </div>
-
-          <div className="grid gap-4">
-            {mockServices.map((service) => (
-              <Card key={service.id} className="border border-border shadow-sm">
-                <CardContent className="space-y-4 p-5">
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
+            {getMockServices.map((service) => (
+              <Card
+                key={service.id}
+                className="border border-border shadow-sm hover:shadow-md transition-shadow overflow-hidden"
+              >
+                <CardContent className="flex flex-col h-full p-0 group">
+                  <div className="h-40 overflow-hidden bg-muted m-2 rounded-2xl">
+                    <img
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      src={service.image}
+                      alt={service.title}
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2 p-4 grow">
                     <div>
-                      <CardTitle className="text-lg font-semibold text-foreground">
+                      <CardTitle className="text-base font-semibold text-foreground">
                         {service.title}
                       </CardTitle>
-                      <CardDescription>{service.description}</CardDescription>
+                      <CardDescription className="text-xs mt-0.5">
+                        {service.description}
+                      </CardDescription>
                     </div>
-                    <div className="rounded-full bg-muted px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                      {service.category}
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                    <div className="text-sm font-semibold text-foreground">
+                    <div className="text-base font-semibold text-primary mt-auto">
                       {service.price}
                     </div>
-                    <Button variant="outline" size="sm" disabled>
-                      {t("View details")}
-                    </Button>
                   </div>
                 </CardContent>
               </Card>
