@@ -1,4 +1,38 @@
-.react-router
-build
+# Git
+
+.git
+.gitignore
+
+# Node
+
 node_modules
-README.md
+npm-debug.log
+\*.log
+
+# React
+
+client/dist
+client/build
+client/.react-router
+
+# Maven
+
+server/target
+server/.m2
+
+# IDE
+
+.idea
+.vscode
+\*.iml
+
+# OS
+
+.DS_Store
+Thumbs.db
+
+# Docker
+
+Dockerfile
+docker-compose.yml
+.dockerignore

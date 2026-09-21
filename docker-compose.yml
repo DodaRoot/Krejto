@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:latest
+    container_name: krejto-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: krejto_db
+      POSTGRES_USER: krejto_user
+      POSTGRES_PASSWORD: krejto_password
+    ports:
+      - "5000:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/docker
+
+volumes:
+  postgres_data:
