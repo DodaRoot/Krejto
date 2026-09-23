@@ -31,7 +31,6 @@ public class Service {
     @Column(nullable = false)
     private Double price;
 
-    @Column(nullable = false)
     private String address;
 
     @OneToMany(mappedBy = "service", cascade = CascadeType.ALL, orphanRemoval = true)
