@@ -18,7 +18,7 @@ public class SecurityConfiguration {
                 auth.requestMatchers(
                         "/api/v1/users/register", "/api/v1/users/login").permitAll()
                         .anyRequest().authenticated())
-                .formLogin(form -> form.loginProcessingUrl("/api/v1/users/login"))
+                .formLogin(form -> form.usernameParameter("email").loginProcessingUrl("/api/v1/users/login").defaultSuccessUrl("/loginSuccessful", true))
                 .logout(logout -> logout.logoutUrl("/api/v1/users/logout"));
         return http.build();
     }

@@ -39,9 +39,7 @@ public class UserService {
     public UserDTO.GetUserResponse getUserById(UUID id) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFound("User with id " + id + " not found"));
 
-        UserDTO.GetUserResponse getUserResponse = new UserDTO.GetUserResponse(user.getId(), user.getFullName(), user.getEmail(), user.getPhoneNumber(), user.getCreatedAt());
-
-        return getUserResponse;
+        return new UserDTO.GetUserResponse(user.getId(), user.getFullName(), user.getEmail(), user.getPhoneNumber(), user.getCreatedAt());
     }
 
     public UserDTO.CreateUserResponse createUser(UserDTO.CreateUserRequest createUserRequest) {
@@ -55,9 +53,7 @@ public class UserService {
 
         userRepository.save(user);
 
-        UserDTO.CreateUserResponse createUserResponse = new UserDTO.CreateUserResponse(user.getId(), user.getFullName(), user.getEmail(), user.getPhoneNumber(), user.getCreatedAt());
-
-        return createUserResponse;
+        return new UserDTO.CreateUserResponse(user.getId(), user.getFullName(), user.getEmail(), user.getPhoneNumber(), user.getCreatedAt());
     }
 
     @Transactional
@@ -68,14 +64,16 @@ public class UserService {
         user.setEmail(updateUserRequest.email());
         user.setPhoneNumber(updateUserRequest.phoneNumber());
 
-        UserDTO.UpdateUserResponse updateUserResponse = new UserDTO.UpdateUserResponse(user.getFullName(), user.getEmail(), user.getPhoneNumber());
+        if (updateUserRequest.password() != null && !updateUserRequest.password().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(updateUserRequest.password()));
+        }
 
-        return updateUserResponse;
+        return new UserDTO.UpdateUserResponse(user.getId(), user.getFullName(), user.getEmail(), user.getPhoneNumber());
     }
 
     public void deleteUserById(UUID id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFound("User not found"));
+        userRepository.findById(id).orElseThrow(() -> new UserNotFound("User not found"));
 
-        userRepository.delete(user);
+        userRepository.deleteById(id);
     }
 }

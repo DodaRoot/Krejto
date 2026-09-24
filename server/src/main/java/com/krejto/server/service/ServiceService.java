@@ -1,5 +1,6 @@
 package com.krejto.server.service;
 
+import com.krejto.server.exceptions.ServiceNotFound;
 import com.krejto.server.exceptions.UserNotFound;
 import com.krejto.server.exceptions.UserServiceExists;
 import com.krejto.server.model.dto.LocationDTO;
@@ -14,11 +15,13 @@ import com.krejto.server.repository.LocationRepository;
 import com.krejto.server.repository.ServiceRepository;
 import com.krejto.server.repository.TypeOfServiceRepository;
 import com.krejto.server.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.jspecify.annotations.NonNull;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @org.springframework.stereotype.Service
 public class ServiceService {
@@ -83,6 +86,27 @@ public class ServiceService {
         serviceRepository.save(service);
 
         return new ServiceDTO.CreateServiceResponse(service.getId(), service.getUser().getId(), service.getLocation().getId(), service.getTypeOfService().getId(), service.getDescription(), service.getPrice(), service.getAddress());
+    }
+
+    @Transactional
+    public ServiceDTO.UpdateServiceResponse updateService(ServiceDTO.UpdateServiceRequest updateServiceRequest) {
+        Service service = serviceRepository.findById(updateServiceRequest.id()).orElseThrow(() -> new ServiceNotFound("Service does not exist"));
+
+        service.setLocation(locationRepository.findById(updateServiceRequest.locationId()).orElse(null));
+        service.setTypeOfService(typeOfServiceRepository.findById(updateServiceRequest.typeOfServiceId()).orElse(null));
+        service.setDescription(updateServiceRequest.description());
+        service.setPrice(updateServiceRequest.price());
+        service.setAddress(updateServiceRequest.address());
+
+        serviceRepository.save(service);
+
+        return new ServiceDTO.UpdateServiceResponse(service.getId(), service.getUser().getId(), service.getLocation().getId(), service.getTypeOfService().getId(), service.getDescription(), service.getPrice(), service.getAddress());
+    }
+
+    public void deleteService(UUID id) {
+        serviceRepository.findById(id).orElseThrow(() -> new ServiceNotFound("Service does not exist"));
+
+        serviceRepository.deleteById(id);
     }
 
     private static ServiceDTO.@NonNull GetServiceResponse getGetServiceResponse(Service service) {

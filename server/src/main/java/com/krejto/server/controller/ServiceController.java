@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("api/v1/service")
@@ -37,5 +38,18 @@ public class ServiceController {
         ServiceDTO.CreateServiceResponse createServiceResponse = serviceService.createService(createServiceRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createServiceResponse);
+    }
+
+    @PatchMapping
+    public ResponseEntity<ServiceDTO.UpdateServiceResponse> updateService(@Valid @RequestBody ServiceDTO.UpdateServiceRequest updateServiceRequest) {
+        ServiceDTO.UpdateServiceResponse updateServiceResponse = serviceService.updateService(updateServiceRequest);
+
+        return ResponseEntity.ok(updateServiceResponse);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteService(@PathVariable UUID id) {
+        serviceService.deleteService(id);
+        return ResponseEntity.noContent().build();
     }
 }

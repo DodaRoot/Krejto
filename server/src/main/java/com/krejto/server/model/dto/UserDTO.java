@@ -34,8 +34,11 @@ public class UserDTO {
             String email,
 
             @NotEmpty(message = "Phone Number should not be empty")
-            String phoneNumber) {}
+            String phoneNumber,
 
-    public record UpdateUserResponse (String fullName, String email, String phoneNumber) {}
+            String password
+    ) {}
+
+    public record UpdateUserResponse (UUID id, String fullName, String email, String phoneNumber) {}
 }
 

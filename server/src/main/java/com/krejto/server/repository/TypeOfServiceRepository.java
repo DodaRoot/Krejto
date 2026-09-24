@@ -4,8 +4,10 @@ import com.krejto.server.model.entity.TypeOfService;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
 public interface TypeOfServiceRepository extends JpaRepository<TypeOfService, UUID> {
+    Optional<TypeOfService> findByServiceName(String serviceName);
 }
