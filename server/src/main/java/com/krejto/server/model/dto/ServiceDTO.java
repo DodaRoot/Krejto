@@ -30,9 +30,6 @@ public class ServiceDTO {
     public record GetServiceResponse(UUID id, UserDTO.GetUserResponse getUserResponse, LocationDTO.GetLocationResponse getLocationResponse, TypeOfServiceDTO.GetTypeOfServiceResponse getTypeOfServiceResponse, String description, Double price, String address, List<ServiceReview> serviceReviews) {}
 
     public record CreateServiceRequest(
-            @NotNull(message = "User id is required")
-            UUID userId,
-
             @NotNull(message = "Location id is required")
             UUID locationId,
 
@@ -51,9 +48,6 @@ public class ServiceDTO {
     public record CreateServiceResponse(UUID id, UUID userId, UUID locationId, UUID typeOfServiceId, String description, Double price, String address) {}
 
     public record UpdateServiceRequest(
-            @NotNull(message = "Id is required")
-            UUID id,
-
             @NotNull(message = "Location id is required")
             UUID locationId,
 

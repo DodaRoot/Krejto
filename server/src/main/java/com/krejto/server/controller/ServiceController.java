@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,22 +35,23 @@ public class ServiceController {
     }
 
     @PostMapping
-    public ResponseEntity<ServiceDTO.CreateServiceResponse> createService(@Valid @RequestBody ServiceDTO.CreateServiceRequest createServiceRequest) {
-        ServiceDTO.CreateServiceResponse createServiceResponse = serviceService.createService(createServiceRequest);
+    public ResponseEntity<ServiceDTO.CreateServiceResponse> createService(@Valid @RequestBody ServiceDTO.CreateServiceRequest createServiceRequest, Principal principal) {
+        ServiceDTO.CreateServiceResponse createServiceResponse = serviceService.createService(createServiceRequest, principal);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createServiceResponse);
     }
 
-    @PatchMapping
-    public ResponseEntity<ServiceDTO.UpdateServiceResponse> updateService(@Valid @RequestBody ServiceDTO.UpdateServiceRequest updateServiceRequest) {
-        ServiceDTO.UpdateServiceResponse updateServiceResponse = serviceService.updateService(updateServiceRequest);
+    @PatchMapping("/{id}")
+    public ResponseEntity<ServiceDTO.UpdateServiceResponse> updateService(@Valid @PathVariable UUID id, @Valid @RequestBody ServiceDTO.UpdateServiceRequest updateServiceRequest, Principal principal) {
+        ServiceDTO.UpdateServiceResponse updateServiceResponse = serviceService.updateService(id, updateServiceRequest, principal);
 
         return ResponseEntity.ok(updateServiceResponse);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteService(@PathVariable UUID id) {
-        serviceService.deleteService(id);
+    public ResponseEntity<Object> deleteService(@Valid @PathVariable UUID id, Principal principal) {
+        serviceService.deleteService(id, principal);
+
         return ResponseEntity.noContent().build();
     }
 }

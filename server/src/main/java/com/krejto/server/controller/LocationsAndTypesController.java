@@ -4,8 +4,10 @@ import com.krejto.server.model.dto.LocationAndTypesDTO;
 import com.krejto.server.model.dto.LocationDTO;
 import com.krejto.server.model.dto.TypeOfServiceDTO;
 import com.krejto.server.service.LocationAndTypesOfService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,13 +32,15 @@ public class LocationsAndTypesController {
     }
 
     @PostMapping("/newLocation")
-    public ResponseEntity<LocationDTO.CreateLocationResponse> createLocation(@RequestBody LocationDTO.CreateLocationRequest createLocationRequest) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<LocationDTO.CreateLocationResponse> createLocation(@Valid @RequestBody LocationDTO.CreateLocationRequest createLocationRequest) {
        LocationDTO.CreateLocationResponse createLocationResponse = locationAndTypesOfService.createLocation(createLocationRequest);
        return ResponseEntity.status(HttpStatus.CREATED).body(createLocationResponse);
     }
 
     @PostMapping("/newTypeOfService")
-    public ResponseEntity<TypeOfServiceDTO.CreateTypeOfServiceResponse> createTypeOfService(@RequestBody TypeOfServiceDTO.CreateTypeOfServiceRequest createTypeOfServiceRequest) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<TypeOfServiceDTO.CreateTypeOfServiceResponse> createTypeOfService(@Valid @RequestBody TypeOfServiceDTO.CreateTypeOfServiceRequest createTypeOfServiceRequest) {
         TypeOfServiceDTO.CreateTypeOfServiceResponse createTypeOfServiceResponse = locationAndTypesOfService.createTypeOfService(createTypeOfServiceRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(createTypeOfServiceResponse);
     }

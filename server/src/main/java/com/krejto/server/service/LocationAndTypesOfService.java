@@ -56,7 +56,7 @@ public class LocationAndTypesOfService {
     }
 
     public LocationDTO.CreateLocationResponse createLocation(LocationDTO.CreateLocationRequest createLocationRequest) {
-        if (!locationRepository.findByLocation(createLocationRequest.location()).isEmpty()) {
+        if (locationRepository.findByLocation(createLocationRequest.location()).isPresent()) {
             throw new LocationOrTypesAlreadyExist("Location already exists");
         }
         Location location = new Location(createLocationRequest.location());
@@ -65,7 +65,7 @@ public class LocationAndTypesOfService {
     }
 
     public TypeOfServiceDTO.CreateTypeOfServiceResponse createTypeOfService(TypeOfServiceDTO.CreateTypeOfServiceRequest createTypeOfServiceRequest) {
-        if (!typeOfServiceRepository.findByServiceName(createTypeOfServiceRequest.serviceName()).isEmpty()) {
+        if (typeOfServiceRepository.findByServiceName(createTypeOfServiceRequest.serviceName()).isPresent()) {
             throw new LocationOrTypesAlreadyExist("Type of Service already exists");
         }
         TypeOfService typeOfService = new TypeOfService(createTypeOfServiceRequest.serviceName(), createTypeOfServiceRequest.serviceDescription());

@@ -1,10 +1,8 @@
 package com.krejto.server.model.entity;
 
 import jakarta.persistence.*;
-import org.antlr.v4.runtime.misc.NotNull;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.security.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,13 +37,18 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ServiceReview> servicesReviews = new ArrayList<>();
 
+    @ManyToOne
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role role;
+
     public User() {}
 
-    public User(String fullName, String email, String password, String phoneNumber) {
+    public User(String fullName, String email, String password, String phoneNumber, Role role) {
         this.fullName = fullName;
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNumber;
+        this.role = role;
     }
 
     public UUID getId() {
@@ -104,4 +107,11 @@ public class User {
         this.servicesReviews = servicesReviews;
     }
 
+    public String getRole() {
+        return role.getRole();
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
 }

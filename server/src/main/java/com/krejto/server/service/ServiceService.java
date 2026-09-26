@@ -7,10 +7,7 @@ import com.krejto.server.model.dto.LocationDTO;
 import com.krejto.server.model.dto.ServiceDTO;
 import com.krejto.server.model.dto.TypeOfServiceDTO;
 import com.krejto.server.model.dto.UserDTO;
-import com.krejto.server.model.entity.Location;
-import com.krejto.server.model.entity.Service;
-import com.krejto.server.model.entity.TypeOfService;
-import com.krejto.server.model.entity.User;
+import com.krejto.server.model.entity.*;
 import com.krejto.server.repository.LocationRepository;
 import com.krejto.server.repository.ServiceRepository;
 import com.krejto.server.repository.TypeOfServiceRepository;
@@ -19,6 +16,7 @@ import jakarta.transaction.Transactional;
 import org.jspecify.annotations.NonNull;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -64,12 +62,10 @@ public class ServiceService {
         return getServiceResponseList;
     }
 
-    public ServiceDTO.CreateServiceResponse createService(ServiceDTO.CreateServiceRequest createServiceRequest) {
-        if (userRepository.findById(createServiceRequest.userId()).isEmpty()) {
-            throw new UserNotFound("This user does not exist");
-        }
+    public ServiceDTO.CreateServiceResponse createService(ServiceDTO.CreateServiceRequest createServiceRequest, Principal principal) {
+        User user = userRepository.findByEmail(principal.getName()).orElseThrow(() -> new UserNotFound(principal.getName()));
 
-        List<Service> userServices = serviceRepository.findByUserId(createServiceRequest.userId());
+        List<Service> userServices = serviceRepository.findByUserId(user.getId());
 
         for (Service serviceInUserServices : userServices) {
             if (serviceInUserServices.getTypeOfService().getId().equals(createServiceRequest.typeOfServiceId())) {
@@ -77,7 +73,6 @@ public class ServiceService {
             }
         }
 
-        User user = userRepository.findById(createServiceRequest.userId()).orElse(null);
         Location location = locationRepository.findById(createServiceRequest.locationId()).orElse(null);
         TypeOfService typeOfService = typeOfServiceRepository.findById(createServiceRequest.typeOfServiceId()).orElse(null);
 
@@ -89,8 +84,14 @@ public class ServiceService {
     }
 
     @Transactional
-    public ServiceDTO.UpdateServiceResponse updateService(ServiceDTO.UpdateServiceRequest updateServiceRequest) {
-        Service service = serviceRepository.findById(updateServiceRequest.id()).orElseThrow(() -> new ServiceNotFound("Service does not exist"));
+    public ServiceDTO.UpdateServiceResponse updateService(UUID id, ServiceDTO.UpdateServiceRequest updateServiceRequest, Principal principal) {
+        Service service = serviceRepository.findById(id).orElseThrow(() -> new ServiceNotFound("Service does not exist"));
+
+        User user = userRepository.findByEmail(principal.getName()).orElseThrow(() -> new UserNotFound(principal.getName()));
+
+        if (!service.getUser().getId().equals(user.getId()) && !user.getRole().equals("ADMIN")) {
+            throw new ServiceNotFound("User does not own this service");
+        }
 
         service.setLocation(locationRepository.findById(updateServiceRequest.locationId()).orElse(null));
         service.setTypeOfService(typeOfServiceRepository.findById(updateServiceRequest.typeOfServiceId()).orElse(null));
@@ -98,13 +99,17 @@ public class ServiceService {
         service.setPrice(updateServiceRequest.price());
         service.setAddress(updateServiceRequest.address());
 
-        serviceRepository.save(service);
-
         return new ServiceDTO.UpdateServiceResponse(service.getId(), service.getUser().getId(), service.getLocation().getId(), service.getTypeOfService().getId(), service.getDescription(), service.getPrice(), service.getAddress());
     }
 
-    public void deleteService(UUID id) {
-        serviceRepository.findById(id).orElseThrow(() -> new ServiceNotFound("Service does not exist"));
+    public void deleteService(UUID id, Principal principal) {
+        Service service = serviceRepository.findById(id).orElseThrow(() -> new ServiceNotFound("Service does not exist"));
+
+        User user = userRepository.findByEmail(principal.getName()).orElseThrow(() -> new UserNotFound(principal.getName()));
+
+        if (!service.getUser().getId().equals(user.getId()) && !user.getRole().equals("ADMIN")) {
+            throw new ServiceNotFound("User does not own this service");
+        }
 
         serviceRepository.deleteById(id);
     }

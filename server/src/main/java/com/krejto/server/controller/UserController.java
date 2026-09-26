@@ -5,7 +5,10 @@ import com.krejto.server.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,13 +22,14 @@ public class UserController {
     }
 
     @GetMapping()
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserDTO.GetUserResponse>> getAllUsers() {
         List<UserDTO.GetUserResponse> getUserResponses = userService.getAllUsers();
         return ResponseEntity.ok(getUserResponses);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDTO.GetUserResponse> getUserById(@PathVariable UUID id) {
+    public ResponseEntity<UserDTO.GetUserResponse> getUserById(@Valid @PathVariable UUID id) {
         UserDTO.GetUserResponse getUserResponse = userService.getUserById(id);
         return ResponseEntity.ok(getUserResponse);
     }
@@ -37,14 +41,29 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<UserDTO.UpdateUserResponse> updateUser(@PathVariable UUID id, @Valid @RequestBody UserDTO.UpdateUserRequest updateUserRequest) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<UserDTO.UpdateUserResponse> updateUser(@Valid @PathVariable UUID id, @Valid @RequestBody UserDTO.UpdateUserRequest updateUserRequest) {
         UserDTO.UpdateUserResponse updateUserResponse = userService.updateUser(id, updateUserRequest);
         return ResponseEntity.ok(updateUserResponse);
     }
 
+    @PatchMapping
+    public ResponseEntity<UserDTO.UpdateUserResponse> updateUser(@Valid @RequestBody UserDTO.UpdateUserRequest updateUserRequest, Principal principal) {
+        UserDTO.UpdateUserResponse updateUserResponse = userService.updateUser(principal.getName(), updateUserRequest);
+        return ResponseEntity.ok(updateUserResponse);
+    }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteUserById(@PathVariable UUID id) {
-        userService.deleteUserById(id);
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Object> deleteUser(@Valid @PathVariable UUID id) {
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Object> deleteUser(Principal principal) {
+        String email = principal.getName();
+        userService.deleteUser(email);
         return ResponseEntity.noContent().build();
     }
 }

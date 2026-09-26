@@ -1,9 +1,11 @@
 package com.krejto.server.service;
 
+import com.krejto.server.exceptions.RoleNotFound;
 import com.krejto.server.exceptions.UserEmailAlreadyExists;
 import com.krejto.server.exceptions.UserNotFound;
 import com.krejto.server.model.dto.UserDTO;
 import com.krejto.server.model.entity.User;
+import com.krejto.server.repository.RoleRepository;
 import com.krejto.server.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,10 +19,12 @@ import java.util.UUID;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RoleRepository roleRepository;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.roleRepository = roleRepository;
     }
 
     public List<UserDTO.GetUserResponse> getAllUsers() {
@@ -49,7 +53,7 @@ public class UserService {
 
         String encodedPassword = passwordEncoder.encode(createUserRequest.password());
 
-        User user = new User(createUserRequest.email(), createUserRequest.fullName(), encodedPassword, createUserRequest.phoneNumber());
+        User user = new User(createUserRequest.fullName(), createUserRequest.email(), encodedPassword, createUserRequest.phoneNumber(), roleRepository.findByRole("USER").orElseThrow(() -> new RoleNotFound("Role not found")));
 
         userRepository.save(user);
 
@@ -71,8 +75,29 @@ public class UserService {
         return new UserDTO.UpdateUserResponse(user.getId(), user.getFullName(), user.getEmail(), user.getPhoneNumber());
     }
 
-    public void deleteUserById(UUID id) {
+    @Transactional
+    public UserDTO.UpdateUserResponse updateUser(String email, UserDTO.UpdateUserRequest updateUserRequest) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFound("User not found"));
+
+        user.setFullName(updateUserRequest.fullName());
+        user.setEmail(updateUserRequest.email());
+        user.setPhoneNumber(updateUserRequest.phoneNumber());
+
+        if (updateUserRequest.password() != null && !updateUserRequest.password().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(updateUserRequest.password()));
+        }
+
+        return new UserDTO.UpdateUserResponse(user.getId(), user.getFullName(), user.getEmail(), user.getPhoneNumber());
+    }
+
+    public void deleteUser(UUID id) {
         userRepository.findById(id).orElseThrow(() -> new UserNotFound("User not found"));
+
+        userRepository.deleteById(id);
+    }
+
+    public void deleteUser(String email) {
+        UUID id = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFound("User not found")).getId();
 
         userRepository.deleteById(id);
     }
