@@ -21,6 +21,17 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping("/loginSuccessful")
+    public ResponseEntity<UserDTO.GetUserResponse> loggedInSuccessfully(Principal principal) {
+        UserDTO.GetUserResponse getUserResponse = userService.getUserByEmail(principal);
+        return ResponseEntity.ok(getUserResponse);
+    }
+
+    @GetMapping("/logoutSuccessful")
+    public ResponseEntity loggedOutSuccessfully() {
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
     @GetMapping()
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserDTO.GetUserResponse>> getAllUsers() {

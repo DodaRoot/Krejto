@@ -31,10 +31,7 @@ public class LocationAndTypesOfService {
         List<Location> locations = locationRepository.findAll();
         List<LocationDTO.GetLocationResponse> locationDTOs = new ArrayList<>();
 
-        for (Location location : locations) {
-            LocationDTO.GetLocationResponse getLocationResponse = new LocationDTO.GetLocationResponse(location.getId(), location.getLocation());
-            locationDTOs.add(getLocationResponse);
-        }
+        locations.forEach(location -> locationDTOs.add(new LocationDTO.GetLocationResponse(location.getId(), location.getLocation())));
 
         return locationDTOs;
     }
@@ -47,10 +44,7 @@ public class LocationAndTypesOfService {
         List<TypeOfService> typeOfServices = typeOfServiceRepository.findAll();
         List<TypeOfServiceDTO.GetTypeOfServiceResponse> typeOfServiceDTOs = new ArrayList<>();
 
-        for (TypeOfService typeOfService : typeOfServices) {
-            TypeOfServiceDTO.GetTypeOfServiceResponse getTypeOfServiceResponse = new TypeOfServiceDTO.GetTypeOfServiceResponse(typeOfService.getId(), typeOfService.getServiceName(), typeOfService.getServiceDescription());
-            typeOfServiceDTOs.add(getTypeOfServiceResponse);
-        }
+        typeOfServices.forEach(typeOfService -> typeOfServiceDTOs.add(new TypeOfServiceDTO.GetTypeOfServiceResponse(typeOfService.getId(), typeOfService.getServiceName(), typeOfService.getServiceDescription())));
 
         return typeOfServiceDTOs;
     }

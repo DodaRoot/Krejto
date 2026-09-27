@@ -20,10 +20,10 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) {
         http.csrf(csrf -> csrf.disable()).authorizeHttpRequests(auth ->
                 auth.requestMatchers(
-                        "/api/v1/users/register", "/api/v1/users/login").permitAll()
+                        "/api/v1/users/register", "/api/v1/users/login", "/api/v1/users/logoutSuccessful").permitAll()
                         .anyRequest().authenticated())
-                .formLogin(form -> form.usernameParameter("email").loginProcessingUrl("/api/v1/users/login").defaultSuccessUrl("/loginSuccessful", true))
-                .logout(logout -> logout.logoutUrl("/api/v1/users/logout")
+                .formLogin(form -> form.usernameParameter("email").loginProcessingUrl("/api/v1/users/login").defaultSuccessUrl("/api/v1/users/loginSuccessful", true))
+                .logout(logout -> logout.logoutUrl("/api/v1/users/logout").logoutSuccessUrl("/api/v1/users/logoutSuccessful")
                 ).exceptionHandling(ex -> ex
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
                 );

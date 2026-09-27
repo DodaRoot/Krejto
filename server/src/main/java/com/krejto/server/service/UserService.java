@@ -11,6 +11,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -32,16 +33,19 @@ public class UserService {
 
         List<UserDTO.GetUserResponse> getUserResponses = new ArrayList<>();
 
-        for (User user : users) {
-            UserDTO.GetUserResponse getUserResponse = new UserDTO.GetUserResponse(user.getId(), user.getFullName(), user.getEmail(), user.getPhoneNumber(), user.getCreatedAt());
-            getUserResponses.add(getUserResponse);
-        }
+        users.forEach(user -> getUserResponses.add(new UserDTO.GetUserResponse(user.getId(), user.getFullName(), user.getEmail(), user.getPhoneNumber(), user.getCreatedAt())));
 
         return getUserResponses;
     }
 
     public UserDTO.GetUserResponse getUserById(UUID id) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFound("User with id " + id + " not found"));
+
+        return new UserDTO.GetUserResponse(user.getId(), user.getFullName(), user.getEmail(), user.getPhoneNumber(), user.getCreatedAt());
+    }
+
+    public UserDTO.GetUserResponse getUserByEmail(Principal principal) {
+        User user = userRepository.findByEmail(principal.getName()).orElseThrow(() -> new UserNotFound("User with email " + principal.getName() + " not found"));
 
         return new UserDTO.GetUserResponse(user.getId(), user.getFullName(), user.getEmail(), user.getPhoneNumber(), user.getCreatedAt());
     }

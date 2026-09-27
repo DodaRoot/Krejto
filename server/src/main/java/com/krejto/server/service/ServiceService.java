@@ -41,10 +41,7 @@ public class ServiceService {
         List<Service> services = serviceRepository.findAll(specification);
         List<ServiceDTO.GetServiceResponse> getServiceResponseList = new ArrayList<>();
 
-        for (Service service : services) {
-            ServiceDTO.GetServiceResponse getServiceResponse = getGetServiceResponse(service);
-            getServiceResponseList.add(getServiceResponse);
-        }
+        services.forEach(service -> getServiceResponseList.add(getGetServiceResponse(service)));
 
         return getServiceResponseList;
     }
@@ -54,10 +51,7 @@ public class ServiceService {
 
         List<ServiceDTO.GetServiceResponse> getServiceResponseList = new ArrayList<>();
 
-        for (Service service : services) {
-            ServiceDTO.GetServiceResponse getServiceResponse = getGetServiceResponse(service);
-            getServiceResponseList.add(getServiceResponse);
-        }
+        services.forEach(service -> getServiceResponseList.add(getGetServiceResponse(service)));
 
         return getServiceResponseList;
     }
@@ -67,11 +61,11 @@ public class ServiceService {
 
         List<Service> userServices = serviceRepository.findByUserId(user.getId());
 
-        for (Service serviceInUserServices : userServices) {
-            if (serviceInUserServices.getTypeOfService().getId().equals(createServiceRequest.typeOfServiceId())) {
+        userServices.forEach(service -> {
+            if (service.getTypeOfService().getId().equals(createServiceRequest.typeOfServiceId())) {
                 throw new UserServiceExists("User already offers this service");
             }
-        }
+        });
 
         Location location = locationRepository.findById(createServiceRequest.locationId()).orElse(null);
         TypeOfService typeOfService = typeOfServiceRepository.findById(createServiceRequest.typeOfServiceId()).orElse(null);
