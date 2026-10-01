@@ -1,5 +1,6 @@
 package com.krejto.server.service;
 
+import com.krejto.server.config.securityFilterChain.JWTService;
 import com.krejto.server.exceptions.RoleNotFound;
 import com.krejto.server.exceptions.UserEmailAlreadyExists;
 import com.krejto.server.exceptions.UserNotFound;
@@ -8,6 +9,10 @@ import com.krejto.server.model.entity.User;
 import com.krejto.server.repository.RoleRepository;
 import com.krejto.server.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,11 +26,25 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+    private final AuthenticationManager authenticationManager;
+    private final JWTService jwtService;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository, AuthenticationManager authenticationManager, JWTService jwtService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
+        this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
+    }
+
+    public String validateUserLogin(UserDTO.LoginUserRequest user) {
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.email(), user.password()));
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        if  (authentication.isAuthenticated()) {
+            return jwtService.generateToken(userDetails);
+        }
+
+        throw new UserNotFound("User not found");
     }
 
     public List<UserDTO.GetUserResponse> getAllUsers() {

@@ -8,6 +8,14 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class UserDTO {
+    public record LoginUserRequest(
+            @NotEmpty
+            @Email(message = "Valid email is required")
+            String email,
+
+            @NotEmpty
+            String password) {}
+
     public record GetUserResponse(UUID id, String fullName, String email, String phoneNumber, LocalDateTime createdAt) {}
 
     public record CreateUserRequest (

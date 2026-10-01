@@ -1,8 +1,9 @@
-package com.krejto.server.service;
+package com.krejto.server.config.securityFilterChain;
 
 import com.krejto.server.exceptions.UserNotFound;
 import com.krejto.server.model.entity.User;
 import com.krejto.server.repository.UserRepository;
+import org.jspecify.annotations.NonNull;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
@@ -16,8 +17,9 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFound());
+    @NonNull
+    public UserDetails loadUserByUsername(@NonNull String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(UserNotFound::new);
 
         return org.springframework.security.core.userdetails.User.withUsername(user.getEmail())
                 .password(user.getPassword())

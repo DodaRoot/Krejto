@@ -3,12 +3,9 @@ spring.datasource.url=jdbc:postgresql://localhost:5000/krejto_db
 spring.datasource.username=krejto_user
 spring.datasource.password=krejto_password
 
-spring.jpa.hibernate.ddl-auto=update
+spring.jpa.hibernate.ddl-auto=validate
 spring.jpa.show-sql=true
 spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
 
-jwt.secret=N+7qdAR2pXfVStBK+51p30Y8l/c5mVrvf/ub3PdKqoQ=\n
-jwt.expiration=1800000
-
-logging.level.org.springframework.security=DEBUG
-logging.level.root=DEBUG
+jwt.secret=your_key
+jwt.expiration=your_expiration_time

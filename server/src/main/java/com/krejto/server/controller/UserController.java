@@ -51,6 +51,12 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @PostMapping("/login")
+    public ResponseEntity login(@Valid @RequestBody UserDTO.LoginUserRequest user) {
+        String token = userService.validateUserLogin(user);
+        return ResponseEntity.status(HttpStatus.OK).body(token);
+    }
+
     @PatchMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserDTO.UpdateUserResponse> updateUser(@Valid @PathVariable UUID id, @Valid @RequestBody UserDTO.UpdateUserRequest updateUserRequest) {
