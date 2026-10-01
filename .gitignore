@@ -19,6 +19,7 @@ HELP.md
 /server/nbbuild/
 /server/dist/
 /server/nbdist/
+/server/src/main/resources/application.properties
 
 ### STS ###
 *.apt_generated
