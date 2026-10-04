@@ -8,7 +8,6 @@ import {
   FieldSet,
 } from "../components/ui/field";
 import { Input } from "../components/ui/input";
-import { Switch } from "../components/ui/switch";
 import { Button } from "../components/ui/button";
 import { getMockServices, getUserData } from "../mock/index";
 
@@ -125,40 +124,9 @@ function ProfileForm({ name, number, email }: ProfileFormProps) {
               />
             </Field>
           </div>
-
-          <EmailPreferencesSection />
         </FieldGroup>
       </FieldSet>
     </form>
-  );
-}
-
-function EmailPreferencesSection() {
-  const [t] = useTranslation();
-
-  return (
-    <div className="flex gap-6 mt-4 flex-col md:flex-row">
-      <div className="flex gap-2 items-center">
-        <FieldLabel htmlFor="emailsPromotional">
-          {t("Receive promotional emails")}
-        </FieldLabel>
-        <Switch
-          id="emailsPromotional"
-          checked={false}
-          onCheckedChange={() => {}}
-        />
-      </div>
-      <div className="flex gap-2 items-center">
-        <FieldLabel htmlFor="emailsNotifications">
-          {t("Receive notification emails")}
-        </FieldLabel>
-        <Switch
-          id="emailsNotifications"
-          checked={false}
-          onCheckedChange={() => {}}
-        />
-      </div>
-    </div>
   );
 }
 

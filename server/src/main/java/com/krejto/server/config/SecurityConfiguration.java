@@ -29,10 +29,15 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) {
         http
+                .cors(cors -> cors.disable())
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth ->
                 auth.requestMatchers(
-                        "/api/v1/users/register", "/api/v1/users/login", "/api/v1/users/logoutSuccessful").permitAll()
+                        "/api/v1/users/register"
+                                , "/api/v1/users/login"
+                                , "/api/v1/users/logoutSuccessful"
+                                , "/api/v1/locationsAndTypes"
+                                , "/api/v1/service").permitAll()
                         .anyRequest().authenticated())
                 .logout(logout ->
                         logout.logoutUrl("/api/v1/users/logout")

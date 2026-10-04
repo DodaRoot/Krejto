@@ -17,7 +17,7 @@ import {
   InputGroupInput,
 } from "../../ui/input-group";
 import type { SearchComboboxProps } from "../../../types/landing";
-import { CATEGORIES_LIST, CITIES_LIST } from "../../../mock";
+import getLocationsAndTypesQuery from "~/apis/getLocationsAndTypes";
 
 function SearchCombobox({ items, placeholder }: SearchComboboxProps) {
   const [t] = useTranslation();
@@ -42,6 +42,11 @@ function SearchCombobox({ items, placeholder }: SearchComboboxProps) {
 }
 
 export default function SearchBar() {
+  const { data } = getLocationsAndTypesQuery();
+
+  const locations = data?.locations;
+  const typesOfService = data?.typesOfService;
+
   const [t] = useTranslation();
 
   return (
@@ -66,11 +71,22 @@ export default function SearchBar() {
       </InputGroup>
 
       <SearchCombobox
-        items={CATEGORIES_LIST}
+        items={
+          typesOfService?.map(
+            (service: { serviceName: string }) => service.serviceName,
+          ) || []
+        }
         placeholder={t("Select a category")}
       />
 
-      <SearchCombobox items={CITIES_LIST} placeholder={t("Select a city")} />
+      <SearchCombobox
+        items={
+          locations?.map(
+            (location: { location: string }) => location.location,
+          ) || []
+        }
+        placeholder={t("Select a city")}
+      />
 
       <Button type="submit">{t("Search")}</Button>
     </Form>

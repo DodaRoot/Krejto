@@ -2,6 +2,8 @@ import Autoplay from "embla-carousel-autoplay";
 import { ArrowUp, Star } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
+import { getLocationsAndTypes } from "../apis/getLocationsAndTypes";
+
 import { getCategories, getReviews } from "../mock/index";
 import SearchBar from "../components/feature/SearchBar/SearchBar";
 
@@ -10,8 +12,6 @@ import bannerTwo from "../assets/images/Banner2.png";
 import bannerThree from "../assets/images/Banner3.png";
 import bannerFour from "../assets/images/Banner4.png";
 import headerSvg from "../assets/images/Header.svg";
-
-import { Button } from "../components/ui/button";
 
 import {
   Card,
@@ -37,6 +37,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "../components/ui/accordion";
+import { useQuery } from "@tanstack/react-query";
 
 const CAROUSEL_ITEMS = [bannerOne, bannerTwo, bannerThree, bannerFour];
 const CATEGORIES_LIST = getCategories().map((category) => category.name);
@@ -95,7 +96,7 @@ function ReviewCard({ name, comment, stars }: ReviewProps) {
     .toUpperCase();
 
   return (
-    <Card className="m-2 w-full select-none">
+    <Card className="m-2 w-full max-w-sm select-none">
       <CardContent className="flex flex-col p-3">
         {/* Stars */}
         <div className="mb-5 flex gap-1 items-center justify-center">
@@ -136,7 +137,6 @@ function ReviewCard({ name, comment, stars }: ReviewProps) {
 
 export default function Landing() {
   const [t] = useTranslation();
-
   return (
     <div className="mt-1 flex flex-col gap-10 justify-center items-center">
       <section className="w-full py-8">
@@ -193,7 +193,7 @@ export default function Landing() {
             key={category.id}
             name={category.name}
             description={category.description}
-            image={category.image}
+            image={""}
           />
         ))}
       </section>
