@@ -2,8 +2,8 @@ import { Link } from "react-router";
 import { ArrowUpRight, Mail } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import FacebookIcon from "../../../assets/Icons/FacebookIcon";
-import InstagramIcon from "../../../assets/Icons/InstagramIcon";
+import FacebookIcon from "../../../assets/icons/FacebookIcon";
+import InstagramIcon from "../../../assets/icons/InstagramIcon";
 
 const footerSections = [
   {

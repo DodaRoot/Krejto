@@ -1,46 +1,20 @@
-# === REACT / CLIENT ===
-.DS_Store
+# client
 .env
-.env.local
-.env.*.local
 /client/node_modules/
 /client/dist/
 /client/build/
 /client/.react-router/
-/client/app/assets
-/client/app/mock
 
-# === SPRING BOOT / SERVER ===
-HELP.md
+# server
 /server/target/
 /server/.mvn/
 /server/build/
-/server/nbproject/
-/server/nbbuild/
 /server/dist/
-/server/nbdist/
 /server/src/main/resources/application.properties
 
-### STS ###
-*.apt_generated
-*.classpath
-*.factorypath
-*.project
-*.settings
-*.springBeans
-*.sts4-cache
-
-### IntelliJ IDEA ###
+# IDE
 .idea/
+.vscode/
 *.iws
 *.iml
 *.ipr
-
-### NetBeans ###
-.nb-gradle/
-
-### VS Code ###
-.vscode/
-
-# === OS ===
-Thumbs.db

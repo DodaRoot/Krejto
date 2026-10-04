@@ -184,6 +184,57 @@ export default function Landing() {
         <CarouselNext />
       </Carousel>
 
+      <p className="sm:w-max lg:w-full font-bold text-sm -mb-8">
+        {t("Most Searched")}
+      </p>
+      <section className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {getCategories().map((category) => (
+          <CategoryCard
+            key={category.id}
+            name={category.name}
+            description={category.description}
+            image={category.image}
+          />
+        ))}
+      </section>
+
+      <section className="w-full flex gap-5">
+        <Card className="w-full h-full">
+          <CardHeader>
+            <CardTitle>Si ta perdori Krejto.com</CardTitle>
+            <CardDescription>
+              Ketu mund te gjeni informate reth Krejto.com dhe perdorimit te tij
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Accordion type="single" collapsible defaultValue="item-1">
+              <AccordionItem value="item-1">
+                <AccordionTrigger>Is it accessible?</AccordionTrigger>
+                <AccordionContent>
+                  Yes. It adheres to the WAI-ARIA design pattern.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-2">
+                <AccordionTrigger>Si mund te gjej sherbime?</AccordionTrigger>
+                <AccordionContent>
+                  Vetem kerko kategorine dhe qytetin qe deshironi dhe klikoni
+                  butonin "Search" per te gjetur rezultatet.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-3">
+                <AccordionTrigger>Si mund te ofroj sherbime?</AccordionTrigger>
+                <AccordionContent>
+                  Vetem klikoni butonin "Ofroni sherbime" dhe plotesoni
+                  formularin me te dhenat e nevojshme. Pas plotesimit, do te
+                  merrni nje email konfirmimi dhe sherbimi juaj do te publikohet
+                  ne platforme.
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </CardContent>
+        </Card>
+      </section>
+
       <Carousel
         plugins={[
           Autoplay({
@@ -214,67 +265,6 @@ export default function Landing() {
         <CarouselPrevious />
         <CarouselNext />
       </Carousel>
-
-      <p className="sm:w-max lg:w-full font-bold text-sm -mb-8">
-        {t("Most Searched")}
-      </p>
-      <section className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {getCategories().map((category) => (
-          <CategoryCard
-            key={category.id}
-            name={category.name}
-            description={category.description}
-            image={category.image}
-          />
-        ))}
-      </section>
-      <section className="w-full flex gap-5">
-        <Card className="w-full h-full">
-          <CardHeader>
-            <CardTitle>Si ta perdori Krejto.com</CardTitle>
-            <CardDescription>
-              Ketu mund te gjeni informate reth Krejto.com dhe perdorimit te tij
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Accordion type="single" collapsible defaultValue="item-1">
-              <AccordionItem value="item-1">
-                <AccordionTrigger>Is it accessible?</AccordionTrigger>
-                <AccordionContent>
-                  Yes. It adheres to the WAI-ARIA design pattern.
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="item-2">
-                <AccordionTrigger>Is it accessible?</AccordionTrigger>
-                <AccordionContent>
-                  Yes. It adheres to the WAI-ARIA design pattern.
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="item-3">
-                <AccordionTrigger>Is it accessible?</AccordionTrigger>
-                <AccordionContent>
-                  Yes. It adheres to the WAI-ARIA design pattern.
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="item-4">
-                <AccordionTrigger>Is it accessible?</AccordionTrigger>
-                <AccordionContent>
-                  Yes. It adheres to the WAI-ARIA design pattern.
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="item-5">
-                <AccordionTrigger>Is it accessible?</AccordionTrigger>
-                <AccordionContent>
-                  Yes. It adheres to the WAI-ARIA design pattern.
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          </CardContent>
-        </Card>
-        {/* <div className="image w-1/2">
-          <img src={bannerOne}></img>
-        </div> */}
-      </section>
     </div>
   );
 }

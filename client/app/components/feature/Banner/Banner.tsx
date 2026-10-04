@@ -1,4 +1,4 @@
-import VerifiedIcon from "../../../assets/Icons/VerifiedIcon";
+import VerifiedIcon from "../../../assets/icons/VerifiedIcon";
 import { useTranslation } from "react-i18next";
 
 export default function Banner() {
