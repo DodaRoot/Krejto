@@ -24,7 +24,7 @@ public class LocationsAndTypesController {
     @GetMapping
     public ResponseEntity<LocationAndTypesDTO.LocationAndTypesDTOList> getLocationAndTypes() {
         List<LocationDTO.GetLocationResponse> locationsDTOs = locationAndTypesOfService.getLocations();
-        List<TypeOfServiceDTO.GetTypeOfServiceResponse> typeOfServicesDTOs = locationAndTypesOfService.getTypeOfServices();
+        List<TypeOfServiceDTO.GetTypeOfServiceResponseWithCount> typeOfServicesDTOs = locationAndTypesOfService.getTypeOfServices();
 
         LocationAndTypesDTO.LocationAndTypesDTOList locationAndTypesDTO = new LocationAndTypesDTO.LocationAndTypesDTOList(locationsDTOs, typeOfServicesDTOs);
 

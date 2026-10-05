@@ -39,6 +39,12 @@ public class UserController {
         return ResponseEntity.ok(getUserResponses);
     }
 
+    @GetMapping("/myself")
+    public ResponseEntity<UserDTO.GetUserResponse> getSelf(Principal principal) {
+        UserDTO.GetUserResponse getUserResponse = userService.getUserByEmail(principal);
+        return ResponseEntity.ok(getUserResponse);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO.GetUserResponse> getUserById(@Valid @PathVariable UUID id) {
         UserDTO.GetUserResponse getUserResponse = userService.getUserById(id);

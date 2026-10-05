@@ -36,15 +36,20 @@ public class LocationAndTypesOfService {
         return locationDTOs;
     }
 
-    public List<TypeOfServiceDTO.GetTypeOfServiceResponse> getTypeOfServices() {
-        if (typeOfServiceRepository.findAll().isEmpty()) {
+    public List<TypeOfServiceDTO.GetTypeOfServiceResponseWithCount> getTypeOfServices() {
+        if (typeOfServiceRepository.getParentsWithChildrenCount().isEmpty()) {
             throw new LocationsOrTypesNonExistent("Types Of Services are empty");
         }
 
-        List<TypeOfService> typeOfServices = typeOfServiceRepository.findAll();
-        List<TypeOfServiceDTO.GetTypeOfServiceResponse> typeOfServiceDTOs = new ArrayList<>();
+        List<Object[]> typeOfServicesWithCount = typeOfServiceRepository.getParentsWithChildrenCount();
 
-        typeOfServices.forEach(typeOfService -> typeOfServiceDTOs.add(new TypeOfServiceDTO.GetTypeOfServiceResponse(typeOfService.getId(), typeOfService.getServiceName(), typeOfService.getServiceDescription())));
+        List<TypeOfServiceDTO.GetTypeOfServiceResponseWithCount> typeOfServiceDTOs = new ArrayList<>();
+
+        for (Object[] typeOfServiceAndCount : typeOfServicesWithCount) {
+            TypeOfService typeOfService = (TypeOfService) typeOfServiceAndCount[0];
+            Long typeOfServiceCount = (Long) typeOfServiceAndCount[1];
+            typeOfServiceDTOs.add(new TypeOfServiceDTO.GetTypeOfServiceResponseWithCount(typeOfService.getId(), typeOfService.getServiceName(), typeOfService.getServiceDescription(), typeOfServiceCount));
+        }
 
         return typeOfServiceDTOs;
     }
