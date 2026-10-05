@@ -14,6 +14,7 @@ export default [
     route("search", "routes/SearchPage.tsx"),
     route("itemPage/:id", "routes/ItemPage.tsx"),
     route("preferences", "routes/Preferences.tsx"),
+    route("loginregister", "routes/LoginRegister.tsx"),
   ]),
   route("*", "routes/NotFound.tsx"),
 ] satisfies RouteConfig;

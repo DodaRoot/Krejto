@@ -18,7 +18,8 @@ export default function Index({ loaderData }: Route.ComponentProps) {
   const [t, i18n] = useTranslation();
   const { theme, lang } = loaderData;
   const location = useLocation();
-  const hideFooterRoutes = ["/messages"];
+  const hideNavbarRoutes = ["/loginregister"];
+  const hideFooterRoutes = ["/messages", "/loginregister"];
 
   useEffect(() => {
     i18n.changeLanguage(lang);
@@ -48,8 +49,10 @@ export default function Index({ loaderData }: Route.ComponentProps) {
 
   return (
     <>
-      <Banner />
-      <Navbar theme={theme} lang={lang} />
+      {!hideNavbarRoutes.includes(location.pathname) && <Banner />}
+      {!hideNavbarRoutes.includes(location.pathname) && (
+        <Navbar theme={theme} lang={lang} />
+      )}
       <div className="w-full justify-center items-center flex py-2 px-5">
         <div className="w-5xl flex justify-center items-center md:justify-between">
           <Outlet />

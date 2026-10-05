@@ -4,7 +4,6 @@
       "Title": "Krejto.com",
       "Header": "Find Local Services",
       "Header Description": "Hire painters, electricians, mechanics and other skilled professionals near you.",
-      "Most Searched": "Most Searched Categories",
       "Banner Text": "Trade confidently with powerful anti-fraud security.",
       "Profile": "Profile",
       "Messages": "Messages",
@@ -27,6 +26,17 @@
       "Location": "Location",
       "Email": "Email",
       "Password": "Password",
+      "Login": "Log in",
+      "Register": "Register",
+      "Welcome to Krejto": "Welcome to Krejto",
+      "Auth intro": "Sign in or create an account to connect with your community.",
+      "Email placeholder": "name@example.com",
+      "Forgot password?": "Forgot password?",
+      "Enter your password": "Enter your password",
+      "Create a password": "Create a password",
+      "Phone number": "Phone number",
+      "Phone number placeholder": "+383 045 300 340",
+      "Create account": "Create account",
       "Your full name": "Your full name",
       "City": "City",
       "Number": "Number",
@@ -65,7 +75,8 @@
       "Price: High to Low": "Price: High to Low",
       "Newest first": "Newest first",
       "Results": "Results",
-      "No results found": "No results found"
+      "No results found": "No results found",
+      "Register / Login": "Register / Login"
     }
   },
   "al": {
@@ -73,7 +84,6 @@
       "Title": "Krejto.com",
       "Header": "Gjej Shërbime Lokale",
       "Header Description": "Gjeni bojaxhinj, elektricistë, mekanikë dhe profesionistë pranë jush.",
-      "Most Searched": "Kategoritë Kryesore",
       "Banner Text": "Tregtoni me siguri kundër mashtrimit.",
       "Profile": "Profili",
       "Messages": "Mesazhe",
@@ -96,6 +106,17 @@
       "Location": "Vendndodhja",
       "Email": "Email",
       "Password": "Fjalëkalimi",
+      "Login": "Kyçu",
+      "Register": "Regjistrohu",
+      "Welcome to Krejto": "Mirë se vini në Krejto",
+      "Auth intro": "Kyçu ose krijo një llogari për t'u lidhur me komunitetin tënd.",
+      "Email placeholder": "emri@shembull.com",
+      "Forgot password?": "E harrove fjalëkalimin?",
+      "Enter your password": "Shkruaj fjalëkalimin",
+      "Create a password": "Krijo një fjalëkalim",
+      "Phone number": "Numri i telefonit",
+      "Phone number placeholder": "+383 045 300 340",
+      "Create account": "Krijo llogari",
       "Your full name": "Emri juaj",
       "City": "Qyteti",
       "Number": "Numri",
@@ -134,7 +155,8 @@
       "Price: High to Low": "Çmimi: Lartë → Ulët",
       "Newest first": "Më të rejat",
       "Results": "Rezultate",
-      "No results found": "Nuk u gjet asnjë rezultat"
+      "No results found": "Nuk u gjet asnjë rezultat",
+      "Register / Login": "Regjistrohu / Kyqu"
     }
   }
 }

@@ -2,8 +2,6 @@ import Autoplay from "embla-carousel-autoplay";
 import { ArrowUp, Star } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { getLocationsAndTypes } from "../apis/getLocationsAndTypes";
-
 import { getCategories, getReviews } from "../mock/index";
 import SearchBar from "../components/feature/SearchBar/SearchBar";
 
@@ -37,7 +35,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "../components/ui/accordion";
-import { useQuery } from "@tanstack/react-query";
 
 const CAROUSEL_ITEMS = [bannerOne, bannerTwo, bannerThree, bannerFour];
 const CATEGORIES_LIST = getCategories().map((category) => category.name);
@@ -184,9 +181,6 @@ export default function Landing() {
         <CarouselNext />
       </Carousel>
 
-      <p className="sm:w-max lg:w-full font-bold text-sm -mb-8">
-        {t("Most Searched")}
-      </p>
       <section className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {getCategories().map((category) => (
           <CategoryCard

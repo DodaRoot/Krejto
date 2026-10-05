@@ -62,8 +62,8 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="bg-background px-5 py-2">
-      <div className="mx-auto max-w-5xl py-15">
+    <footer className="bg-background shadow-inner mt-8">
+      <div className="mx-auto max-w-5xl py-10">
         <div className="grid gap-12 lg:grid-cols-5">
           <div className="lg:col-span-2">
             <Link to="/" className="text-2xl font-bold tracking-tight">

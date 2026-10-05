@@ -9,6 +9,7 @@ export interface NotificationsDropdownTypes {
   icon: React.ReactNode;
   label: string;
   t: any;
+  isLoggedIn: boolean;
 }
 
 export interface ProfileMenuTypes {
@@ -16,6 +17,7 @@ export interface ProfileMenuTypes {
   label: string;
   t: any;
   preferences?: preferencesTypes;
+  isLoggedIn: boolean;
 }
 
 export type preferencesTypes = {
