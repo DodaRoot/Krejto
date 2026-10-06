@@ -35,7 +35,7 @@
       "Enter your password": "Enter your password",
       "Create a password": "Create a password",
       "Phone number": "Phone number",
-      "Phone number placeholder": "+383 045 300 340",
+      "Phone number placeholder": "+383 *** *** ***",
       "Create account": "Create account",
       "Your full name": "Your full name",
       "City": "City",
@@ -76,7 +76,8 @@
       "Newest first": "Newest first",
       "Results": "Results",
       "No results found": "No results found",
-      "Register / Login": "Register / Login"
+      "Register / Login": "Register / Login",
+      "Registration successful! Please log in": "Registration successful! Please log in."
     }
   },
   "al": {
@@ -115,7 +116,7 @@
       "Enter your password": "Shkruaj fjalëkalimin",
       "Create a password": "Krijo një fjalëkalim",
       "Phone number": "Numri i telefonit",
-      "Phone number placeholder": "+383 045 300 340",
+      "Phone number placeholder": "+383 *** *** ***",
       "Create account": "Krijo llogari",
       "Your full name": "Emri juaj",
       "City": "Qyteti",
@@ -156,7 +157,8 @@
       "Newest first": "Më të rejat",
       "Results": "Rezultate",
       "No results found": "Nuk u gjet asnjë rezultat",
-      "Register / Login": "Regjistrohu / Kyqu"
+      "Register / Login": "Regjistrohu / Kyqu",
+      "Registration successful! Please log in": "Regjistrimi u krye me sukses! Ju lutemi kyçuni."
     }
   }
 }

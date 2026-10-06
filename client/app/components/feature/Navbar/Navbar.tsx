@@ -1,4 +1,11 @@
-import { Link, Form, useFetcher, Navigate, useNavigate } from "react-router";
+import {
+  Link,
+  Form,
+  useFetcher,
+  Navigate,
+  useNavigate,
+  useSubmit,
+} from "react-router";
 import { useTranslation } from "react-i18next";
 import type {
   NavItemTypes,
@@ -38,7 +45,6 @@ import {
 } from "../../../components/ui/dropdown-menu";
 import { useEffect, useState } from "react";
 import { Button } from "@base-ui/react";
-import postLogout from "~/apis/postLogout";
 
 function NavItem({ icon, label, link, className }: NavItemTypes) {
   return (
@@ -70,7 +76,7 @@ function NotificationsDropdown({
     <DropdownMenu
       onOpenChange={() => {
         if (!isLoggedIn) {
-          navigate("/");
+          navigate("/loginOrRegister");
         }
       }}
     >
@@ -122,7 +128,6 @@ function ProfileMenu({
   isLoggedIn,
 }: ProfileMenuTypes) {
   const fetcher = useFetcher();
-  const logoutMutation = postLogout();
   const navigate = useNavigate();
   return (
     <DropdownMenu>
@@ -155,109 +160,101 @@ function ProfileMenu({
         sideOffset={25}
         onCloseAutoFocus={(e) => e.preventDefault()}
       >
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            logoutMutation.mutate(undefined, {
-              onSuccess: () => {
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>{t("Profile")}</DropdownMenuLabel>
+          <Link to={isLoggedIn ? "profile" : "loginOrRegister"}>
+            <DropdownMenuItem className="cursor-pointer">
+              {icon}
+              <p>{t("Profile")}</p>
+            </DropdownMenuItem>
+          </Link>
+          <Link to={isLoggedIn ? "liked" : "loginOrRegister"}>
+            <DropdownMenuItem className="cursor-pointer">
+              <Heart />
+              <p>{t("Liked")}</p>
+            </DropdownMenuItem>
+          </Link>
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger>
+              <PaletteIcon />
+              {t("Theme")}
+            </DropdownMenuSubTrigger>
+            <DropdownMenuPortal>
+              <DropdownMenuSubContent className="ml-2">
+                <DropdownMenuGroup>
+                  <DropdownMenuLabel>{t("Appearance")}</DropdownMenuLabel>
+                  <Form method="post">
+                    <DropdownMenuRadioGroup
+                      value={preferences?.theme ?? "light"}
+                      onValueChange={(value) => {
+                        fetcher.submit(
+                          { theme: value },
+                          { method: "POST", action: "/preferences" }, // or "/preferences"
+                        );
+                      }}
+                    >
+                      <DropdownMenuRadioItem value="light">
+                        <SunIcon />
+                        {t("Light")}
+                      </DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem value="dark">
+                        <MoonIcon />
+                        {t("Dark")}
+                      </DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem value="system">
+                        <MonitorIcon />
+                        {t("System")}
+                      </DropdownMenuRadioItem>
+                    </DropdownMenuRadioGroup>
+                  </Form>
+                </DropdownMenuGroup>
+              </DropdownMenuSubContent>
+            </DropdownMenuPortal>
+          </DropdownMenuSub>
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger>
+              <Languages />
+              {t("Language")}
+            </DropdownMenuSubTrigger>
+            <DropdownMenuPortal>
+              <DropdownMenuSubContent className="ml-2">
+                <DropdownMenuGroup>
+                  <DropdownMenuLabel>{t("Language")}</DropdownMenuLabel>
+                  <Form method="post">
+                    <DropdownMenuRadioGroup
+                      value={preferences?.lang ?? "al"}
+                      onValueChange={(value) => {
+                        fetcher.submit(
+                          { lang: value },
+                          { method: "POST", action: "/preferences" }, // or "/preferences"
+                        );
+                      }}
+                    >
+                      <DropdownMenuRadioItem value="en">
+                        {t("En")}
+                      </DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem value="al">
+                        {t("Al")}
+                      </DropdownMenuRadioItem>
+                    </DropdownMenuRadioGroup>
+                  </Form>
+                </DropdownMenuGroup>
+              </DropdownMenuSubContent>
+            </DropdownMenuPortal>
+          </DropdownMenuSub>
+          {isLoggedIn && (
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={() => {
                 localStorage.removeItem("token");
                 navigate("/");
-              },
-            });
-          }}
-        >
-          <DropdownMenuGroup>
-            <DropdownMenuLabel>{t("Profile")}</DropdownMenuLabel>
-            <Link to={isLoggedIn ? "profile" : "loginregister"}>
-              <DropdownMenuItem className="cursor-pointer">
-                {icon}
-                <p>{t("Profile")}</p>
-              </DropdownMenuItem>
-            </Link>
-            <Link to={isLoggedIn ? "liked" : "loginregister"}>
-              <DropdownMenuItem className="cursor-pointer">
-                <Heart />
-                <p>{t("Liked")}</p>
-              </DropdownMenuItem>
-            </Link>
-            <DropdownMenuSub>
-              <DropdownMenuSubTrigger>
-                <PaletteIcon />
-                {t("Theme")}
-              </DropdownMenuSubTrigger>
-              <DropdownMenuPortal>
-                <DropdownMenuSubContent className="ml-2">
-                  <DropdownMenuGroup>
-                    <DropdownMenuLabel>{t("Appearance")}</DropdownMenuLabel>
-                    <Form method="post">
-                      <DropdownMenuRadioGroup
-                        value={preferences?.theme ?? "light"}
-                        onValueChange={(value) => {
-                          fetcher.submit(
-                            { theme: value },
-                            { method: "POST", action: "/preferences" }, // or "/preferences"
-                          );
-                        }}
-                      >
-                        <DropdownMenuRadioItem value="light">
-                          <SunIcon />
-                          {t("Light")}
-                        </DropdownMenuRadioItem>
-                        <DropdownMenuRadioItem value="dark">
-                          <MoonIcon />
-                          {t("Dark")}
-                        </DropdownMenuRadioItem>
-                        <DropdownMenuRadioItem value="system">
-                          <MonitorIcon />
-                          {t("System")}
-                        </DropdownMenuRadioItem>
-                      </DropdownMenuRadioGroup>
-                    </Form>
-                  </DropdownMenuGroup>
-                </DropdownMenuSubContent>
-              </DropdownMenuPortal>
-            </DropdownMenuSub>
-            <DropdownMenuSub>
-              <DropdownMenuSubTrigger>
-                <Languages />
-                {t("Language")}
-              </DropdownMenuSubTrigger>
-              <DropdownMenuPortal>
-                <DropdownMenuSubContent className="ml-2">
-                  <DropdownMenuGroup>
-                    <DropdownMenuLabel>{t("Language")}</DropdownMenuLabel>
-                    <Form method="post">
-                      <DropdownMenuRadioGroup
-                        value={preferences?.lang ?? "al"}
-                        onValueChange={(value) => {
-                          fetcher.submit(
-                            { lang: value },
-                            { method: "POST", action: "/preferences" }, // or "/preferences"
-                          );
-                        }}
-                      >
-                        <DropdownMenuRadioItem value="en">
-                          {t("En")}
-                        </DropdownMenuRadioItem>
-                        <DropdownMenuRadioItem value="al">
-                          {t("Al")}
-                        </DropdownMenuRadioItem>
-                      </DropdownMenuRadioGroup>
-                    </Form>
-                  </DropdownMenuGroup>
-                </DropdownMenuSubContent>
-              </DropdownMenuPortal>
-            </DropdownMenuSub>
-            {isLoggedIn && (
-              <button type="submit">
-                <DropdownMenuItem className="cursor-pointer">
-                  <LogOut />
-                  <p>{"Logout"}</p>
-                </DropdownMenuItem>
-              </button>
-            )}
-          </DropdownMenuGroup>
-        </form>
+              }}
+            >
+              <LogOut />
+              <p>{"Logout"}</p>
+            </DropdownMenuItem>
+          )}
+        </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   );
@@ -294,7 +291,7 @@ export default function Navbar(preferences: preferencesTypes) {
             isLoggedIn={isLoggedIn}
           />
           <NavItem
-            link={isLoggedIn ? "messages" : "loginregister"}
+            link={isLoggedIn ? "messages" : "loginOrRegister"}
             icon={<MessageCircleCheck />}
             label={t("Messages")}
           />

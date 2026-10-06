@@ -22,6 +22,7 @@ type AuthFieldProps = {
 };
 
 import postLogin from "~/apis/postLogin";
+import postRegister from "~/apis/postRegister";
 
 function AuthField({
   id,
@@ -60,8 +61,17 @@ function AuthField({
 export default function Login() {
   const [t] = useTranslation();
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [tab, setTab] = useState<"login" | "register">("login");
+
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+  const [registerFullName, setRegisterFullName] = useState("");
+  const [registerEmail, setRegisterEmail] = useState("");
+  const [registerPassword, setRegisterPassword] = useState("");
+  const [registerPhoneNumber, setRegisterPhoneNumber] = useState("");
+
+  const registerMutation = postRegister();
+
   const loginMutation = postLogin();
 
   return (
@@ -76,16 +86,18 @@ export default function Login() {
           </p>
         </div>
 
-        <Tabs defaultValue="login" className="gap-0">
+        <Tabs value={tab} className="gap-0">
           <TabsList className="grid h-11 w-full grid-cols-2 rounded-lg bg-muted p-1">
             <TabsTrigger
               value="login"
+              onClick={() => setTab("login")}
               className="data-[state=active]:bg-background data-[state=active]:shadow-sm"
             >
               {t("Login")}
             </TabsTrigger>
             <TabsTrigger
               value="register"
+              onClick={() => setTab("register")}
               className="data-[state=active]:bg-background data-[state=active]:shadow-sm"
             >
               {t("Register")}
@@ -97,7 +109,7 @@ export default function Login() {
               onSubmit={(event) => {
                 event.preventDefault();
                 loginMutation.mutate(
-                  { email, password },
+                  { email: loginEmail, password: loginPassword },
                   {
                     onSuccess: (token) => {
                       localStorage.setItem("token", token);
@@ -115,7 +127,7 @@ export default function Login() {
                 autoComplete="email"
                 placeholder={t("Email placeholder")}
                 icon={Mail}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => setLoginEmail(e.target.value)}
               />
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between gap-3">
@@ -141,7 +153,7 @@ export default function Login() {
                     autoComplete="current-password"
                     placeholder={t("Enter your password")}
                     required
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => setLoginPassword(e.target.value)}
                     className="h-11 pl-10"
                   />
                 </div>
@@ -164,8 +176,17 @@ export default function Login() {
 
           <TabsContent value="register" className="mt-5">
             <form
+              onSubmit={(event) => {
+                event.preventDefault();
+                registerMutation.mutate({
+                  fullName: registerFullName,
+                  email: registerEmail,
+                  password: registerPassword,
+                  phoneNumber: registerPhoneNumber,
+                });
+                setTab("login");
+              }}
               className="space-y-4"
-              onSubmit={(event) => event.preventDefault()}
             >
               <AuthField
                 id="fullName"
@@ -173,6 +194,7 @@ export default function Login() {
                 type="text"
                 autoComplete="name"
                 placeholder={t("Your full name")}
+                onChange={(e) => setRegisterFullName(e.target.value)}
                 icon={UserRound}
               />
               <AuthField
@@ -181,6 +203,7 @@ export default function Login() {
                 type="email"
                 autoComplete="email"
                 placeholder={t("Email placeholder")}
+                onChange={(e) => setRegisterEmail(e.target.value)}
                 icon={Mail}
               />
               <AuthField
@@ -189,6 +212,7 @@ export default function Login() {
                 type="password"
                 autoComplete="new-password"
                 placeholder={t("Create a password")}
+                onChange={(e) => setRegisterPassword(e.target.value)}
                 icon={LockKeyhole}
               />
               <AuthField
@@ -197,14 +221,25 @@ export default function Login() {
                 type="tel"
                 autoComplete="tel"
                 placeholder={t("Phone number placeholder")}
+                onChange={(e) => setRegisterPhoneNumber(e.target.value)}
                 icon={Phone}
               />
               <Button type="submit" className="h-11 w-full">
                 {t("Create account")}
               </Button>
+              {registerMutation.isError && (
+                <p className="text-sm text-destructive" role="alert">
+                  {registerMutation.error.message}
+                </p>
+              )}
             </form>
           </TabsContent>
         </Tabs>
+        {registerMutation.isSuccess && (
+          <p className="text-sm text-green-500" role="alert">
+            {t("Registration successful! Please log in")}
+          </p>
+        )}
       </section>
     </main>
   );

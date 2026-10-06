@@ -18,8 +18,8 @@ export default function Index({ loaderData }: Route.ComponentProps) {
   const [t, i18n] = useTranslation();
   const { theme, lang } = loaderData;
   const location = useLocation();
-  const hideNavbarRoutes = ["/loginregister"];
-  const hideFooterRoutes = ["/messages", "/loginregister"];
+  const hideNavbarRoutes = ["/loginOrRegister"];
+  const hideFooterRoutes = ["/messages", "/loginOrRegister"];
 
   useEffect(() => {
     i18n.changeLanguage(lang);
