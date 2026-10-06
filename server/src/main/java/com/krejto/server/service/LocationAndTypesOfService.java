@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LocationAndTypesOfService {
@@ -36,22 +37,35 @@ public class LocationAndTypesOfService {
         return locationDTOs;
     }
 
-    public List<TypeOfServiceDTO.GetTypeOfServiceResponseWithCount> getTypeOfServices() {
-        if (typeOfServiceRepository.getParentsWithChildrenCount().isEmpty()) {
+    public List<TypeOfServiceDTO.GetTypeOfServiceResponse> getTypeOfServices() {
+        if (typeOfServiceRepository.findAll().isEmpty()) {
+            throw new LocationsOrTypesNonExistent("Types are empty");
+        }
+        List<TypeOfService> typeOfServices = typeOfServiceRepository.findAll();
+        List<TypeOfServiceDTO.GetTypeOfServiceResponse> typeOfServicesDTOs = new ArrayList<>();
+
+        typeOfServices.forEach(typeOfService ->  typeOfServicesDTOs.add(new TypeOfServiceDTO.GetTypeOfServiceResponse(typeOfService.getId(), typeOfService.getServiceName(), typeOfService.getServiceDescription())));
+
+        return typeOfServicesDTOs;
+    }
+
+    public List<TypeOfServiceDTO.GetTypeOfServiceResponseWithCount> getTopTypeOfServices() {
+        List<Object[]> typeOfServicesWithCount = typeOfServiceRepository.getParentsWithChildrenCount();
+
+        if (typeOfServicesWithCount.isEmpty()) {
             throw new LocationsOrTypesNonExistent("Types Of Services are empty");
         }
 
-        List<Object[]> typeOfServicesWithCount = typeOfServiceRepository.getParentsWithChildrenCount();
-
-        List<TypeOfServiceDTO.GetTypeOfServiceResponseWithCount> typeOfServiceDTOs = new ArrayList<>();
-
-        for (Object[] typeOfServiceAndCount : typeOfServicesWithCount) {
-            TypeOfService typeOfService = (TypeOfService) typeOfServiceAndCount[0];
-            Long typeOfServiceCount = (Long) typeOfServiceAndCount[1];
-            typeOfServiceDTOs.add(new TypeOfServiceDTO.GetTypeOfServiceResponseWithCount(typeOfService.getId(), typeOfService.getServiceName(), typeOfService.getServiceDescription(), typeOfServiceCount));
-        }
-
-        return typeOfServiceDTOs;
+        return typeOfServicesWithCount.stream()
+                .sorted((a, b) -> Integer.compare((int) b[1], (int) a[1]))
+                .limit(6)
+                .map(row -> new TypeOfServiceDTO.GetTypeOfServiceResponseWithCount(
+                        ((TypeOfService) row[0]).getId(),
+                        ((TypeOfService) row[0]).getServiceName(),
+                        ((TypeOfService) row[0]).getServiceDescription(),
+                        (Long) row[1]
+                ))
+                .collect(Collectors.toList());
     }
 
     public LocationDTO.CreateLocationResponse createLocation(LocationDTO.CreateLocationRequest createLocationRequest) {

@@ -21,10 +21,17 @@ public class LocationsAndTypesController {
         this.locationAndTypesOfService = locationAndTypesOfService;
     }
 
-    @GetMapping
-    public ResponseEntity<LocationAndTypesDTO.LocationAndTypesDTOList> getLocationAndTypes() {
-        List<LocationDTO.GetLocationResponse> locationsDTOs = locationAndTypesOfService.getLocations();
-        List<TypeOfServiceDTO.GetTypeOfServiceResponseWithCount> typeOfServicesDTOs = locationAndTypesOfService.getTypeOfServices();
+    @GetMapping("/getTopTypes")
+    public ResponseEntity<List<TypeOfServiceDTO.GetTypeOfServiceResponseWithCount>> getTopTypes() {
+        List<TypeOfServiceDTO.GetTypeOfServiceResponseWithCount> typeOfServicesDTOs = locationAndTypesOfService.getTopTypeOfServices();
+
+        return ResponseEntity.ok().body(typeOfServicesDTOs);
+    }
+
+    @GetMapping("/getAllLocationsAndTypes")
+    public ResponseEntity<LocationAndTypesDTO.LocationAndTypesDTOList> getLocationsAndTypes() {
+        List<LocationDTO.GetLocationResponse>  locationsDTOs = locationAndTypesOfService.getLocations();
+        List<TypeOfServiceDTO.GetTypeOfServiceResponse> typeOfServicesDTOs = locationAndTypesOfService.getTypeOfServices();
 
         LocationAndTypesDTO.LocationAndTypesDTOList locationAndTypesDTO = new LocationAndTypesDTO.LocationAndTypesDTOList(locationsDTOs, typeOfServicesDTOs);
 

@@ -241,7 +241,7 @@ export default function Landing() {
         }}
         className="max-w-xs sm:max-w-md lg:max-w-5xl overflow-clip rounded-xl"
       >
-        <CarouselContent className="flex gap-5">
+        <CarouselContent className="flex gap-2">
           {REVIEWS_LIST.map((review, index) => (
             <CarouselItem
               key={index}

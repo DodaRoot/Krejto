@@ -23,7 +23,7 @@ import java.util.List;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfiguration {
-    private JWTAuthenticationFilter jwtAuthenticationFilter;
+    private final JWTAuthenticationFilter jwtAuthenticationFilter;
 
     SecurityConfiguration(JWTAuthenticationFilter jwtAuthenticationFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
@@ -44,7 +44,8 @@ public class SecurityConfiguration {
                 auth.requestMatchers(
                         "/api/v1/users/register"
                                 , "/api/v1/users/login"
-                                , "/api/v1/locationsAndTypes"
+                                , "/api/v1/locationsAndTypes/*"
+                                , "/api/v1/reviews/getSiteReviews"
                                 , "/api/v1/service").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session
