@@ -27,11 +27,6 @@ public class UserController {
         return ResponseEntity.ok(getUserResponse);
     }
 
-    @GetMapping("/logoutSuccessful")
-    public ResponseEntity loggedOutSuccessfully() {
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-
     @GetMapping()
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserDTO.GetUserResponse>> getAllUsers() {

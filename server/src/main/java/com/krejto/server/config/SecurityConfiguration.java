@@ -15,6 +15,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -29,19 +32,21 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) {
         http
-                .cors(cors -> cors.disable())
+                .cors(cors -> cors.configurationSource(request -> {
+                    CorsConfiguration configuration = new CorsConfiguration();
+                    configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+                    configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                    configuration.setAllowedHeaders(List.of("*"));
+                    return configuration;
+                }))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth ->
                 auth.requestMatchers(
                         "/api/v1/users/register"
                                 , "/api/v1/users/login"
-                                , "/api/v1/users/logoutSuccessful"
                                 , "/api/v1/locationsAndTypes"
                                 , "/api/v1/service").permitAll()
                         .anyRequest().authenticated())
-                .logout(logout ->
-                        logout.logoutUrl("/api/v1/users/logout")
-                                .logoutSuccessUrl("/api/v1/users/logoutSuccessful"))
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
