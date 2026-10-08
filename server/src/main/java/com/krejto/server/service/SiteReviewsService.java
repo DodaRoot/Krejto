@@ -4,7 +4,7 @@ import com.krejto.server.exceptions.ReviewsNotFound;
 import com.krejto.server.exceptions.UserNotFound;
 import com.krejto.server.model.dto.ReviewsDTO;
 import com.krejto.server.model.dto.UserDTO;
-import com.krejto.server.model.entity.Review;
+import com.krejto.server.model.entity.SiteReview;
 import com.krejto.server.model.entity.User;
 import com.krejto.server.repository.ReviewsRepository;
 import com.krejto.server.repository.UserRepository;
@@ -15,17 +15,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class ReviewsService {
+public class SiteReviewsService {
     private final ReviewsRepository reviewsRepository;
     private final UserRepository userRepository;
 
-    public ReviewsService(ReviewsRepository reviewsRepository, UserRepository userRepository) {
+    public SiteReviewsService(ReviewsRepository reviewsRepository, UserRepository userRepository) {
         this.reviewsRepository = reviewsRepository;
         this.userRepository = userRepository;
     }
 
     public List<ReviewsDTO.GetSiteReview> getSiteReviews() {
-        List<Review> reviews = reviewsRepository.findAll();
+        List<SiteReview> reviews = reviewsRepository.findAll();
         if (reviews.isEmpty()) {
             throw new ReviewsNotFound("No reviews found");
         }
@@ -33,7 +33,7 @@ public class ReviewsService {
 
         reviews.forEach(review -> {
             UserDTO.GetUserResponse getUserResponse = new UserDTO.GetUserResponse(review.getUser().getId(), review.getUser().getFullName(), review.getUser().getEmail(), review.getUser().getPhoneNumber(), review.getUser().getCreatedAt());
-            reviewsDTOList.add(new ReviewsDTO.GetSiteReview(review.getId(), getUserResponse, review.getComment(), review.getStars()));
+            reviewsDTOList.add(new ReviewsDTO.GetSiteReview(review.getId(), getUserResponse, review.getReview(), review.getRating()));
         });
 
         return reviewsDTOList;
@@ -46,11 +46,11 @@ public class ReviewsService {
             throw new ReviewsNotFound("This user has already left a review");
         }
 
-        Review review = new Review(user, postSiteReview.rating(), postSiteReview.reviewMessage());
+        SiteReview review = new SiteReview(user, postSiteReview.rating(), postSiteReview.reviewMessage());
         reviewsRepository.save(review);
 
         UserDTO.GetUserResponse getUserResponse = new UserDTO.GetUserResponse(review.getUser().getId(), review.getUser().getFullName(), review.getUser().getEmail(), review.getUser().getPhoneNumber(), review.getUser().getCreatedAt());
 
-        return new ReviewsDTO.GetSiteReview(review.getId(), getUserResponse, review.getComment(), review.getStars());
+        return new ReviewsDTO.GetSiteReview(review.getId(), getUserResponse, review.getReview(), review.getRating());
     }
 }

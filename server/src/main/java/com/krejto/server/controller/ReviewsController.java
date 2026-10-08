@@ -1,7 +1,7 @@
 package com.krejto.server.controller;
 
 import com.krejto.server.model.dto.ReviewsDTO;
-import com.krejto.server.service.ReviewsService;
+import com.krejto.server.service.SiteReviewsService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,9 +11,9 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/reviews")
 public class ReviewsController {
-    private final ReviewsService reviewsService;
+    private final SiteReviewsService reviewsService;
 
-    public ReviewsController(ReviewsService reviewsService) {
+    public ReviewsController(SiteReviewsService reviewsService) {
         this.reviewsService = reviewsService;
     }
 

@@ -14,18 +14,18 @@ public class ServiceReview {
     private UUID id;
 
     @ManyToOne
-    @JoinColumn(name = "reviewer_id")
+    @JoinColumn(name = "reviewer_id", nullable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "service_id")
+    @JoinColumn(name = "service_id", nullable = false)
     private Service service;
 
     @Column(nullable = false)
     private int rating;
 
     @Column(nullable = false)
-    private String comment;
+    private String review;
 
     @CreationTimestamp
     @Column(updatable = false)
@@ -33,11 +33,11 @@ public class ServiceReview {
 
     public ServiceReview() {}
 
-    public ServiceReview(User user, Service service, int rating, String comment) {
+    public ServiceReview(User user, Service service, int rating, String review) {
         this.user = user;
         this.service = service;
         this.rating = rating;
-        this.comment = comment;
+        this.review = review;
     }
 
     public UUID getId() {
@@ -75,11 +75,11 @@ public class ServiceReview {
         return rating;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setReview(String comment) {
+        this.review = review;
     }
 
-    public String getComment() {
-        return comment;
+    public String getReview() {
+        return review;
     }
 }

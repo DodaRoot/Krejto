@@ -5,28 +5,28 @@ import jakarta.persistence.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "REVIEWS")
-public class Review {
+@Table(name = "SITE_REVIEWS")
+public class SiteReview {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @ManyToOne
-    @JoinColumn(name = "reviewer_id")
+    @JoinColumn(name = "reviewer_id", nullable = false)
     private User user;
 
     @Column(nullable = false)
-    private int stars;
+    private int rating;
 
     @Column(nullable = false)
-    private String comment;
+    private String review;
 
-    public Review() {}
+    public SiteReview() {}
 
-    public Review(User user, int stars, String comment) {
+    public SiteReview(User user, int rating, String review) {
         this.user = user;
-        this.stars = stars;
-        this.comment = comment;
+        this.rating = rating;
+        this.review = review;
     }
 
     public void setId(UUID id) {
@@ -45,27 +45,27 @@ public class Review {
         this.user = user;
     }
 
-    public int getStars() {
-        return stars;
+    public int getRating() {
+        return rating;
     }
 
-    public void setStars(int stars) {
-        if (stars < 1 || stars > 5) {
+    public void setRating(int rating) {
+        if (rating < 1 || rating > 5) {
             throw new IllegalArgumentException("Rating must be between 1 and 5");
         }
-        this.stars = stars;
+        this.rating = rating;
     }
 
-    public String getComment() {
-        return comment;
+    public String getReview() {
+        return review;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setReview(String comment) {
+        this.review = comment;
     }
 
     @Override
     public String toString() {
-        return getId() + " " + getUser() + " " + getStars() + " " + getComment();
+        return getId() + " " + getUser() + " " + getRating() + " " + getReview();
     }
 }

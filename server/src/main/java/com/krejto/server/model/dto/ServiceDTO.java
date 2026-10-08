@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,12 +23,12 @@ public class ServiceDTO {
             String typeOfService,
 
             @NotNull @RequestParam
-            Double priceStart,
+            BigDecimal priceStart,
 
             @NotNull @RequestParam
-            Double priceEnd) {}
+            BigDecimal priceEnd) {}
 
-    public record GetServiceResponse(UUID id, UserDTO.GetUserResponse getUserResponse, LocationDTO.GetLocationResponse getLocationResponse, TypeOfServiceDTO.GetTypeOfServiceResponse getTypeOfServiceResponse, String description, Double price, String address, List<ServiceReview> serviceReviews) {}
+    public record GetServiceResponse(UUID id, UserDTO.GetUserResponse getUserResponse, LocationDTO.GetLocationResponse getLocationResponse, TypeOfServiceDTO.GetTypeOfServiceResponse getTypeOfServiceResponse, String description, BigDecimal price, String address, List<ServiceReview> serviceReviews) {}
 
     public record CreateServiceRequest(
             @NotNull(message = "Location id is required")
@@ -40,12 +41,12 @@ public class ServiceDTO {
             String description,
 
             @NotNull(message = "Price is required")
-            Double price,
+            BigDecimal price,
 
             String address
     ) {}
 
-    public record CreateServiceResponse(UUID id, UUID userId, UUID locationId, UUID typeOfServiceId, String description, Double price, String address) {}
+    public record CreateServiceResponse(UUID id, UUID userId, UUID locationId, UUID typeOfServiceId, String description, BigDecimal price, String address) {}
 
     public record UpdateServiceRequest(
             @NotNull(message = "Location id is required")
@@ -58,9 +59,9 @@ public class ServiceDTO {
             String description,
 
             @NotNull(message = "Price is required")
-            Double price,
+            BigDecimal price,
 
             String address ) {}
 
-    public record UpdateServiceResponse(UUID id, UUID userId, UUID locationId, UUID typeOfServiceId, String description, Double price, String address) {}
+    public record UpdateServiceResponse(UUID id, UUID userId, UUID locationId, UUID typeOfServiceId, String description, BigDecimal price, String address) {}
 }
