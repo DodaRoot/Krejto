@@ -121,3 +121,118 @@ VALUES (gen_random_uuid(),
         'Administrator',
         '$2a$10$cmly5Z.UlXxWphXfulOT4uY05DhCR1gBrDHHanbdYXAbrBf2SOdf2',
         '+1 111 111 111');
+
+-- SERVICE CATEGORIES
+
+INSERT INTO types_of_services (id,
+                               service_name,
+                               service_description)
+VALUES (gen_random_uuid(),
+        'Elektricist',
+        'Instalime, riparime dhe mirembajtje elektrike per shtepi dhe biznese.'),
+       (gen_random_uuid(),
+        'Hidraulik',
+        'Instalime dhe riparime te tubave, rubinetave, ujësjellesit dhe ngrohjes.'),
+       (gen_random_uuid(),
+        'Pastrim',
+        'Pastrim profesional per shtepi, banesa, zyra dhe hapesira pune.'),
+       (gen_random_uuid(),
+        'Kopshtari',
+        'Mirembajtje e kopshteve, oborreve, lendinave dhe hapesirave te gjelbra.'),
+       (gen_random_uuid(),
+        'Lyerje (Moler)',
+        'Lyerje e mureve dhe tavaneve per ambiente te brendshme dhe te jashtme.'),
+       (gen_random_uuid(),
+        'Riparim kompjuteresh',
+        'Diagnostikim, mirembajtje dhe riparim i kompjutereve dhe laptopëve.'),
+       (gen_random_uuid(),
+        'Punë dore dhe riparime shtëpiake',
+        'Montim mobiliesh, vendosje rafteve dhe riparime te vogla ne shtepi.'),
+       (gen_random_uuid(),
+        'Ndërtim dhe renovim',
+        'Punime me pllaka, suvatim, renovime dhe permiresime te hapesirave.');
+
+-- CITIES IN KOSOVO
+
+INSERT INTO locations (id, location)
+VALUES (gen_random_uuid(), 'Prishtinë'),
+       (gen_random_uuid(), 'Prizren'),
+       (gen_random_uuid(), 'Pejë'),
+       (gen_random_uuid(), 'Gjakovë'),
+       (gen_random_uuid(), 'Gjilan'),
+       (gen_random_uuid(), 'Ferizaj'),
+       (gen_random_uuid(), 'Mitrovicë'),
+       (gen_random_uuid(), 'Podujevë'),
+       (gen_random_uuid(), 'Vushtrri'),
+       (gen_random_uuid(), 'Fushë Kosovë'),
+       (gen_random_uuid(), 'Lipjan'),
+       (gen_random_uuid(), 'Suharekë'),
+       (gen_random_uuid(), 'Rahovec'),
+       (gen_random_uuid(), 'Drenas'),
+       (gen_random_uuid(), 'Viti');
+
+-- SEED DATA: REVIEWER USERS
+
+INSERT INTO users (id,
+                   created_at,
+                   role_id,
+                   email,
+                   full_name,
+                   password,
+                   phone_number)
+VALUES (gen_random_uuid(),
+        CURRENT_TIMESTAMP,
+        (SELECT id FROM user_roles WHERE role = 'USER' LIMIT 1), 'arta.krasniqi@example.com', 'Arta Krasniqi',
+        '$2a$10$cmly5Z.UlXxWphXfulOT4uY05DhCR1gBrDHHanbdYXAbrBf2SOdf2', '+38344100001'),
+       (gen_random_uuid(),
+        CURRENT_TIMESTAMP,
+        (SELECT id FROM user_roles WHERE role = 'USER' LIMIT 1),
+        'blerim.gashi@example.com',
+        'Blerim Gashi',
+        '$2a$10$cmly5Z.UlXxWphXfulOT4uY05DhCR1gBrDHHanbdYXAbrBf2SOdf2',
+        '+38344100002'),
+       (gen_random_uuid(),
+        CURRENT_TIMESTAMP,
+        (SELECT id FROM user_roles WHERE role = 'USER' LIMIT 1),
+        'elira.berisha@example.com',
+        'Elira Berisha',
+        '$2a$10$cmly5Z.UlXxWphXfulOT4uY05DhCR1gBrDHHanbdYXAbrBf2SOdf2',
+        '+38344100003'),
+       (gen_random_uuid(),
+        CURRENT_TIMESTAMP,
+        (SELECT id FROM user_roles WHERE role = 'USER' LIMIT 1),
+        'ardian.hoxha@example.com',
+        'Ardian Hoxha',
+        '$2a$10$cmly5Z.UlXxWphXfulOT4uY05DhCR1gBrDHHanbdYXAbrBf2SOdf2',
+        '+38344100004');
+
+-- SEED DATA: SITE REVIEWS
+
+INSERT INTO site_reviews (id,
+                          reviewer_id,
+                          rating,
+                          review)
+VALUES (gen_random_uuid(),
+        (SELECT id
+         FROM users
+         WHERE email = 'arta.krasniqi@example.com'),
+        5,
+        'Platforme shume e lehte per te gjetur profesioniste te besueshem.'),
+       (gen_random_uuid(),
+        (SELECT id
+         FROM users
+         WHERE email = 'blerim.gashi@example.com'),
+        5,
+        'Sherbim i shkelqyer dhe proces i thjeshte per te kontaktuar ofruesit.'),
+       (gen_random_uuid(),
+        (SELECT id
+         FROM users
+         WHERE email = 'elira.berisha@example.com'),
+        4,
+        'Platforme praktike me kategori te dobishme dhe zgjedhje te mira.'),
+       (gen_random_uuid(),
+        (SELECT id
+         FROM users
+         WHERE email = 'ardian.hoxha@example.com'),
+        5,
+        'Eksperience pozitive. Gjetja e sherbimeve lokale eshte shume e lehte.');

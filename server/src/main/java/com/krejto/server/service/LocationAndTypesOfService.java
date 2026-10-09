@@ -57,7 +57,7 @@ public class LocationAndTypesOfService {
         }
 
         return typeOfServicesWithCount.stream()
-                .sorted((a, b) -> Integer.compare((int) b[1], (int) a[1]))
+                .sorted((a, b) -> Long.compare((long) b[1], (long) a[1]))
                 .limit(6)
                 .map(row -> new TypeOfServiceDTO.GetTypeOfServiceResponseWithCount(
                         ((TypeOfService) row[0]).getId(),
