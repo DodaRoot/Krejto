@@ -37,6 +37,7 @@ import {
 } from "../components/ui/accordion";
 
 import getTopTypesOfServiceQuery from "~/apis/getTopTypesOfService";
+import getSiteReviewsQuery from "~/apis/getSiteReviews";
 
 const CAROUSEL_ITEMS = [bannerOne, bannerTwo, bannerThree, bannerFour];
 const CATEGORIES_LIST = getCategories().map((category) => category.name);
@@ -136,16 +137,7 @@ function ReviewCard({ name, comment, stars }: ReviewProps) {
 
 export default function Landing() {
   const { data: topTypesOfServiceData } = getTopTypesOfServiceQuery();
-  const serviceName = topTypesOfServiceData?.serviceName;
-  const serviceDescription = topTypesOfServiceData?.serviceDescription;
-
-  // const { data: siteReviewsData } = getSiteReviews();
-  // const userDTO = siteReviewsData?.userDTO;
-  // const reviewMessage = siteReviewsData?.reviewMessage;
-  // const rating = siteReviewsData?.rating;
-
-  console.log("Service Name:", serviceName);
-  console.log("Service Description:", serviceDescription);
+  const { data: siteReviewsData } = getSiteReviewsQuery();
 
   const [t] = useTranslation();
   return (
@@ -196,11 +188,11 @@ export default function Landing() {
       </Carousel>
 
       <section className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {getCategories().map((category) => (
+        {topTypesOfServiceData?.map((typeOfService) => (
           <CategoryCard
-            key={category.id}
-            name={category.name}
-            description={category.description}
+            key={typeOfService.id}
+            name={typeOfService.serviceName}
+            description={typeOfService.serviceDescription}
             image={""}
           />
         ))}
@@ -256,15 +248,15 @@ export default function Landing() {
         className="max-w-xs sm:max-w-md lg:max-w-5xl overflow-clip rounded-xl"
       >
         <CarouselContent className="flex gap-2">
-          {REVIEWS_LIST.map((review, index) => (
+          {siteReviewsData?.map((review) => (
             <CarouselItem
-              key={index}
+              key={review.reviewId}
               className="basis-full sm:basis-2/3 lg:basis-1/3"
             >
               <ReviewCard
-                name={review.name}
-                comment={review.comment}
-                stars={review.stars}
+                name={review.userDTO.fullName}
+                comment={review.reviewMessage}
+                stars={review.rating}
               />
             </CarouselItem>
           ))}
