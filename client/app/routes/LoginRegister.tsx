@@ -21,8 +21,8 @@ type AuthFieldProps = {
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-import postLogin from "~/apis/postLogin";
-import postRegister from "~/apis/postRegister";
+import postLogin from "~/apis/login";
+import postRegister from "~/apis/register";
 
 function AuthField({
   id,

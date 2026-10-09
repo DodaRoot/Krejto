@@ -11,6 +11,8 @@ import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import { getMockServices, getUserData } from "../mock/index";
 
+import profile from "../assets/images/Profile.svg";
+
 const USER_DATA = getUserData();
 
 interface ProfileHeaderProps {
@@ -35,32 +37,22 @@ function ProfileHeader({
     .join("");
 
   return (
-    <aside className="md:col-span-1 col-auto mb-5">
-      <div className="shadow rounded-lg p-6 flex flex-col items-center gap-4 bg-background">
-        <div className="relative">
-          <p className="text-xs text-muted-foreground text-center mb-3">
-            {t("Active since", { date: activeDate })}
-          </p>
-          <label>
-            <Avatar className="h-28 w-28 cursor-pointer hover:opacity-50">
-              <AvatarImage src={avatarPreview} />
-              <AvatarFallback>{initials}</AvatarFallback>
-            </Avatar>
-            <input type="file" accept="image/*" className="hidden" />
-            <div className="cursor-pointer absolute bottom-0 right-0 rounded-full bg-muted px-2 py-1 text-[10px] font-medium text-foreground shadow-sm">
-              {t("Change")}
-            </div>
-          </label>
-        </div>
-        <div className="text-center">
-          <h2 className="font-semibold text-lg">{name}</h2>
-          <p className="text-sm text-muted-foreground">{email}</p>
-        </div>
-        <p className="text-sm text-muted-foreground text-center">
-          {t("Profile description")}
+    <div className="shadow rounded-lg h-full flex flex-col items-center justify-center gap-4 bg-background">
+      <div className="relative">
+        <label>
+          <Avatar className="h-28 w-28 cursor-pointer hover:opacity-50 bg-gray-100">
+            <AvatarImage src={profile} className="p-3" />
+            <AvatarFallback>{initials}</AvatarFallback>
+          </Avatar>
+          <input type="file" accept="image/*" className="hidden" />
+        </label>
+      </div>
+      <div className="text-center">
+        <p className="text-xs text-muted-foreground text-center mb-3">
+          {t("Active since", { date: activeDate })}
         </p>
       </div>
-    </aside>
+    </div>
   );
 }
 
@@ -84,7 +76,7 @@ function ProfileForm({ name, number, email }: ProfileFormProps) {
       </div>
 
       <FieldSet>
-        <FieldGroup>
+        <FieldGroup className="gap-3 md:gap-7">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Field>
               <FieldLabel htmlFor="name">{t("Full name")}</FieldLabel>
@@ -197,15 +189,17 @@ function ServicesSection() {
 export default function Profile() {
   return (
     <div className="space-y-6 p-2 w-full">
-      <div className="grid grid-cols-1 md:grid-cols-3 md:gap-8">
-        <ProfileHeader
-          name={USER_DATA.name}
-          email={USER_DATA.email}
-          avatarPreview={USER_DATA.avatarPreview}
-          activeDate={USER_DATA.activeDate}
-        />
+      <div className="grid grid-cols-1 md:grid-cols-3 md:gap-8 gap-5">
+        <main className="md:col-span-1 space-y-6">
+          <ProfileHeader
+            name={USER_DATA.name}
+            email={USER_DATA.email}
+            avatarPreview={USER_DATA.avatarPreview}
+            activeDate={USER_DATA.activeDate}
+          />
+        </main>
 
-        <main className="col-span-2 space-y-6">
+        <main className="md:col-span-2 space-y-6">
           <ProfileForm
             name={USER_DATA.name}
             number={USER_DATA.number}

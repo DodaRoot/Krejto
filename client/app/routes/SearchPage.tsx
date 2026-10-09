@@ -3,8 +3,6 @@ import { useState } from "react";
 import { SlidersHorizontal } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import type { SearchComboboxProps } from "../types/landing";
-
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
@@ -16,42 +14,12 @@ import {
   CardDescription,
 } from "../components/ui/card";
 
-import {
-  Combobox,
-  ComboboxContent,
-  ComboboxEmpty,
-  ComboboxInput,
-  ComboboxItem,
-  ComboboxList,
-} from "../components/ui/combobox";
-
 import { Slider } from "../components/ui/slider";
 
 import { getMockServices } from "../mock";
+import SearchCombobox from "../components/feature/SearchBar/SearchCombobox";
 
 const typeOfProvider = ["Kompani", "Individ"];
-
-function SearchCombobox({ items, placeholder }: SearchComboboxProps) {
-  const [t] = useTranslation();
-
-  return (
-    <Combobox items={items}>
-      <ComboboxInput placeholder={placeholder} className="min-w-1/5" />
-
-      <ComboboxContent>
-        <ComboboxEmpty>{t("No items found")}</ComboboxEmpty>
-
-        <ComboboxList>
-          {(item) => (
-            <ComboboxItem key={item} value={item}>
-              {item}
-            </ComboboxItem>
-          )}
-        </ComboboxList>
-      </ComboboxContent>
-    </Combobox>
-  );
-}
 
 export default function SearchPage() {
   const [value, setValue] = useState([0, 100]);

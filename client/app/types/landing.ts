@@ -4,11 +4,6 @@ export interface CardComponentProps {
   image: string;
 }
 
-export interface SearchComboboxProps {
-  items: string[];
-  placeholder: string;
-}
-
 export interface ReviewProps {
   name: string;
   comment: string;

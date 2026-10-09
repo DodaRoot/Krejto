@@ -36,8 +36,8 @@ import {
   AccordionTrigger,
 } from "../components/ui/accordion";
 
-import getTopTypesOfServiceQuery from "~/apis/getTopTypesOfService";
-import getSiteReviewsQuery from "~/apis/getSiteReviews";
+import { useTopTypesOfServiceQuery } from "../hooks/queries/useTopTypesOfServiceQuery";
+import { useSiteReviewsQuery } from "../hooks/queries/useSiteReviewsQuery";
 
 const CAROUSEL_ITEMS = [bannerOne, bannerTwo, bannerThree, bannerFour];
 const CATEGORIES_LIST = getCategories().map((category) => category.name);
@@ -136,8 +136,8 @@ function ReviewCard({ name, comment, stars }: ReviewProps) {
 }
 
 export default function Landing() {
-  const { data: topTypesOfServiceData } = getTopTypesOfServiceQuery();
-  const { data: siteReviewsData } = getSiteReviewsQuery();
+  const { data: topTypesOfServiceData } = useTopTypesOfServiceQuery();
+  const { data: siteReviewsData } = useSiteReviewsQuery();
 
   const [t] = useTranslation();
   return (

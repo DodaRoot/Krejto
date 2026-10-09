@@ -4,45 +4,15 @@ import { useTranslation } from "react-i18next";
 
 import { Button } from "../../ui/button";
 import {
-  Combobox,
-  ComboboxContent,
-  ComboboxEmpty,
-  ComboboxInput,
-  ComboboxItem,
-  ComboboxList,
-} from "../../ui/combobox";
-import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
 } from "../../ui/input-group";
-import type { SearchComboboxProps } from "../../../types/landing";
-import getLocationsAndTypesQuery from "~/apis/getLocationsAndTypes";
-
-function SearchCombobox({ items, placeholder }: SearchComboboxProps) {
-  const [t] = useTranslation();
-
-  return (
-    <Combobox items={items}>
-      <ComboboxInput placeholder={placeholder} className="min-w-1/5" />
-
-      <ComboboxContent>
-        <ComboboxEmpty>{t("No items found")}</ComboboxEmpty>
-
-        <ComboboxList>
-          {(item) => (
-            <ComboboxItem key={item} value={item}>
-              {item}
-            </ComboboxItem>
-          )}
-        </ComboboxList>
-      </ComboboxContent>
-    </Combobox>
-  );
-}
+import { useLocationsAndTypesQuery } from "../../../hooks/queries/useLocationsAndTypesQuery";
+import SearchCombobox from "../SearchBar/SearchCombobox";
 
 export default function SearchBar() {
-  const { data } = getLocationsAndTypesQuery();
+  const { data } = useLocationsAndTypesQuery();
 
   const locationsDTO = data?.locationDTO;
   const typesOfServiceDTO = data?.typeOfServiceDTO;
@@ -71,20 +41,12 @@ export default function SearchBar() {
       </InputGroup>
 
       <SearchCombobox
-        items={
-          locationsDTO?.map(
-            (location: { location: string }) => location.location,
-          ) || []
-        }
+        items={locationsDTO?.map((location) => location.location) || []}
         placeholder={t("Select a category")}
       />
 
       <SearchCombobox
-        items={
-          typesOfServiceDTO?.map(
-            (service: { serviceName: string }) => service.serviceName,
-          ) || []
-        }
+        items={typesOfServiceDTO?.map((service) => service.serviceName) || []}
         placeholder={t("Select a city")}
       />
 

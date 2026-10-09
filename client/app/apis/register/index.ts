@@ -1,11 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 
-type RegisterData = {
-  fullName: string;
-  email: string;
-  password: string;
-  phoneNumber: string;
-};
+import type { RegisterData } from "./types";
 
 export default function postRegister() {
   return useMutation({

@@ -1,9 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 
-type LoginData = {
-  email: string;
-  password: string;
-};
+import type { LoginData } from "./types";
 
 export default function postLogin() {
   return useMutation({

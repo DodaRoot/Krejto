@@ -1,31 +1,23 @@
-import {
-  Link,
-  Form,
-  useFetcher,
-  Navigate,
-  useNavigate,
-  useSubmit,
-} from "react-router";
+import { Link, Form, useFetcher, useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
 import type {
-  NavItemTypes,
-  NotificationsDropdownTypes,
-  ProfileMenuTypes,
-  preferencesTypes,
-} from "../../../types/navbar";
+  MenuButtonProps,
+  NavItemProps,
+  NotificationsDropdownProps,
+  ProfileMenuProps,
+  NavbarPreferences,
+} from "../Navbar/types";
 import {
   MessageCircleCheck,
   UserRound,
   LogOut,
   Heart,
   Bell,
-  SquarePlus,
   PaletteIcon,
   SunIcon,
   MoonIcon,
   MonitorIcon,
   Languages,
-  Box,
   House,
 } from "lucide-react";
 
@@ -44,9 +36,8 @@ import {
   DropdownMenuLabel,
 } from "../../../components/ui/dropdown-menu";
 import { useEffect, useState } from "react";
-import { Button } from "@base-ui/react";
 
-function NavItem({ icon, label, link, className }: NavItemTypes) {
+function NavItem({ icon, label, link, className }: NavItemProps) {
   return (
     <Link
       to={link}
@@ -65,44 +56,46 @@ function NavItem({ icon, label, link, className }: NavItemTypes) {
   );
 }
 
+function MenuButton({
+  icon,
+  label,
+  className,
+  ...buttonProps
+}: MenuButtonProps) {
+  return (
+    <button
+      {...buttonProps}
+      className={`flex flex-col items-center justify-center cursor-pointer group w-14 size-5 ${className ?? ""}`}
+    >
+      <div className="opacity-50 group-hover:opacity-100 transition-opacity duration-200 group-data-[state=open]:opacity-100">
+        <div className="group-hover:rotate-4 duration-200 group-data-[state=open]:rotate-4">
+          {icon}
+        </div>
+      </div>
+      <p className="text-xs opacity-50 group-hover:opacity-100 transition-opacity duration-200 group-data-[state=open]:opacity-100">
+        {label}
+      </p>
+    </button>
+  );
+}
+
 function NotificationsDropdown({
   icon,
   label,
   t,
   isLoggedIn,
-}: NotificationsDropdownTypes) {
+}: NotificationsDropdownProps) {
   const navigate = useNavigate();
   return (
     <DropdownMenu
-      onOpenChange={() => {
-        if (!isLoggedIn) {
+      onOpenChange={(open) => {
+        if (open && !isLoggedIn) {
           navigate("/loginOrRegister");
         }
       }}
     >
       <DropdownMenuTrigger asChild>
-        <button className="flex flex-col items-center justify-center cursor-pointer group w-14 size-5">
-          <div
-            className={
-              "opacity-50 group-hover:opacity-100 transition-opacity duration-200 group-data-[state=open]:opacity-100"
-            }
-          >
-            <div
-              className={
-                "group-hover:rotate-4 duration-200 group-data-[state=open]:rotate-4"
-              }
-            >
-              {icon}
-            </div>
-          </div>
-          <p
-            className={
-              "text-xs opacity-50 group-hover:opacity-100 transition-opacity duration-200 group-data-[state=open]:opacity-100"
-            }
-          >
-            {label}
-          </p>
-        </button>
+        <MenuButton icon={icon} label={label} />
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="center"
@@ -126,34 +119,14 @@ function ProfileMenu({
   t,
   preferences,
   isLoggedIn,
-}: ProfileMenuTypes) {
+  onLogout,
+}: ProfileMenuProps) {
   const fetcher = useFetcher();
   const navigate = useNavigate();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="flex flex-col items-center justify-center cursor-pointer group w-14 size-5">
-          <div
-            className={
-              "opacity-50 group-hover:opacity-100 transition-opacity duration-200 group-data-[state=open]:opacity-100"
-            }
-          >
-            <div
-              className={
-                "group-hover:rotate-4 duration-200 group-data-[state=open]:rotate-4"
-              }
-            >
-              {icon}
-            </div>
-          </div>
-          <p
-            className={
-              "text-xs opacity-50 group-hover:opacity-100 transition-opacity duration-200 group-data-[state=open]:opacity-100"
-            }
-          >
-            {label}
-          </p>
-        </button>
+        <MenuButton icon={icon} label={label} />
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
@@ -247,6 +220,7 @@ function ProfileMenu({
               className="cursor-pointer"
               onClick={() => {
                 localStorage.removeItem("token");
+                onLogout();
                 navigate("/");
               }}
             >
@@ -260,7 +234,7 @@ function ProfileMenu({
   );
 }
 
-export default function Navbar(preferences: preferencesTypes) {
+export default function Navbar(preferences: NavbarPreferences) {
   const [t] = useTranslation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   useEffect(() => {
@@ -301,6 +275,7 @@ export default function Navbar(preferences: preferencesTypes) {
             t={t}
             preferences={preferences}
             isLoggedIn={isLoggedIn}
+            onLogout={() => setIsLoggedIn(false)}
           />
         </div>
       </div>
