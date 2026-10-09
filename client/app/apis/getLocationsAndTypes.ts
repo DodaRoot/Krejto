@@ -8,12 +8,15 @@ export default function getLocationsAndTypesQuery() {
 }
 
 export const getLocationsAndTypes = () => {
-  return new Promise<{ locations: any[]; typesOfService: any[] }>(
-    (resolve, reject) => {
-      fetch("http://localhost:8080/api/v1/locationsAndTypes")
-        .then((response) => response.json())
-        .then((data) => resolve(data))
-        .catch((error) => reject(error));
-    },
-  );
+  return new Promise<{
+    locationDTO: { location: string }[];
+    typeOfServiceDTO: { serviceName: string; serviceDescription: string }[];
+  }>((resolve, reject) => {
+    fetch(
+      "http://localhost:8080/api/v1/locationsAndTypes/getAllLocationsAndTypes",
+    )
+      .then((response) => response.json())
+      .then((data) => resolve(data))
+      .catch((error) => reject(error));
+  });
 };

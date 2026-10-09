@@ -36,6 +36,8 @@ import {
   AccordionTrigger,
 } from "../components/ui/accordion";
 
+import getTopTypesOfServiceQuery from "~/apis/getTopTypesOfService";
+
 const CAROUSEL_ITEMS = [bannerOne, bannerTwo, bannerThree, bannerFour];
 const CATEGORIES_LIST = getCategories().map((category) => category.name);
 const REVIEWS_LIST = getReviews();
@@ -133,6 +135,18 @@ function ReviewCard({ name, comment, stars }: ReviewProps) {
 }
 
 export default function Landing() {
+  const { data: topTypesOfServiceData } = getTopTypesOfServiceQuery();
+  const serviceName = topTypesOfServiceData?.serviceName;
+  const serviceDescription = topTypesOfServiceData?.serviceDescription;
+
+  // const { data: siteReviewsData } = getSiteReviews();
+  // const userDTO = siteReviewsData?.userDTO;
+  // const reviewMessage = siteReviewsData?.reviewMessage;
+  // const rating = siteReviewsData?.rating;
+
+  console.log("Service Name:", serviceName);
+  console.log("Service Description:", serviceDescription);
+
   const [t] = useTranslation();
   return (
     <div className="mt-1 flex flex-col gap-10 justify-center items-center">

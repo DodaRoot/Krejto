@@ -44,8 +44,8 @@ function SearchCombobox({ items, placeholder }: SearchComboboxProps) {
 export default function SearchBar() {
   const { data } = getLocationsAndTypesQuery();
 
-  const locations = data?.locations;
-  const typesOfService = data?.typesOfService;
+  const locationsDTO = data?.locationDTO;
+  const typesOfServiceDTO = data?.typeOfServiceDTO;
 
   const [t] = useTranslation();
 
@@ -72,8 +72,8 @@ export default function SearchBar() {
 
       <SearchCombobox
         items={
-          typesOfService?.map(
-            (service: { serviceName: string }) => service.serviceName,
+          locationsDTO?.map(
+            (location: { location: string }) => location.location,
           ) || []
         }
         placeholder={t("Select a category")}
@@ -81,8 +81,8 @@ export default function SearchBar() {
 
       <SearchCombobox
         items={
-          locations?.map(
-            (location: { location: string }) => location.location,
+          typesOfServiceDTO?.map(
+            (service: { serviceName: string }) => service.serviceName,
           ) || []
         }
         placeholder={t("Select a city")}
