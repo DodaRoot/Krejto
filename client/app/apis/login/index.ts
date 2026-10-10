@@ -18,7 +18,7 @@ export async function postLoginFunction(loginData: LoginData): Promise<string> {
 
   const token = await response.text();
   if (!response.ok) {
-    throw new Error(token || `Login failed (${response.status})`);
+    throw new Error(token || `Login credentials failed (${response.status})`);
   }
 
   return token;

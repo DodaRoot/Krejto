@@ -85,7 +85,9 @@
       "Password must be at least 8 characters long.": "Password must be at least 8 characters long.",
       "Password must include at least one letter.": "Password must include at least one letter.",
       "Password must include at least one number.": "Password must include at least one number.",
-      "Password is required.": "Password is required."
+      "Password is required.": "Password is required.",
+      "Login Error": "Unable to log in. Please check your email address and password and try again.",
+      "Register Error": "Registration failed. An account with this email may already exist, or some of the information provided may be incorrect. Please check your details and try again."
     }
   },
   "al": {
@@ -173,7 +175,9 @@
       "Password must be at least 8 characters long.": "Fjalëkalimi duhet të jetë të paktën 8 karaktere i gjatë.",
       "Password must include at least one letter.": "Fjalëkalimi duhet të përmbajë të paktën një shkronjë.",
       "Password must include at least one number.": "Fjalëkalimi duhet të përmbajë të paktën një numër.",
-      "Password is required.": "Fjalëkalimi është i kërkuar."
+      "Password is required.": "Fjalëkalimi është i kërkuar.",
+      "Login Error": "Hyrja dështoi. Ju lutemi, kontrolloni adresën e emailit dhe fjalëkalimin dhe provoni përsëri.",
+      "Register Error": "Regjistrimi dështoi. Një llogari me këtë adresë emaili mund të ekzistojë tashmë, ose disa nga të dhënat e dhëna mund të jenë të pasakta. Ju lutemi, kontrolloni të dhënat dhe provoni përsëri."
     }
   }
 }

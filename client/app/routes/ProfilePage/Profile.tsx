@@ -4,11 +4,7 @@ import { AsYouType, parsePhoneNumberFromString } from "libphonenumber-js";
 
 import profile from "../../assets/images/Profile.svg";
 import { Button } from "../../components/ui/button";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "../../components/ui/avatar";
+import { Avatar, AvatarImage } from "../../components/ui/avatar";
 import {
   Field,
   FieldGroup,
@@ -23,13 +19,6 @@ import type {
   ServiceCardProps,
 } from "./types";
 
-const PROFILE_DATA = {
-  name: "Arben Krasniqi",
-  email: "arben.krasniqi@example.com",
-  number: "+383 44 123 456",
-  activeDate: "Janar 2024",
-};
-
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 type ProfileFormErrors = {
@@ -40,6 +29,8 @@ type ProfileFormErrors = {
 };
 
 import { useProfileDataQuery } from "~/hooks/queries/useProfileDataQuery";
+import { useNavigate } from "react-router";
+import { Spinner } from "~/components/ui/spinner";
 
 function formatPhoneNumberInput(value: string) {
   if (!value) {
@@ -92,7 +83,7 @@ function validateProfileForm(
   return errors;
 }
 
-function ProfileHeader({ name, activeDate }: ProfileHeaderProps) {
+function ProfileHeader({ activeDate }: ProfileHeaderProps) {
   const [t] = useTranslation();
 
   return (
@@ -333,6 +324,8 @@ function ServicesSection() {
 export default function Profile() {
   const { data } = useProfileDataQuery();
 
+  const navigate = useNavigate();
+
   const formatDate = (value: string) => {
     if (!value) return "—";
 
@@ -350,8 +343,17 @@ export default function Profile() {
     }).format(date);
   };
 
+  if (useProfileDataQuery().isFetching) {
+    return (
+      <div className="w-full h-96 flex justify-center items-center">
+        <Spinner className="size-10" />
+      </div>
+    );
+  }
+
   if (!data) {
-    return "";
+    localStorage.removeItem("token");
+    navigate("/");
   }
 
   return (
@@ -360,7 +362,7 @@ export default function Profile() {
         <main className="space-y-6 md:col-span-1">
           <ProfileHeader
             name={data?.fullName || ""}
-            activeDate={formatDate(data?.createdAt) || ""}
+            activeDate={formatDate(data?.createdAt || "") || ""}
           />
         </main>
 
