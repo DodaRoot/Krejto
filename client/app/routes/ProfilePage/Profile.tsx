@@ -1,26 +1,27 @@
-import React from "react";
 import { useTranslation } from "react-i18next";
-import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "../../components/ui/avatar";
 import {
   Field,
   FieldGroup,
   FieldLabel,
   FieldSet,
-} from "../components/ui/field";
-import { Input } from "../components/ui/input";
-import { Button } from "../components/ui/button";
-import { getMockServices, getUserData } from "../mock/index";
+} from "../../components/ui/field";
+import { Input } from "../../components/ui/input";
+import { Button } from "../../components/ui/button";
+import { getMockServices, getUserData } from "../../mock/index";
 
-import profile from "../assets/images/Profile.svg";
+import profile from "../../assets/images/Profile.svg";
+import type {
+  ProfileFormProps,
+  ProfileHeaderProps,
+  ServiceCardProps,
+} from "./types";
 
 const USER_DATA = getUserData();
-
-interface ProfileHeaderProps {
-  name: string;
-  email: string;
-  avatarPreview: string;
-  activeDate: string;
-}
 
 function ProfileHeader({
   name,
@@ -54,12 +55,6 @@ function ProfileHeader({
       </div>
     </div>
   );
-}
-
-interface ProfileFormProps {
-  name: string;
-  number: string;
-  email: string;
 }
 
 function ProfileForm({ name, number, email }: ProfileFormProps) {
@@ -137,10 +132,6 @@ function AddServiceCard() {
       </div>
     </button>
   );
-}
-
-interface ServiceCardProps {
-  service: any;
 }
 
 function ServiceCard({ service }: ServiceCardProps) {

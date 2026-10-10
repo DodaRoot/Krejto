@@ -1,22 +1,22 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Send, Search, ArrowLeft } from "lucide-react";
-import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
-import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
 import {
-  getConversations,
-  getConversationById,
-  type MockConversation,
-} from "../mock/index";
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "../../components/ui/avatar";
+import { getConversations, getConversationById } from "../../mock/index";
+import type {
+  ChatHeaderProps,
+  ChatViewProps,
+  ConversationListProps,
+  MessageBubbleProps,
+} from "./types";
 
 const CONVERSATIONS = getConversations();
-
-interface ConversationListProps {
-  conversations: MockConversation[];
-  selectedId: number | null;
-  onSelect: (id: number) => void;
-}
 
 function ConversationList({
   conversations,
@@ -75,12 +75,6 @@ function ConversationList({
   );
 }
 
-interface MessageBubbleProps {
-  message: string;
-  sender: "me" | "other";
-  timestamp: string;
-}
-
 function MessageBubble({ message, sender, timestamp }: MessageBubbleProps) {
   return (
     <div
@@ -108,11 +102,6 @@ function MessageBubble({ message, sender, timestamp }: MessageBubbleProps) {
   );
 }
 
-interface ChatHeaderProps {
-  conversation: MockConversation;
-  onBack?: () => void;
-}
-
 function ChatHeader({ conversation, onBack }: ChatHeaderProps) {
   return (
     <div className="flex items-center gap-3 p-4 border-b border-border bg-background">
@@ -135,11 +124,6 @@ function ChatHeader({ conversation, onBack }: ChatHeaderProps) {
       </div>
     </div>
   );
-}
-
-interface ChatViewProps {
-  conversation: MockConversation | null;
-  onBack?: () => void;
 }
 
 function ChatView({ conversation, onBack }: ChatViewProps) {

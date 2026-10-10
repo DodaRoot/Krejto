@@ -1,25 +1,16 @@
-import { Check, LockKeyhole, Mail, Phone, UserRound } from "lucide-react";
+import { LockKeyhole, Mail, Phone, UserRound } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
-import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "../components/ui/tabs";
+} from "../../components/ui/tabs";
 import { useState } from "react";
-
-type AuthFieldProps = {
-  id: string;
-  label: string;
-  type: string;
-  placeholder: string;
-  autoComplete: string;
-  icon: typeof Mail;
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-};
+import type { AuthFieldProps } from "./types";
 
 import postLogin from "~/apis/login";
 import postRegister from "~/apis/register";

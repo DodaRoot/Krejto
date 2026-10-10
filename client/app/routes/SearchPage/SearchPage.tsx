@@ -3,26 +3,27 @@ import { useState } from "react";
 import { SlidersHorizontal } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
-import { Label } from "../components/ui/label";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
 
 import {
   Card,
   CardContent,
   CardTitle,
   CardDescription,
-} from "../components/ui/card";
+} from "../../components/ui/card";
 
-import { Slider } from "../components/ui/slider";
+import { Slider } from "../../components/ui/slider";
 
-import { getMockServices } from "../mock";
-import SearchCombobox from "../components/feature/SearchBar/SearchCombobox";
+import { getMockServices } from "../../mock";
+import SearchCombobox from "../../components/feature/SearchBar/SearchCombobox";
+import type { PriceRange } from "./types";
 
 const typeOfProvider = ["Kompani", "Individ"];
 
 export default function SearchPage() {
-  const [value, setValue] = useState([0, 100]);
+  const [value, setValue] = useState<PriceRange>([0, 100]);
   const [t] = useTranslation();
 
   return (

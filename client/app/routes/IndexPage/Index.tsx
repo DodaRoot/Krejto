@@ -1,17 +1,18 @@
 import { Outlet, useNavigation, useLocation } from "react-router";
 import type { Route } from "./+types/Index";
-import { userPrefs } from "../cookies.server";
+import { userPrefs } from "../../cookies.server";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
-import Navbar from "../components/feature/Navbar/Navbar";
-import Banner from "../components/feature/Banner/Banner";
-import Footer from "../components/feature/Footer/Footer";
+import Navbar from "../../components/feature/Navbar/Navbar";
+import Banner from "../../components/feature/Banner/Banner";
+import Footer from "../../components/feature/Footer/Footer";
+import type { PreferencesData } from "./types";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const cookieHeader = request.headers.get("Cookie");
   const cookie = (await userPrefs.parse(cookieHeader)) || {};
-  return { theme: cookie.theme, lang: cookie.lang };
+  return { theme: cookie.theme, lang: cookie.lang } satisfies PreferencesData;
 }
 
 export default function Index({ loaderData }: Route.ComponentProps) {

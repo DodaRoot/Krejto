@@ -2,14 +2,13 @@ import Autoplay from "embla-carousel-autoplay";
 import { ArrowUp, Star } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { getCategories, getReviews } from "../mock/index";
-import SearchBar from "../components/feature/SearchBar/SearchBar";
+import SearchBar from "../../components/feature/SearchBar/SearchBar";
 
-import bannerOne from "../assets/images/Banner.png";
-import bannerTwo from "../assets/images/Banner2.png";
-import bannerThree from "../assets/images/Banner3.png";
-import bannerFour from "../assets/images/Banner4.png";
-import headerSvg from "../assets/images/Header.svg";
+import bannerOne from "../../assets/images/Banner.png";
+import bannerTwo from "../../assets/images/Banner2.png";
+import bannerThree from "../../assets/images/Banner3.png";
+import bannerFour from "../../assets/images/Banner4.png";
+import headerSvg from "../../assets/images/Header.svg";
 
 import {
   Card,
@@ -17,7 +16,7 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
-} from "../components/ui/card";
+} from "../../components/ui/card";
 
 import {
   Carousel,
@@ -25,25 +24,23 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "../components/ui/carousel";
-import { Avatar, AvatarFallback } from "../components/ui/avatar";
-import type { CardComponentProps, ReviewProps } from "../types/landing";
+} from "../../components/ui/carousel";
+import { Avatar, AvatarFallback } from "../../components/ui/avatar";
+import type { CategoryCardProps, ReviewCardProps } from "./types";
 
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "../components/ui/accordion";
+} from "../../components/ui/accordion";
 
-import { useTopTypesOfServiceQuery } from "../hooks/queries/useTopTypesOfServiceQuery";
-import { useSiteReviewsQuery } from "../hooks/queries/useSiteReviewsQuery";
+import { useTopTypesOfServiceQuery } from "../../hooks/queries/useTopTypesOfServiceQuery";
+import { useSiteReviewsQuery } from "../../hooks/queries/useSiteReviewsQuery";
 
 const CAROUSEL_ITEMS = [bannerOne, bannerTwo, bannerThree, bannerFour];
-const CATEGORIES_LIST = getCategories().map((category) => category.name);
-const REVIEWS_LIST = getReviews();
 
-function CategoryCard({ name, description, image }: CardComponentProps) {
+function CategoryCard({ name, description, image }: CategoryCardProps) {
   return (
     <Card
       className="
@@ -86,7 +83,7 @@ function CategoryCard({ name, description, image }: CardComponentProps) {
   );
 }
 
-function ReviewCard({ name, comment, stars }: ReviewProps) {
+function ReviewCard({ name, comment, stars }: ReviewCardProps) {
   const [t] = useTranslation();
   const initials = name
     .split(" ")

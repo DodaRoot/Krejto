@@ -1,7 +1,7 @@
-import type { Route } from "./+types/ItemPage.js";
+import type { Route } from "./+types/ItemPage";
 import { useState, useEffect } from "react";
 
-import bannerOne from "../assets/images/Banner.png";
+import bannerOne from "../../assets/images/Banner.png";
 
 import {
   Carousel,
@@ -10,7 +10,8 @@ import {
   CarouselNext,
   CarouselPrevious,
   type CarouselApi,
-} from "../components/ui/carousel";
+} from "../../components/ui/carousel";
+import type { CarouselProgress } from "./types";
 
 export async function loader({ params }: Route.LoaderArgs) {
   return params.id;
@@ -18,16 +19,23 @@ export async function loader({ params }: Route.LoaderArgs) {
 
 export default function ItemPage({ loaderData }: Route.ComponentProps) {
   const [api, setApi] = useState<CarouselApi>();
-  const [current, setCurrent] = useState(0);
-  const [count, setCount] = useState(0);
+  const [progress, setProgress] = useState<CarouselProgress>({
+    current: 0,
+    count: 0,
+  });
   useEffect(() => {
     if (!api) {
       return;
     }
-    setCount(api.scrollSnapList().length);
-    setCurrent(api.selectedScrollSnap() + 1);
+    setProgress({
+      count: api.scrollSnapList().length,
+      current: api.selectedScrollSnap() + 1,
+    });
     api.on("select", () => {
-      setCurrent(api.selectedScrollSnap() + 1);
+      setProgress((currentProgress) => ({
+        ...currentProgress,
+        current: api.selectedScrollSnap() + 1,
+      }));
     });
   }, [api]);
 
@@ -62,7 +70,7 @@ export default function ItemPage({ loaderData }: Route.ComponentProps) {
           </div>
         </Carousel>
         <div className="py-2 text-center text-sm text-muted-foreground">
-          Slide {current} of {count}
+          Slide {progress.current} of {progress.count}
         </div>
       </section>
       <aside className="w-1/3 bg-blue-400"></aside>
