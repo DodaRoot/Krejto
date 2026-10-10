@@ -76,7 +76,16 @@
       "Results": "Results",
       "No results found": "No results found",
       "Register / Login": "Register / Login",
-      "Registration successful! Please log in": "Registration successful! Please log in."
+      "Registration successful! Please log in": "Registration successful! Please log in.",
+      "Full name must be at least 2 characters long.": "Full name must be at least 2 characters long.",
+      "Phone number is required.": "Phone number is required.",
+      "Enter a valid phone number.": "Enter a valid phone number.",
+      "Email is required.": "Email is required.",
+      "Enter a valid email address.": "Enter a valid email address.",
+      "Password must be at least 8 characters long.": "Password must be at least 8 characters long.",
+      "Password must include at least one letter.": "Password must include at least one letter.",
+      "Password must include at least one number.": "Password must include at least one number.",
+      "Password is required.": "Password is required."
     }
   },
   "al": {
@@ -155,7 +164,16 @@
       "Results": "Rezultate",
       "No results found": "Nuk u gjet asnjë rezultat",
       "Register / Login": "Regjistrohu / Kyqu",
-      "Registration successful! Please log in": "Regjistrimi u krye me sukses! Ju lutemi kyçuni."
+      "Registration successful! Please log in": "Regjistrimi u krye me sukses! Ju lutemi kyçuni.",
+      "Full name must be at least 2 characters long.": "Emri duhet të ketë të paktën 2 karaktere.",
+      "Phone number is required.": "Numri i telefonit është i kërkuar.",
+      "Enter a valid phone number.": "Shkruaj një numër telefoni valid.",
+      "Email is required.": "Email është i kërkuar.",
+      "Enter a valid email address.": "Shkruaj një email valid.",
+      "Password must be at least 8 characters long.": "Fjalëkalimi duhet të jetë të paktën 8 karaktere i gjatë.",
+      "Password must include at least one letter.": "Fjalëkalimi duhet të përmbajë të paktën një shkronjë.",
+      "Password must include at least one number.": "Fjalëkalimi duhet të përmbajë të paktën një numër.",
+      "Password is required.": "Fjalëkalimi është i kërkuar."
     }
   }
 }

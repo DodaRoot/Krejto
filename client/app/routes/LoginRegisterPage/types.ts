@@ -8,5 +8,7 @@ export interface AuthFieldProps {
   placeholder: string;
   autoComplete: string;
   icon: LucideIcon;
-  onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
+  value: string;
+  error?: string;
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
 }

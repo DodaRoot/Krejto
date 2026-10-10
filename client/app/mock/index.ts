@@ -20,14 +20,6 @@ export interface MockReview {
   stars: number;
 }
 
-export interface MockUser {
-  name: string;
-  email: string;
-  number: string;
-  avatarPreview: string;
-  activeDate: string;
-}
-
 export interface MockMessage {
   id: number;
   content: string;
@@ -185,15 +177,6 @@ const reviews: MockReview[] = [
   },
 ];
 
-const user: MockUser = {
-  name: "Arben Krasniqi",
-  email: "arben.krasniqi@example.com",
-  number: "+383 44 123 456",
-  avatarPreview:
-    "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=256&h=256&q=80",
-  activeDate: "Janar 2024",
-};
-
 const conversations: MockConversation[] = [
   {
     id: 1,
@@ -284,10 +267,6 @@ export function getCategories(): MockCategory[] {
 
 export function getReviews(): MockReview[] {
   return reviews;
-}
-
-export function getUserData(): MockUser {
-  return user;
 }
 
 export function getConversations(): MockConversation[] {

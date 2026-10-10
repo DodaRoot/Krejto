@@ -2,15 +2,13 @@ import type { MockService } from "../../mock";
 
 export interface ProfileHeaderProps {
   name: string;
-  email: string;
-  avatarPreview: string;
   activeDate: string;
 }
 
 export interface ProfileFormProps {
-  name: string;
-  number: string;
-  email: string;
+  nameData: string;
+  numberData: string;
+  emailData: string;
 }
 
 export interface ServiceCardProps {
