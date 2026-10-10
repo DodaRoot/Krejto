@@ -39,15 +39,7 @@ type ProfileFormErrors = {
   password?: string;
 };
 
-function getInitials(name: string) {
-  return name
-    .split(" ")
-    .filter(Boolean)
-    .map((part) => part[0])
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
-}
+import { useProfileDataQuery } from "~/hooks/queries/useProfileDataQuery";
 
 function formatPhoneNumberInput(value: string) {
   if (!value) {
@@ -109,7 +101,6 @@ function ProfileHeader({ name, activeDate }: ProfileHeaderProps) {
         <label htmlFor="profile-image-upload" className="cursor-pointer">
           <Avatar className="h-28 w-28 bg-gray-100 hover:opacity-50">
             <AvatarImage src={profile} className="p-3" />
-            <AvatarFallback>{getInitials(name)}</AvatarFallback>
           </Avatar>
           <input
             id="profile-image-upload"
@@ -127,20 +118,20 @@ function ProfileHeader({ name, activeDate }: ProfileHeaderProps) {
   );
 }
 
-function ProfileForm({ nameData, numberData, emailData }: ProfileFormProps) {
+function ProfileForm({ fullName, number, email }: ProfileFormProps) {
   const [t] = useTranslation();
   const [formData, setFormData] = useState({
-    name: nameData,
-    number: numberData,
-    email: emailData,
+    name: fullName,
+    number: number,
+    email: email,
     password: "",
   });
   const [errors, setErrors] = useState<ProfileFormErrors>({});
 
   const hasChanges =
-    formData.name !== nameData ||
-    formData.number !== numberData ||
-    formData.email !== emailData ||
+    formData.name !== fullName ||
+    formData.number !== number ||
+    formData.email !== email ||
     formData.password !== "";
 
   const isFormValid =
@@ -340,17 +331,45 @@ function ServicesSection() {
 }
 
 export default function Profile() {
-  const { name, email, number, activeDate } = PROFILE_DATA;
+  const { data } = useProfileDataQuery();
+
+  const formatDate = (value: string) => {
+    if (!value) return "—";
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) return "—";
+
+    return new Intl.DateTimeFormat("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    }).format(date);
+  };
+
+  if (!data) {
+    return "";
+  }
 
   return (
     <div className="w-full space-y-6 p-2">
       <div className="grid grid-cols-1 gap-5 md:grid-cols-3 md:gap-8">
         <main className="space-y-6 md:col-span-1">
-          <ProfileHeader name={name} activeDate={activeDate} />
+          <ProfileHeader
+            name={data?.fullName || ""}
+            activeDate={formatDate(data?.createdAt) || ""}
+          />
         </main>
 
         <main className="space-y-6 md:col-span-2">
-          <ProfileForm nameData={name} numberData={number} emailData={email} />
+          <ProfileForm
+            fullName={data?.fullName || ""}
+            number={data?.phoneNumber || ""}
+            email={data?.email || ""}
+          />
         </main>
       </div>
 

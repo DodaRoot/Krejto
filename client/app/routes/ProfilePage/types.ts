@@ -6,9 +6,9 @@ export interface ProfileHeaderProps {
 }
 
 export interface ProfileFormProps {
-  nameData: string;
-  numberData: string;
-  emailData: string;
+  fullName: string;
+  number: string;
+  email: string;
 }
 
 export interface ServiceCardProps {
