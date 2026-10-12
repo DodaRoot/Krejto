@@ -29,6 +29,7 @@ type ProfileFormErrors = {
 };
 
 import { useProfileDataQuery } from "~/hooks/queries/useProfileDataQuery";
+import { useGetMyServicesQuery } from "~/hooks/queries/useGetMyServicesQuery";
 import { useNavigate } from "react-router";
 import { Spinner } from "~/components/ui/spinner";
 
@@ -282,12 +283,17 @@ function ServiceCard({ service }: ServiceCardProps) {
   return (
     <div className="flex flex-col gap-3 rounded-lg bg-background p-4 shadow">
       <div>
-        <h4 className="text-sm font-semibold">{service.title}</h4>
-        <p className="text-xs text-muted-foreground">{service.category}</p>
+        <p className="font-bold">
+          {service.getTypeOfServiceResponse.serviceName}
+        </p>
+        <p className="text-sm">{service.getLocationResponse.location}</p>
       </div>
 
       <p className="text-sm text-muted-foreground">{service.description}</p>
-      <div className="text-sm font-medium text-foreground">{service.price}</div>
+      <p className="text-sm text-muted-foreground">{service.address}</p>
+      <div className="text-sm font-medium text-foreground">
+        {service.price}€
+      </div>
 
       <div className="flex gap-2 pt-2">
         <Button type="button" variant="outline" size="sm">
@@ -304,6 +310,8 @@ function ServiceCard({ service }: ServiceCardProps) {
 function ServicesSection() {
   const [t] = useTranslation();
 
+  const { data } = useGetMyServicesQuery();
+
   return (
     <section className="space-y-4">
       <h3 className="text-lg font-medium">{t("My Services")}</h3>
@@ -313,8 +321,11 @@ function ServicesSection() {
       </div>
 
       <div className="grid grid-cols-1 gap-4">
-        {getMockServices.map((service) => (
-          <ServiceCard key={service.id} service={service} />
+        {data?.map((service) => (
+          <ServiceCard
+            key={service.getTypeOfServiceResponse.serviceName}
+            service={service}
+          />
         ))}
       </div>
     </section>

@@ -12,5 +12,17 @@ export interface ProfileFormProps {
 }
 
 export interface ServiceCardProps {
-  service: MockService;
+  service: Service;
+}
+
+export interface Service {
+  getLocationResponse: {
+    location: string;
+  };
+  getTypeOfServiceResponse: {
+    serviceName: string;
+  };
+  description: string;
+  price: number;
+  address: string;
 }
