@@ -27,9 +27,9 @@ public class ServiceController {
         return ResponseEntity.status(HttpStatus.OK).body(getServiceResponses);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<List<ServiceDTO.GetServiceResponse>> getServicesByUser(@Valid ServiceDTO.GetServiceByUserIdRequest getServiceByUserIdRequest) {
-        List<ServiceDTO.GetServiceResponse> getServiceResponses = serviceService.getServicesByUser(getServiceByUserIdRequest);
+    @GetMapping("/myServices")
+    public ResponseEntity<List<ServiceDTO.GetServiceResponse>> getServicesByUser(Principal principal) {
+        List<ServiceDTO.GetServiceResponse> getServiceResponses = serviceService.getServicesByUser(principal);
 
         return ResponseEntity.status(HttpStatus.OK).body(getServiceResponses);
     }

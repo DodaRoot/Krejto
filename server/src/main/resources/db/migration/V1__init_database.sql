@@ -1,103 +1,113 @@
-CREATE TABLE locations
+create table locations
 (
-    id       UUID         NOT NULL,
-    location VARCHAR(255) NOT NULL,
-    PRIMARY KEY (id)
+    id       uuid         not null,
+    location varchar(255) not null,
+    primary key (id)
 );
 
-CREATE TABLE service_reviews
+create table locations_ids
 (
-    rating      INTEGER      NOT NULL,
-    created_at  TIMESTAMP(6) NOT NULL,
-    id          UUID         NOT NULL,
-    reviewer_id UUID         NOT NULL,
-    service_id  UUID         NOT NULL,
-    review      VARCHAR(255) NOT NULL,
-    PRIMARY KEY (id)
+    location_id uuid not null,
+    service_id  uuid not null
 );
 
-CREATE TABLE services
+create table service_reviews
 (
-    price              NUMERIC(38, 2) NOT NULL,
-    id                 UUID           NOT NULL,
-    location_id        UUID           NOT NULL,
-    provider_id        UUID           NOT NULL,
-    type_of_service_id UUID           NOT NULL,
-    address            VARCHAR(255),
-    description        VARCHAR(255)   NOT NULL,
-    PRIMARY KEY (id)
+    rating      integer      not null,
+    created_at  timestamp(6) not null,
+    id          uuid         not null,
+    reviewer_id uuid         not null,
+    service_id  uuid         not null,
+    review      varchar(255) not null,
+    primary key (id)
 );
 
-CREATE TABLE site_reviews
+create table services
 (
-    rating      INTEGER      NOT NULL,
-    id          UUID         NOT NULL,
-    reviewer_id UUID         NOT NULL,
-    review      VARCHAR(255) NOT NULL,
-    PRIMARY KEY (id)
+    price              numeric(38, 2) not null,
+    id                 uuid           not null,
+    provider_id        uuid           not null,
+    type_of_service_id uuid           not null,
+    address            varchar(255),
+    description        varchar(255)   not null,
+    primary key (id)
 );
 
-CREATE TABLE types_of_services
+create table site_reviews
 (
-    id                  UUID         NOT NULL,
-    service_description VARCHAR(255) NOT NULL,
-    service_name        VARCHAR(255) NOT NULL UNIQUE,
-    PRIMARY KEY (id)
+    rating      integer      not null,
+    id          uuid         not null,
+    reviewer_id uuid         not null,
+    review      varchar(255) not null,
+    primary key (id)
 );
 
-CREATE TABLE user_roles
+create table types_of_services
 (
-    id   UUID         NOT NULL,
-    role VARCHAR(255) NOT NULL,
-    PRIMARY KEY (id)
+    id                  uuid         not null,
+    service_description varchar(255) not null,
+    service_name        varchar(255) not null unique,
+    primary key (id)
 );
 
-CREATE TABLE users
+create table user_roles
 (
-    created_at   TIMESTAMP(6) NOT NULL,
-    id           UUID         NOT NULL,
-    role_id      UUID         NOT NULL,
-    email        VARCHAR(255) NOT NULL UNIQUE,
-    full_name    VARCHAR(255) NOT NULL,
-    password     VARCHAR(255) NOT NULL,
-    phone_number VARCHAR(255) NOT NULL UNIQUE,
-    PRIMARY KEY (id)
+    id   uuid         not null,
+    role varchar(255) not null,
+    primary key (id)
 );
 
-ALTER TABLE IF EXISTS service_reviews
-    ADD CONSTRAINT fk_service_reviews_service
-        FOREIGN KEY (service_id)
-            REFERENCES services (id);
+create table users
+(
+    created_at   timestamp(6) not null,
+    id           uuid         not null,
+    role_id      uuid         not null,
+    email        varchar(255) not null unique,
+    full_name    varchar(255) not null,
+    password     varchar(255) not null,
+    phone_number varchar(255) not null unique,
+    primary key (id)
+);
 
-ALTER TABLE IF EXISTS service_reviews
-    ADD CONSTRAINT fk_service_reviews_reviewer
-        FOREIGN KEY (reviewer_id)
-            REFERENCES users (id);
+alter table if exists locations_ids
+    add constraint FKbmmik94jsa4n8hddbpu8dyu9r
+        foreign key (location_id)
+            references locations;
 
-ALTER TABLE IF EXISTS services
-    ADD CONSTRAINT fk_services_location
-        FOREIGN KEY (location_id)
-            REFERENCES locations (id);
+alter table if exists locations_ids
+    add constraint FK4wkbrn385r1swc0vd2h7bpaip
+        foreign key (service_id)
+            references services;
 
-ALTER TABLE IF EXISTS services
-    ADD CONSTRAINT fk_services_type
-        FOREIGN KEY (type_of_service_id)
-            REFERENCES types_of_services (id);
+alter table if exists service_reviews
+    add constraint FKswvvdd1fiadm0niifdauvqi3d
+        foreign key (service_id)
+            references services;
 
-ALTER TABLE IF EXISTS services
-    ADD CONSTRAINT fk_services_provider
-        FOREIGN KEY (provider_id)
-            REFERENCES users (id);
+alter table if exists service_reviews
+    add constraint FK9f2v9fjcano3jq3vx1ods25r
+        foreign key (reviewer_id)
+            references users;
 
-ALTER TABLE IF EXISTS site_reviews
-    ADD CONSTRAINT fk_site_reviews_reviewer
-        FOREIGN KEY (reviewer_id)
-            REFERENCES users (id);
+alter table if exists services
+    add constraint FKsh4g4r4hswi8vr1i6q1chg0ar
+        foreign key (type_of_service_id)
+            references types_of_services;
 
-ALTER TABLE IF EXISTS users
-    ADD CONSTRAINT fk_users_role
-        FOREIGN KEY (role_id)
-            REFERENCES user_roles (id);
+alter table if exists services
+    add constraint FKe0b0175l27ffcser90cjoots1
+        foreign key (provider_id)
+            references users;
+
+alter table if exists site_reviews
+    add constraint FKld0gco2hhp6w8fvspei5tdse3
+        foreign key (reviewer_id)
+            references users;
+
+alter table if exists users
+    add constraint FKh555fyoyldpyaltlb7jva35j2
+        foreign key (role_id)
+            references user_roles;
 
 -- DEFAULT ROLES
 

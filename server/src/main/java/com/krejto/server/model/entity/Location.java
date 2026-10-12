@@ -16,7 +16,7 @@ public class Location {
     @Column(nullable = false)
     private String location;
 
-    @OneToMany(mappedBy = "location")
+    @ManyToMany(mappedBy = "locations")
     private List<Service> services = new ArrayList<>();
 
     public Location() {}

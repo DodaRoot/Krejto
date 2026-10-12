@@ -1,7 +1,6 @@
 package com.krejto.server.model.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -19,9 +18,9 @@ public class Service {
     @JoinColumn(name = "provider_id", nullable = false)
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "location_id", nullable = false)
-    private Location location;
+    @ManyToMany
+    @JoinTable(name = "locations_ids", joinColumns = {@JoinColumn(name = "service_id")},  inverseJoinColumns = {@JoinColumn(name = "location_id")})
+    private List<Location> locations = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "type_of_service_id", nullable = false)
@@ -40,9 +39,9 @@ public class Service {
 
     public Service() {}
 
-    public Service(User user, Location location, TypeOfService typeOfService, String description, BigDecimal price, String address) {
+    public Service(User user, List<Location> locations, TypeOfService typeOfService, String description, BigDecimal price, String address) {
         this.user = user;
-        this.location = location;
+        this.locations = locations;
         this.typeOfService = typeOfService;
         this.description = description;
         this.price = price;
@@ -61,12 +60,12 @@ public class Service {
         return user;
     }
 
-    public void setLocation(Location location) {
-        this.location = location;
+    public void setLocations(List<Location> locations) {
+        this.locations = locations;
     }
 
-    public Location getLocation() {
-        return location;
+    public List<Location> getLocations() {
+        return locations;
     }
 
     public void setTypeOfService(TypeOfService typeOfService) {

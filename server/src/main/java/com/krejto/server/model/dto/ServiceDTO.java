@@ -11,10 +11,6 @@ import java.util.List;
 import java.util.UUID;
 
 public class ServiceDTO {
-    public record GetServiceByUserIdRequest(
-            @PathVariable @NotEmpty(message = "Id cannot be empty") UUID id) {
-    }
-
     public record GetServiceRequest(
             @NotEmpty @RequestParam
             String location,
@@ -28,11 +24,11 @@ public class ServiceDTO {
             @NotNull @RequestParam
             BigDecimal priceEnd) {}
 
-    public record GetServiceResponse(UUID id, UserDTO.GetUserResponse getUserResponse, LocationDTO.GetLocationResponse getLocationResponse, TypeOfServiceDTO.GetTypeOfServiceResponse getTypeOfServiceResponse, String description, BigDecimal price, String address, List<ServiceReview> serviceReviews) {}
+    public record GetServiceResponse(UUID id, UserDTO.GetUserResponse getUserResponse, LocationDTO.GetLocationsResponse getLocationsResponse, TypeOfServiceDTO.GetTypeOfServiceResponse getTypeOfServiceResponse, String description, BigDecimal price, String address, List<ServiceReview> serviceReviews) {}
 
     public record CreateServiceRequest(
             @NotNull(message = "Location id is required")
-            UUID locationId,
+            List<UUID> locationsIds,
 
             @NotNull(message = "Type Of Service id is required")
             UUID typeOfServiceId,
@@ -46,11 +42,11 @@ public class ServiceDTO {
             String address
     ) {}
 
-    public record CreateServiceResponse(UUID id, UUID userId, UUID locationId, UUID typeOfServiceId, String description, BigDecimal price, String address) {}
+    public record CreateServiceResponse(UUID id, UUID userId, List<UUID> locationsIds, UUID typeOfServiceId, String description, BigDecimal price, String address) {}
 
     public record UpdateServiceRequest(
             @NotNull(message = "Location id is required")
-            UUID locationId,
+            List<UUID> locationsIds,
 
             @NotNull(message = "Type Of Service id is required")
             UUID typeOfServiceId,
@@ -63,5 +59,5 @@ public class ServiceDTO {
 
             String address ) {}
 
-    public record UpdateServiceResponse(UUID id, UUID userId, UUID locationId, UUID typeOfServiceId, String description, BigDecimal price, String address) {}
+    public record UpdateServiceResponse(UUID id, UUID userId, List<UUID> locationsIds, UUID typeOfServiceId, String description, BigDecimal price, String address) {}
 }

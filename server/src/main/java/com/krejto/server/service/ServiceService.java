@@ -1,5 +1,6 @@
 package com.krejto.server.service;
 
+import com.krejto.server.exceptions.LocationsOrTypesNonExistent;
 import com.krejto.server.exceptions.ServiceNotFound;
 import com.krejto.server.exceptions.UserNotFound;
 import com.krejto.server.exceptions.UserServiceExists;
@@ -46,8 +47,9 @@ public class ServiceService {
         return getServiceResponseList;
     }
 
-    public List<ServiceDTO.GetServiceResponse> getServicesByUser(ServiceDTO.GetServiceByUserIdRequest getServiceByUserIdRequest) {
-        List<Service> services = serviceRepository.findByUserId(getServiceByUserIdRequest.id());
+    public List<ServiceDTO.GetServiceResponse> getServicesByUser(Principal principal) {
+        User user = userRepository.findByEmail(principal.getName()).orElseThrow(UserNotFound::new);
+        List<Service> services = serviceRepository.findByUserId(user.getId());
 
         List<ServiceDTO.GetServiceResponse> getServiceResponseList = new ArrayList<>();
 
@@ -67,14 +69,26 @@ public class ServiceService {
             }
         });
 
-        Location location = locationRepository.findById(createServiceRequest.locationId()).orElse(null);
+        List<Location> locations = new ArrayList<>();
+        createServiceRequest.locationsIds().forEach(locationId -> {
+            Location location = locationRepository.findById(locationId).orElseThrow(() -> new LocationsOrTypesNonExistent("Location not found"));
+            locations.add(location);
+        });
+
         TypeOfService typeOfService = typeOfServiceRepository.findById(createServiceRequest.typeOfServiceId()).orElse(null);
 
-        Service service = new Service(user, location, typeOfService, createServiceRequest.description(),createServiceRequest.price(), createServiceRequest.address());
+        Service service = new Service(user, locations, typeOfService, createServiceRequest.description(),createServiceRequest.price(), createServiceRequest.address());
 
         serviceRepository.save(service);
 
-        return new ServiceDTO.CreateServiceResponse(service.getId(), service.getUser().getId(), service.getLocation().getId(), service.getTypeOfService().getId(), service.getDescription(), service.getPrice(), service.getAddress());
+        List<UUID> locationIds = new ArrayList<>();
+
+        locations.forEach(location -> {
+            UUID locationId = location.getId();
+            locationIds.add(locationId);
+        });
+
+        return new ServiceDTO.CreateServiceResponse(service.getId(), service.getUser().getId(), locationIds, service.getTypeOfService().getId(), service.getDescription(), service.getPrice(), service.getAddress());
     }
 
     @Transactional
@@ -87,13 +101,25 @@ public class ServiceService {
             throw new ServiceNotFound("User does not own this service");
         }
 
-        service.setLocation(locationRepository.findById(updateServiceRequest.locationId()).orElse(null));
+        List<Location> locations = new ArrayList<>();
+        updateServiceRequest.locationsIds().forEach(locationId -> {
+            Location location = locationRepository.findById(locationId).orElse(null);
+            locations.add(location);
+        });
+
+        service.setLocations(locations);
         service.setTypeOfService(typeOfServiceRepository.findById(updateServiceRequest.typeOfServiceId()).orElse(null));
         service.setDescription(updateServiceRequest.description());
         service.setPrice(updateServiceRequest.price());
         service.setAddress(updateServiceRequest.address());
 
-        return new ServiceDTO.UpdateServiceResponse(service.getId(), service.getUser().getId(), service.getLocation().getId(), service.getTypeOfService().getId(), service.getDescription(), service.getPrice(), service.getAddress());
+        List<UUID> locationIds = new ArrayList<>();
+        locations.forEach(location -> {
+            UUID locationId = location.getId();
+            locationIds.add(locationId);
+        });
+
+        return new ServiceDTO.UpdateServiceResponse(service.getId(), service.getUser().getId(), locationIds, service.getTypeOfService().getId(), service.getDescription(), service.getPrice(), service.getAddress());
     }
 
     public void deleteService(UUID id, Principal principal) {
@@ -110,11 +136,18 @@ public class ServiceService {
 
     private static ServiceDTO.@NonNull GetServiceResponse getGetServiceResponse(Service service) {
         User user = service.getUser();
-        Location location = service.getLocation();
+        List<Location> locations = service.getLocations();
         TypeOfService typeOfService = service.getTypeOfService();
         UserDTO.GetUserResponse getUserResponse = new UserDTO.GetUserResponse(user.getId(), user.getFullName(), user.getEmail(), user.getPhoneNumber(), user.getCreatedAt());
-        LocationDTO.GetLocationResponse getLocationResponse = new LocationDTO.GetLocationResponse(location.getId(), location.getLocation());
+        List<LocationDTO.GetLocationResponse> getLocationResponseList = new ArrayList<>();
+        locations.forEach(location -> {
+            LocationDTO.GetLocationResponse getLocationResponse = new LocationDTO.GetLocationResponse(location.getId(), location.getLocation());
+            getLocationResponseList.add(getLocationResponse);
+        });
+
+        LocationDTO.GetLocationsResponse getLocationsResponse = new LocationDTO.GetLocationsResponse(getLocationResponseList);
+
         TypeOfServiceDTO.GetTypeOfServiceResponse getTypeOfServiceResponse = new TypeOfServiceDTO.GetTypeOfServiceResponse(typeOfService.getId(), typeOfService.getServiceName(), typeOfService.getServiceDescription());
-        return new ServiceDTO.GetServiceResponse(service.getId(), getUserResponse, getLocationResponse, getTypeOfServiceResponse, service.getDescription(), service.getPrice(), service.getAddress(), service.getServiceReviews());
+        return new ServiceDTO.GetServiceResponse(service.getId(), getUserResponse, getLocationsResponse, getTypeOfServiceResponse, service.getDescription(), service.getPrice(), service.getAddress(), service.getServiceReviews());
     }
 }
