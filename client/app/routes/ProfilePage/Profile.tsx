@@ -1,7 +1,10 @@
 import { useState, type FormEvent } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { AsYouType, parsePhoneNumberFromString } from "libphonenumber-js";
+import { Link, useNavigate } from "react-router";
 
+import deleteMyServices from "~/apis/deleteMyServices";
 import profile from "../../assets/images/Profile.svg";
 import { Button } from "../../components/ui/button";
 import { Avatar, AvatarImage } from "../../components/ui/avatar";
@@ -17,6 +20,9 @@ import type {
   ProfileHeaderProps,
   ServiceCardProps,
 } from "./types";
+import { Spinner } from "~/components/ui/spinner";
+import { useGetMyServicesQuery } from "~/hooks/queries/useGetMyServicesQuery";
+import { useProfileDataQuery } from "~/hooks/queries/useProfileDataQuery";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -26,11 +32,6 @@ type ProfileFormErrors = {
   email?: string;
   password?: string;
 };
-
-import { useProfileDataQuery } from "~/hooks/queries/useProfileDataQuery";
-import { useGetMyServicesQuery } from "~/hooks/queries/useGetMyServicesQuery";
-import { Link, useNavigate } from "react-router";
-import { Spinner } from "~/components/ui/spinner";
 
 function formatPhoneNumberInput(value: string) {
   if (!value) {
@@ -279,6 +280,19 @@ function AddServiceCard() {
 function ServiceCard({ service }: ServiceCardProps) {
   const [t] = useTranslation();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const deleteServiceMutation = deleteMyServices();
+
+  const handleDelete = () => {
+    deleteServiceMutation.mutate(
+      { id: service.id },
+      {
+        onSuccess: () => {
+          void queryClient.invalidateQueries({ queryKey: ["getMyServices"] });
+        },
+      },
+    );
+  };
 
   return (
     <div className="flex flex-col gap-3 rounded-lg bg-background p-4 shadow">
@@ -312,10 +326,28 @@ function ServiceCard({ service }: ServiceCardProps) {
         >
           {t("Edit")}
         </Button>
-        <Button type="button" variant="ghost" size="sm">
-          {t("Delete")}
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          disabled={deleteServiceMutation.isPending}
+          onClick={handleDelete}
+        >
+          {deleteServiceMutation.isPending ? (
+            <>
+              <Spinner className="size-4" />
+              {t("Loading...")}
+            </>
+          ) : (
+            t("Delete")
+          )}
         </Button>
       </div>
+      {deleteServiceMutation.error ? (
+        <p className="text-sm text-destructive" role="alert">
+          {t("Unable to delete service. Please try again.")}
+        </p>
+      ) : null}
     </div>
   );
 }

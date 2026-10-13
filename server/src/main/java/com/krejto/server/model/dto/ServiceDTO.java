@@ -3,7 +3,6 @@ package com.krejto.server.model.dto;
 import com.krejto.server.model.entity.ServiceReview;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;

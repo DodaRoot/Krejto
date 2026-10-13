@@ -1,9 +1,11 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState } from "react";
 import { ArrowLeft, ImagePlus, MapPin } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { Link, useLocation, useParams } from "react-router";
+import { Link, useLocation, useNavigate, useParams } from "react-router";
 
 import type { GetMyServicesResponse } from "~/apis/getMyServices/types";
+import patchMyServices from "~/apis/patchMyServices";
+import useSaveMyService from "~/apis/postMyServices";
 import { Button } from "~/components/ui/button";
 import {
   Combobox,
@@ -26,68 +28,83 @@ import { Spinner } from "~/components/ui/spinner";
 import { Textarea } from "~/components/ui/textarea";
 import { useLocationsAndTypesQuery } from "~/hooks/queries/useLocationsAndTypesQuery";
 
-const PHOTO_SLOTS = [0, 1, 2] as const;
+import type {
+  ServiceFormErrorKey,
+  ServiceFormErrors,
+  ServiceFormValues,
+} from "./types";
+import { validateServiceForm } from "./validation";
 
-type ServiceFormErrors = {
-  serviceType?: string;
-  price?: string;
-  description?: string;
-  locations?: string;
-};
+const PHOTO_SLOTS = [0, 1, 2] as const;
 
 export default function MyService() {
   const [t] = useTranslation();
+  const navigate = useNavigate();
   const { id } = useParams();
   const { state: locationState } = useLocation();
-  const state = locationState as Partial<GetMyServicesResponse> | null;
-  const { data: options, isFetching } = useLocationsAndTypesQuery();
+  const service = locationState as Partial<GetMyServicesResponse> | null;
+  const { data: options, isLoading } = useLocationsAndTypesQuery();
   const [serviceType, setServiceType] = useState(
-    state?.getTypeOfServiceResponse?.serviceName ?? "",
+    service?.getTypeOfServiceResponse?.serviceName ?? "",
   );
+  const createServiceMutation = useSaveMyService();
+  const updateServiceMutation = patchMyServices();
+  const isEditing = Boolean(id);
+  const activeMutation = isEditing
+    ? updateServiceMutation
+    : createServiceMutation;
   const [errors, setErrors] = useState<ServiceFormErrors>({});
 
-  const isEditing = Boolean(id);
+  useEffect(() => {
+    setServiceType(service?.getTypeOfServiceResponse?.serviceName ?? "");
+    setErrors({});
+  }, [id, service?.getTypeOfServiceResponse?.serviceName]);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: any) => {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
-    const nextErrors: ServiceFormErrors = {};
-    const submittedServiceType =
-      serviceType || String(formData.get("serviceType") ?? "").trim();
-    const price = String(formData.get("price") ?? "").trim();
-    const description = String(formData.get("description") ?? "").trim();
-    const hasLocation = formData
+    const serviceTypeOption = options?.typeOfServiceDTO.find(
+      ({ serviceName }) => serviceName === serviceType,
+    );
+    const locationIds = formData
       .getAll("locations")
-      .some((location) => String(location).trim().length > 0);
-
-    if (!submittedServiceType) {
-      nextErrors.serviceType = t("Type of service is required.");
-    }
-    if (!price) {
-      nextErrors.price = t("Price is required.");
-    } else if (
-      !Number.isFinite(Number(price)) ||
-      Number(price) < 0 ||
-      !Number.isInteger(Number(price))
-    ) {
-      nextErrors.price = t("Enter a valid non-negative price.");
-    }
-    if (!description) {
-      nextErrors.description = t("Description is required.");
-    }
-    if (!hasLocation) {
-      nextErrors.locations = t("Select at least one location.");
-    }
-
+      .filter((value): value is string => typeof value === "string");
+    const values: ServiceFormValues = {
+      serviceTypeId: serviceTypeOption?.id,
+      price: String(formData.get("price") ?? ""),
+      description: String(formData.get("description") ?? ""),
+      locationIds,
+    };
+    const nextErrors = validateServiceForm(values, t);
     setErrors(nextErrors);
+
+    if (!serviceTypeOption || Object.keys(nextErrors).length > 0) {
+      return;
+    }
+
+    const serviceData = {
+      locationsIds: locationIds,
+      typeOfServiceId: serviceTypeOption.id,
+      description: values.description.trim(),
+      price: Number(values.price),
+      address: String(formData.get("serviceAddress") ?? "").trim(),
+    };
+    const mutationOptions = { onSuccess: () => navigate("/profile") };
+
+    if (id) {
+      updateServiceMutation.mutate({ id, ...serviceData }, mutationOptions);
+      return;
+    }
+
+    createServiceMutation.mutate(serviceData, mutationOptions);
   };
 
-  const clearError = (field: keyof ServiceFormErrors) => {
+  const clearError = (field: ServiceFormErrorKey) => {
     setErrors((currentErrors) => ({ ...currentErrors, [field]: undefined }));
   };
 
-  if (isFetching) {
+  if (isLoading) {
     return (
       <div className="w-full h-96 flex justify-center items-center">
         <Spinner className="size-10" />
@@ -116,7 +133,7 @@ export default function MyService() {
       </header>
 
       <form
-        key={`${id ?? "new"}`}
+        key={id ?? "new"}
         onSubmit={handleSubmit}
         noValidate
         className="space-y-7 rounded-lg bg-background p-5 shadow md:p-7"
@@ -168,9 +185,7 @@ export default function MyService() {
                     items={options.typeOfServiceDTO.map(
                       ({ serviceName }) => serviceName,
                     )}
-                    defaultValue={
-                      state?.getTypeOfServiceResponse?.serviceName ?? null
-                    }
+                    value={serviceType || null}
                     onValueChange={(value) => {
                       setServiceType(value ?? "");
                       clearError("serviceType");
@@ -196,14 +211,9 @@ export default function MyService() {
                     </ComboboxContent>
                   </Combobox>
                 ) : (
-                  <Input
-                    id="service-type"
-                    name="serviceType"
-                    defaultValue={state?.getTypeOfServiceResponse?.serviceName}
-                    placeholder={t("Enter a service type")}
-                    onChange={() => clearError("serviceType")}
-                    aria-invalid={Boolean(errors.serviceType)}
-                  />
+                  <p className="text-sm text-muted-foreground">
+                    {t("No service types found")}
+                  </p>
                 )}
                 <FieldError>{errors.serviceType}</FieldError>
               </Field>
@@ -217,7 +227,7 @@ export default function MyService() {
                     type="number"
                     min="0"
                     step="1"
-                    defaultValue={state?.price}
+                    defaultValue={service?.price}
                     placeholder="00"
                     className="pr-10"
                     onChange={() => clearError("price")}
@@ -238,7 +248,7 @@ export default function MyService() {
               <Textarea
                 id="service-description"
                 name="description"
-                defaultValue={state?.description}
+                defaultValue={service?.description}
                 placeholder={t("Describe the service you offer")}
                 className="min-h-32 resize-y"
                 onChange={() => clearError("description")}
@@ -252,25 +262,24 @@ export default function MyService() {
               <div className="max-h-52 overflow-y-auto rounded-md border border-input p-3">
                 {options?.locationDTO.length ? (
                   <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                    {options.locationDTO.map(({ location }, index) => (
+                    {options.locationDTO.map(({ id: locationId, location }) => (
                       <Label
-                        key={location}
-                        htmlFor={`service-location-${index}`}
+                        key={locationId}
+                        htmlFor={`service-location-${locationId}`}
                         className="flex cursor-pointer items-center gap-2 rounded-sm px-2 py-1.5 text-sm hover:bg-muted"
                       >
                         <input
-                          id={`service-location-${index}`}
+                          id={`service-location-${locationId}`}
                           type="checkbox"
                           name="locations"
-                          value={location}
-                          defaultChecked={
-                            state?.getLocationsResponses?.some(
-                              (serviceLocation) =>
-                                serviceLocation.location === location,
-                            ) ?? false
-                          }
+                          value={locationId}
+                          defaultChecked={service?.getLocationsResponses?.some(
+                            ({ id: selectedLocationId }) =>
+                              selectedLocationId === locationId,
+                          )}
                           className="size-4 accent-primary"
                           onChange={() => clearError("locations")}
+                          aria-invalid={Boolean(errors.locations)}
                         />
                         <MapPin
                           className="size-4 shrink-0 text-muted-foreground"
@@ -281,13 +290,9 @@ export default function MyService() {
                     ))}
                   </div>
                 ) : (
-                  <Input
-                    id="service-location"
-                    name="locations"
-                    placeholder={t("Enter a location")}
-                    onChange={() => clearError("locations")}
-                    aria-invalid={Boolean(errors.locations)}
-                  />
+                  <p className="text-sm text-muted-foreground">
+                    {t("Locations are unavailable.")}
+                  </p>
                 )}
               </div>
               <FieldError>{errors.locations}</FieldError>
@@ -300,16 +305,32 @@ export default function MyService() {
               </FieldLabel>
               <Input
                 id="service-address"
-                defaultValue={state?.address}
+                name="serviceAddress"
+                defaultValue={service?.address}
                 placeholder={t("Street address or meeting point")}
               />
             </Field>
           </FieldGroup>
         </FieldSet>
 
+        {activeMutation.error ? (
+          <p className="text-sm text-destructive" role="alert">
+            {t("Unable to save service. Please try again.")}
+          </p>
+        ) : null}
+
         <div className="flex flex-col gap-3 border-t pt-5 sm:flex-row sm:justify-start">
-          <Button type="submit">
-            {isEditing ? t("Save changes") : t("Publish service")}
+          <Button type="submit" disabled={activeMutation.isPending}>
+            {activeMutation.isPending ? (
+              <>
+                <Spinner className="size-4" />
+                {t("Loading...")}
+              </>
+            ) : isEditing ? (
+              t("Save changes")
+            ) : (
+              t("Publish service")
+            )}
           </Button>
           <Button asChild variant="outline">
             <Link to="/profile">{t("Cancel")}</Link>
