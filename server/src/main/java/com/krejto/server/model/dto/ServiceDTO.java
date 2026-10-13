@@ -24,7 +24,7 @@ public class ServiceDTO {
             @NotNull @RequestParam
             BigDecimal priceEnd) {}
 
-    public record GetServiceResponse(UUID id, UserDTO.GetUserResponse getUserResponse, LocationDTO.GetLocationsResponse getLocationsResponse, TypeOfServiceDTO.GetTypeOfServiceResponse getTypeOfServiceResponse, String description, BigDecimal price, String address, List<ServiceReview> serviceReviews) {}
+    public record GetServiceResponse(UUID id, UserDTO.GetUserResponse getUserResponse, List<LocationDTO.GetLocationResponse> getLocationsResponses, TypeOfServiceDTO.GetTypeOfServiceResponse getTypeOfServiceResponse, String description, BigDecimal price, String address, List<ServiceReview> serviceReviews) {}
 
     public record CreateServiceRequest(
             @NotNull(message = "Location id is required")

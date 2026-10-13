@@ -16,9 +16,10 @@ export interface ServiceCardProps {
 }
 
 export interface Service {
-  getLocationResponse: {
+  id: string;
+  getLocationsResponses: {
     location: string;
-  };
+  }[];
   getTypeOfServiceResponse: {
     serviceName: string;
   };

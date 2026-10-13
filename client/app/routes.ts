@@ -9,6 +9,7 @@ export default [
   layout("routes/IndexPage/Index.tsx", [
     index("routes/LandingPage/Landing.tsx"),
     route("profile", "routes/ProfilePage/Profile.tsx"),
+    route("myservice/:id?", "routes/MyServicePage/MyService.tsx"),
     route("liked", "routes/LikedPage/Liked.tsx"),
     route("messages", "routes/MessagesPage/Messages.tsx"),
     route("search", "routes/SearchPage/SearchPage.tsx"),

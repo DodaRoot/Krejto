@@ -30,7 +30,7 @@ type ProfileFormErrors = {
 
 import { useProfileDataQuery } from "~/hooks/queries/useProfileDataQuery";
 import { useGetMyServicesQuery } from "~/hooks/queries/useGetMyServicesQuery";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { Spinner } from "~/components/ui/spinner";
 
 function formatPhoneNumberInput(value: string) {
@@ -264,8 +264,8 @@ function AddServiceCard() {
   const [t] = useTranslation();
 
   return (
-    <button
-      type="button"
+    <Link
+      to="/myservice"
       className="flex flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed border-muted-foreground/30 bg-background p-8 transition-colors hover:border-muted-foreground/60"
     >
       <div className="text-3xl">+</div>
@@ -273,20 +273,25 @@ function AddServiceCard() {
       <div className="text-xs text-muted-foreground">
         {t("Click to offer a new service")}
       </div>
-    </button>
+    </Link>
   );
 }
 
 function ServiceCard({ service }: ServiceCardProps) {
   const [t] = useTranslation();
+  const navigate = useNavigate();
 
   return (
     <div className="flex flex-col gap-3 rounded-lg bg-background p-4 shadow">
-      <div>
+      <div className="overflow-hidden">
         <p className="font-bold">
           {service.getTypeOfServiceResponse.serviceName}
         </p>
-        <p className="text-sm">{service.getLocationResponse.location}</p>
+        <div className="flex">
+          {service.getLocationsResponses.map((e) => (
+            <p className="text-sm mr-2">{e.location}</p>
+          ))}
+        </div>
       </div>
 
       <p className="text-sm text-muted-foreground">{service.description}</p>
@@ -296,7 +301,16 @@ function ServiceCard({ service }: ServiceCardProps) {
       </div>
 
       <div className="flex gap-2 pt-2">
-        <Button type="button" variant="outline" size="sm">
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() =>
+            navigate(`/myservice/${encodeURIComponent(service?.id)}`, {
+              state: service,
+            })
+          }
+        >
           {t("Edit")}
         </Button>
         <Button type="button" variant="ghost" size="sm">

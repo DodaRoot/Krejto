@@ -1,7 +1,8 @@
 export interface GetMyServicesResponse {
-  getLocationResponse: {
+  id: string;
+  getLocationsResponses: {
     location: string;
-  };
+  }[];
   getTypeOfServiceResponse: {
     serviceName: string;
   };

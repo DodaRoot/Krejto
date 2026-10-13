@@ -7,7 +7,6 @@ import java.util.UUID;
 
 public class LocationDTO {
     public record GetLocationResponse (UUID id, String location) {}
-    public record GetLocationsResponse (List<GetLocationResponse> getLocationResponse) {}
 
     public record CreateLocationRequest (@NotEmpty String location) {}
     public record CreateLocationResponse (UUID id, String location) {}

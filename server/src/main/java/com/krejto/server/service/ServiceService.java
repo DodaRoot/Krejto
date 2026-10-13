@@ -145,9 +145,7 @@ public class ServiceService {
             getLocationResponseList.add(getLocationResponse);
         });
 
-        LocationDTO.GetLocationsResponse getLocationsResponse = new LocationDTO.GetLocationsResponse(getLocationResponseList);
-
         TypeOfServiceDTO.GetTypeOfServiceResponse getTypeOfServiceResponse = new TypeOfServiceDTO.GetTypeOfServiceResponse(typeOfService.getId(), typeOfService.getServiceName(), typeOfService.getServiceDescription());
-        return new ServiceDTO.GetServiceResponse(service.getId(), getUserResponse, getLocationsResponse, getTypeOfServiceResponse, service.getDescription(), service.getPrice(), service.getAddress(), service.getServiceReviews());
+        return new ServiceDTO.GetServiceResponse(service.getId(), getUserResponse, getLocationResponseList, getTypeOfServiceResponse, service.getDescription(), service.getPrice(), service.getAddress(), service.getServiceReviews());
     }
 }
