@@ -12,7 +12,6 @@ import {
   FieldSet,
 } from "../../components/ui/field";
 import { Input } from "../../components/ui/input";
-import { getMockServices } from "../../mock/index";
 import type {
   ProfileFormProps,
   ProfileHeaderProps,
@@ -347,7 +346,7 @@ function ServicesSection() {
 }
 
 export default function Profile() {
-  const { data } = useProfileDataQuery();
+  const { data, isFetching } = useProfileDataQuery();
 
   const navigate = useNavigate();
 
@@ -368,7 +367,7 @@ export default function Profile() {
     }).format(date);
   };
 
-  if (useProfileDataQuery().isFetching) {
+  if (isFetching) {
     return (
       <div className="w-full h-96 flex justify-center items-center">
         <Spinner className="size-10" />
