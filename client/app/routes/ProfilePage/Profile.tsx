@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { AsYouType, parsePhoneNumberFromString } from "libphonenumber-js";
@@ -137,7 +137,7 @@ function ProfileForm({ fullName, number, email }: ProfileFormProps) {
     setErrors((previous) => ({ ...previous, [field]: currentError }));
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: any) => {
     event.preventDefault();
 
     const nextErrors = validateProfileForm(formData, t);

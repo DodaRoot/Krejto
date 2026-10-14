@@ -16,6 +16,7 @@ export default [
     route("itemPage/:id", "routes/ItemPage/ItemPage.tsx"),
     route("preferences", "routes/PreferencesPage/Preferences.tsx"),
     route("loginOrRegister", "routes/LoginRegisterPage/LoginRegister.tsx"),
+    route("review", "routes/LeaveReviewPage/LeaveReview.tsx"),
   ]),
   route("*", "routes/NotFoundPage/NotFound.tsx"),
 ] satisfies RouteConfig;
