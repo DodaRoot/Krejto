@@ -37,6 +37,8 @@ import {
 
 import { useTopTypesOfServiceQuery } from "../../hooks/queries/useTopTypesOfServiceQuery";
 import { useSiteReviewsQuery } from "../../hooks/queries/useSiteReviewsQuery";
+import { Link } from "react-router";
+import { useEffect, useState } from "react";
 
 const CAROUSEL_ITEMS = [bannerOne, bannerTwo, bannerThree, bannerFour];
 
@@ -133,10 +135,15 @@ function ReviewCard({ name, comment, stars }: ReviewCardProps) {
 }
 
 export default function Landing() {
+  const [t] = useTranslation();
   const { data: topTypesOfServiceData } = useTopTypesOfServiceQuery();
   const { data: siteReviewsData } = useSiteReviewsQuery();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const [t] = useTranslation();
+  useEffect(() => {
+    setIsLoggedIn(!!localStorage.getItem("token"));
+  }, []);
+
   return (
     <div className="mt-1 flex flex-col gap-10 justify-center items-center">
       <section className="w-full py-8">
@@ -231,37 +238,48 @@ export default function Landing() {
           </CardContent>
         </Card>
       </section>
+      <section className="review section w-full">
+        <Carousel
+          plugins={[
+            Autoplay({
+              delay: 1500,
+            }),
+          ]}
+          opts={{
+            align: "center",
+            loop: true,
+          }}
+          className="max-w-xs sm:max-w-md lg:max-w-5xl overflow-clip rounded-xl"
+        >
+          <CarouselContent className="flex gap-2">
+            {siteReviewsData?.map((review) => (
+              <CarouselItem
+                key={review.reviewId}
+                className="basis-full sm:basis-2/3 lg:basis-1/3"
+              >
+                <ReviewCard
+                  name={review.userDTO.fullName}
+                  comment={review.reviewMessage}
+                  stars={review.rating}
+                />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
 
-      <Carousel
-        plugins={[
-          Autoplay({
-            delay: 1500,
-          }),
-        ]}
-        opts={{
-          align: "center",
-          loop: true,
-        }}
-        className="max-w-xs sm:max-w-md lg:max-w-5xl overflow-clip rounded-xl"
-      >
-        <CarouselContent className="flex gap-2">
-          {siteReviewsData?.map((review) => (
-            <CarouselItem
-              key={review.reviewId}
-              className="basis-full sm:basis-2/3 lg:basis-1/3"
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
+        {isLoggedIn ? (
+          <div className="flex justify-start">
+            <Link
+              className="items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+              to={"/review"}
             >
-              <ReviewCard
-                name={review.userDTO.fullName}
-                comment={review.reviewMessage}
-                stars={review.rating}
-              />
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-
-        <CarouselPrevious />
-        <CarouselNext />
-      </Carousel>
+              {t("Leave a review")}
+            </Link>
+          </div>
+        ) : null}
+      </section>
     </div>
   );
 }

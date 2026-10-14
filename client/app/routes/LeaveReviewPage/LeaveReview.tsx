@@ -50,7 +50,7 @@ export default function LeaveReview() {
       onSubmit={handleSubmit}
       className="w-full flex justify-center items-center pt-10 pb-4"
     >
-      <Card>
+      <Card className="w-1/2">
         <CardHeader>
           <CardTitle>
             <h1 className="text-xl font-semibold tracking-tight sm:text-3xl">
@@ -108,8 +108,8 @@ export default function LeaveReview() {
             <Label htmlFor="review-text" className="text-base">
               {t("Write your review")}
             </Label>
-            <p className="text-sm text-muted-foreground">
-              {t("What did you like, and what could we do better?")}
+            <p className="text-xs leading-5 text-muted-foreground">
+              {t("Please keep your review respectful and helpful.")}
             </p>
             <Textarea
               id="review-text"
@@ -135,37 +135,32 @@ export default function LeaveReview() {
           </div>
         </CardContent>
 
-        <CardFooter className="flex-col gap-4 border-t pt-6 sm:flex-row sm:justify-between">
-          <p className="text-xs leading-5 text-muted-foreground">
-            {t("Please keep your review respectful and helpful.")}
-          </p>
-          <div className="flex w-full flex-col gap-2 sm:w-auto sm:items-end">
+        <CardFooter className="flex gap-4 border-t pt-6 sm:flex-row sm:justify-between">
+          <div className="flex w-full flex-col gap-2 sm:w-auto">
             <Button
               type="submit"
               size="lg"
-              className="w-full sm:w-auto"
+              className="w-min"
               disabled={reviewMutation.isPending}
             >
               {reviewMutation.isPending
                 ? t("Submitting...")
                 : t("Confirm review")}
             </Button>
+            {reviewMutation.isError && (
+              <FieldError>
+                {t("Unable to submit your review. Please try again.")}
+              </FieldError>
+            )}
+            {submitted && (
+              <p
+                role="status"
+                className="text-sm text-muted-foreground sm:text-right"
+              >
+                {t("Review submitted.")}
+              </p>
+            )}
           </div>
-        </CardFooter>
-        <CardFooter>
-          {reviewMutation.isError && (
-            <FieldError>
-              {t("Unable to submit your review. Please try again.")}
-            </FieldError>
-          )}
-          {submitted && (
-            <p
-              role="status"
-              className="text-sm text-muted-foreground sm:text-right"
-            >
-              {t("Review submitted.")}
-            </p>
-          )}
         </CardFooter>
       </Card>
     </form>
