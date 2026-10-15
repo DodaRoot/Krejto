@@ -19,10 +19,10 @@ import { Slider } from "../../components/ui/slider";
 import { getMockServices } from "../../mock";
 import SearchCombobox from "../../components/feature/SearchBar/SearchCombobox";
 import type { PriceRange } from "./types";
-
-const typeOfProvider = ["Kompani", "Individ"];
+import { useSearchParams } from "react-router";
 
 export default function SearchPage() {
+  const [searchParams] = useSearchParams();
   const [value, setValue] = useState<PriceRange>([0, 100]);
   const [t] = useTranslation();
 
@@ -38,7 +38,7 @@ export default function SearchPage() {
               {getMockServices.length} {t("Results")}
             </p>
             <p className="text-sm text-muted-foreground">
-              {t("Showing results for")} {" Electricist"}
+              {t("Showing results for")} {searchParams.get("typeOfService")}
             </p>
           </div>
         </div>
@@ -79,7 +79,7 @@ export default function SearchPage() {
               <Label className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
                 {t("Sort by")}
               </Label>
-              <SearchCombobox items={[]} placeholder="" />
+              <SearchCombobox name="sort-by" items={[]} placeholder="" />
             </div>
             <div className="space-y-2 flex gap-4">
               <Button variant="outline">{t("Filter")}</Button>

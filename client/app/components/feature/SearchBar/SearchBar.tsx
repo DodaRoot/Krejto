@@ -1,4 +1,4 @@
-import { Form } from "react-router";
+import { Form, useNavigate, useSearchParams } from "react-router";
 import { Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -19,16 +19,40 @@ export default function SearchBar() {
 
   const [t] = useTranslation();
 
+  const navigate = useNavigate();
+
+  function onFormSubmit(e: any) {
+    e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
+
+    const nextSearchParams = new URLSearchParams();
+
+    nextSearchParams.set(
+      "description",
+      String(formData.get("description") ?? ""),
+    );
+    nextSearchParams.set(
+      "typeOfService",
+      String(formData.get("typeOfService") ?? ""),
+    );
+    nextSearchParams.set("location", String(formData.get("location") ?? ""));
+
+    navigate({
+      pathname: "/search",
+      search: `?${nextSearchParams.toString()}`,
+    });
+  }
+
   return (
     <Form
-      method="get"
-      action="/search"
+      onSubmit={onFormSubmit}
       className="searchBar flex flex-col gap-3 md:flex-row w-full"
     >
       <InputGroup className="min-w-1/5">
         <InputGroupInput
           className="appearance-none "
-          name="query"
+          name="description"
           placeholder={t("Search placeholder")}
           autoComplete="off"
         />
@@ -41,11 +65,13 @@ export default function SearchBar() {
       </InputGroup>
 
       <SearchCombobox
+        name="typeOfService"
         items={locationsDTO?.map((location) => location.location) || []}
         placeholder={t("Select a category")}
       />
 
       <SearchCombobox
+        name="location"
         items={typesOfServiceDTO?.map((service) => service.serviceName) || []}
         placeholder={t("Select a city")}
       />

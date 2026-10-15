@@ -13,12 +13,17 @@ import type { SearchComboboxProps } from "./types";
 export default function SearchCombobox({
   items,
   placeholder,
+  name,
 }: SearchComboboxProps) {
   const [t] = useTranslation();
 
   return (
     <Combobox items={items}>
-      <ComboboxInput placeholder={placeholder} className="min-w-1/5" />
+      <ComboboxInput
+        placeholder={placeholder}
+        name={name}
+        className="min-w-1/5"
+      />
       <ComboboxContent>
         <ComboboxEmpty>{t("No items found")}</ComboboxEmpty>
         <ComboboxList>

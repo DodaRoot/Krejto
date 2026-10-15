@@ -28,18 +28,18 @@ public class ServiceService {
     private final UserRepository userRepository;
     private final LocationRepository locationRepository;
     private final TypeOfServiceRepository typeOfServiceRepository;
+    private final ServiceFilter serviceFilter;
 
-    public ServiceService(ServiceRepository serviceRepository, UserRepository userRepository, LocationRepository locationRepository, TypeOfServiceRepository typeOfServiceRepository) {
+    public ServiceService(ServiceRepository serviceRepository, UserRepository userRepository, LocationRepository locationRepository, TypeOfServiceRepository typeOfServiceRepository, ServiceFilter serviceFilter) {
         this.serviceRepository = serviceRepository;
         this.userRepository = userRepository;
         this.locationRepository = locationRepository;
         this.typeOfServiceRepository = typeOfServiceRepository;
+        this.serviceFilter = serviceFilter;
     }
 
     public List<ServiceDTO.GetServiceResponse> getServicesByQuery(ServiceDTO.GetServiceRequest getServiceRequest) {
-        Specification<Service> specification = Specification.where(ServiceSpecifications.findByLocation(getServiceRequest.location())).and(ServiceSpecifications.findByTypeOfService(getServiceRequest.typeOfService())).and(ServiceSpecifications.findByPrice(getServiceRequest.priceStart(), getServiceRequest.priceEnd()));
-
-        List<Service> services = serviceRepository.findAll(specification);
+        List<Service> services = serviceFilter.findByFilter(getServiceRequest.description(), getServiceRequest.typeOfService(), getServiceRequest.location(), getServiceRequest.priceStart(), getServiceRequest.priceEnd());
         List<ServiceDTO.GetServiceResponse> getServiceResponseList = new ArrayList<>();
 
         services.forEach(service -> getServiceResponseList.add(getGetServiceResponse(service)));

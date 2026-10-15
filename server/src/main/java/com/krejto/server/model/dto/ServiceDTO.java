@@ -11,16 +11,15 @@ import java.util.UUID;
 
 public class ServiceDTO {
     public record GetServiceRequest(
-            @NotEmpty @RequestParam
+            @RequestParam(required = false)
+            String description,
+            @RequestParam(required = false)
             String location,
-
-            @NotEmpty @RequestParam
+            @RequestParam(required = false)
             String typeOfService,
-
-            @NotNull @RequestParam
+            @RequestParam(required = false)
             BigDecimal priceStart,
-
-            @NotNull @RequestParam
+            @RequestParam(required = false)
             BigDecimal priceEnd) {}
 
     public record GetServiceResponse(UUID id, UserDTO.GetUserResponse getUserResponse, List<LocationDTO.GetLocationResponse> getLocationsResponses, TypeOfServiceDTO.GetTypeOfServiceResponse getTypeOfServiceResponse, String description, BigDecimal price, String address, List<ServiceReview> serviceReviews) {}
