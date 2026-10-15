@@ -27,21 +27,28 @@ export default function SearchBar() {
     const formData = new FormData(e.currentTarget);
 
     const nextSearchParams = new URLSearchParams();
+    const description = String(formData.get("description"));
+    const typeOfService = String(formData.get("typeOfService"));
+    const location = String(formData.get("location"));
 
-    nextSearchParams.set(
-      "description",
-      String(formData.get("description") ?? ""),
-    );
-    nextSearchParams.set(
-      "typeOfService",
-      String(formData.get("typeOfService") ?? ""),
-    );
-    nextSearchParams.set("location", String(formData.get("location") ?? ""));
+    description ? nextSearchParams.set("description", description) : false;
+    typeOfService
+      ? nextSearchParams.set("typeOfService", typeOfService)
+      : false;
+    location ? nextSearchParams.set("location", location) : false;
 
-    navigate({
-      pathname: "/search",
-      search: `?${nextSearchParams.toString()}`,
-    });
+    navigate(
+      {
+        pathname: "/search",
+        search: `?${nextSearchParams.toString()}`,
+      },
+      {
+        state: {
+          locationsDTO: locationsDTO,
+          typesOfServiceDTO: typesOfServiceDTO,
+        },
+      },
+    );
   }
 
   return (
@@ -65,15 +72,15 @@ export default function SearchBar() {
       </InputGroup>
 
       <SearchCombobox
-        name="typeOfService"
+        name="location"
         items={locationsDTO?.map((location) => location.location) || []}
-        placeholder={t("Select a category")}
+        placeholder={t("Select a city")}
       />
 
       <SearchCombobox
-        name="location"
+        name="typeOfService"
         items={typesOfServiceDTO?.map((service) => service.serviceName) || []}
-        placeholder={t("Select a city")}
+        placeholder={t("Select a category")}
       />
 
       <Button type="submit">{t("Search")}</Button>
