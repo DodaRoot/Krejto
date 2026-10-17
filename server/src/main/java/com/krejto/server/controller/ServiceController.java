@@ -3,6 +3,7 @@ package com.krejto.server.controller;
 import com.krejto.server.model.dto.ServiceDTO;
 import com.krejto.server.service.ServiceService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +22,8 @@ public class ServiceController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ServiceDTO.GetServiceResponse>> getServicesByQuery(@Valid ServiceDTO.GetServiceRequest getServiceRequest) {
-        List<ServiceDTO.GetServiceResponse> getServiceResponses = serviceService.getServicesByQuery(getServiceRequest);
+    public ResponseEntity<Page<ServiceDTO.GetServiceResponse>> getServicesByQuery(@Valid ServiceDTO.GetServiceRequest getServiceRequest) {
+        Page<ServiceDTO.GetServiceResponse> getServiceResponses = serviceService.getServicesByQuery(getServiceRequest);
 
         return ResponseEntity.status(HttpStatus.OK).body(getServiceResponses);
     }

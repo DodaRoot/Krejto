@@ -7,6 +7,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 import jakarta.persistence.criteria.Predicate;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -20,12 +21,15 @@ public class ServiceFilter {
         this.entityManager = entityManager;
     }
 
-    public List<Service> findByFilter (
+    public Page<Service> findByFilter (
             String description,
             String typeOfService,
             String location,
             BigDecimal priceStart,
-            BigDecimal priceEnd
+            BigDecimal priceEnd,
+            Integer page,
+            Integer size,
+            String sort
     ) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Service> criteriaQuery = criteriaBuilder.createQuery(Service.class);
@@ -47,11 +51,31 @@ public class ServiceFilter {
             Predicate locationPredicate = criteriaBuilder.like(criteriaBuilder.lower(serviceRoot.join("locations").get("location")), "%"+location.toLowerCase()+"%");
             predicates.add(locationPredicate);
         }
+        if (priceStart != null) {
+            Predicate priceStartPredicate = criteriaBuilder.greaterThan(serviceRoot.get("price"), priceStart);
+            predicates.add(priceStartPredicate);
+        }
+        if (priceEnd != null) {
+            Predicate priceEndPredicate = criteriaBuilder.lessThan(serviceRoot.get("price"), priceEnd);
+            predicates.add(priceEndPredicate);
+        }
 
         criteriaQuery.where(predicates.toArray(new Predicate[predicates.size()]));
 
         TypedQuery<Service> query = entityManager.createQuery(criteriaQuery);
 
-        return query.getResultList();
+        Pageable pagable = PageRequest.of(page, size);
+
+        List<Service> serviceList = query.setFirstResult((int) pagable.getOffset()).setMaxResults(pagable.getPageSize()).getResultList();
+
+        CriteriaQuery<Long> countQuery = criteriaBuilder.createQuery(Long.class);
+        Root<Service> countRoot = countQuery.from(Service.class);
+
+        countQuery.select(criteriaBuilder.count(countRoot));
+
+        long total = entityManager.createQuery(countQuery).getSingleResult();
+
+        Page<Service> services = new PageImpl<>(serviceList, pagable, total);
+        return services;
     }
 }

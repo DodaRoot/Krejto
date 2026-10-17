@@ -20,7 +20,13 @@ public class ServiceDTO {
             @RequestParam(required = false)
             BigDecimal priceStart,
             @RequestParam(required = false)
-            BigDecimal priceEnd) {}
+            BigDecimal priceEnd,
+            @RequestParam(defaultValue = "0")
+            Integer page,
+            @RequestParam(defaultValue = "8")
+            Integer size,
+            @RequestParam(defaultValue = "asc")
+            String sort) {}
 
     public record GetServiceResponse(UUID id, UserDTO.GetUserResponse getUserResponse, List<LocationDTO.GetLocationResponse> getLocationsResponses, TypeOfServiceDTO.GetTypeOfServiceResponse getTypeOfServiceResponse, String description, BigDecimal price, String address, List<ServiceReview> serviceReviews) {}
 

@@ -15,6 +15,8 @@ import com.krejto.server.repository.TypeOfServiceRepository;
 import com.krejto.server.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.jspecify.annotations.NonNull;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.security.Principal;
@@ -38,13 +40,10 @@ public class ServiceService {
         this.serviceFilter = serviceFilter;
     }
 
-    public List<ServiceDTO.GetServiceResponse> getServicesByQuery(ServiceDTO.GetServiceRequest getServiceRequest) {
-        List<Service> services = serviceFilter.findByFilter(getServiceRequest.description(), getServiceRequest.typeOfService(), getServiceRequest.location(), getServiceRequest.priceStart(), getServiceRequest.priceEnd());
-        List<ServiceDTO.GetServiceResponse> getServiceResponseList = new ArrayList<>();
+    public Page<ServiceDTO.GetServiceResponse> getServicesByQuery(ServiceDTO.GetServiceRequest getServiceRequest) {
+        Page<Service> services = serviceFilter.findByFilter(getServiceRequest.description(), getServiceRequest.typeOfService(), getServiceRequest.location(), getServiceRequest.priceStart(), getServiceRequest.priceEnd(), getServiceRequest.page(), getServiceRequest.size(), getServiceRequest.sort());
 
-        services.forEach(service -> getServiceResponseList.add(getGetServiceResponse(service)));
-
-        return getServiceResponseList;
+        return services.map(this::getGetServiceResponse);
     }
 
     public List<ServiceDTO.GetServiceResponse> getServicesByUser(Principal principal) {
@@ -134,7 +133,7 @@ public class ServiceService {
         serviceRepository.deleteById(id);
     }
 
-    private static ServiceDTO.@NonNull GetServiceResponse getGetServiceResponse(Service service) {
+    private ServiceDTO.@NonNull GetServiceResponse getGetServiceResponse(Service service) {
         User user = service.getUser();
         List<Location> locations = service.getLocations();
         TypeOfService typeOfService = service.getTypeOfService();
