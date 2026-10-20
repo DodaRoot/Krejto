@@ -6,5 +6,6 @@ export function useLocationsAndTypesQuery() {
   return useQuery({
     queryKey: ["locationsAndTypes"],
     queryFn: getLocationsAndTypes,
+    staleTime: 1000 * 60 * 10,
   });
 }

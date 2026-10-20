@@ -14,14 +14,21 @@ export default function SearchCombobox({
   items,
   placeholder,
   name,
+  defaultValue,
+  itemLabels,
 }: SearchComboboxProps) {
   const [t] = useTranslation();
 
   return (
-    <Combobox items={items}>
+    <Combobox
+      items={items}
+      defaultValue={defaultValue}
+      name={name}
+      itemToStringLabel={(item) => itemLabels?.[item] ?? item}
+      itemToStringValue={(item) => item}
+    >
       <ComboboxInput
         placeholder={placeholder}
-        name={name}
         className="min-w-1/5"
       />
       <ComboboxContent>
@@ -29,7 +36,7 @@ export default function SearchCombobox({
         <ComboboxList>
           {(item) => (
             <ComboboxItem key={item} value={item}>
-              {item}
+              {itemLabels?.[item] ?? item}
             </ComboboxItem>
           )}
         </ComboboxList>
