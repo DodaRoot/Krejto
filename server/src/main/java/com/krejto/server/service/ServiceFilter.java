@@ -3,10 +3,7 @@ package com.krejto.server.service;
 import com.krejto.server.model.entity.Service;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
-import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.*;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Repository;
 
@@ -60,7 +57,26 @@ public class ServiceFilter {
             predicates.add(priceEndPredicate);
         }
 
+        Order sortOrder = criteriaBuilder.desc(serviceRoot.get("createdAt"));
+
+        if (sort != null && !sort.isEmpty()) {
+            if (sort.equals("priceAsc")) {
+                sortOrder = criteriaBuilder.asc(serviceRoot.get("price"));
+            }
+            if (sort.equals("priceDesc")) {
+                sortOrder = criteriaBuilder.desc(serviceRoot.get("price"));
+            }
+            if (sort.equals("createdAtAsc")) {
+                sortOrder = criteriaBuilder.asc(serviceRoot.get("createdAt"));
+            }
+            if (sort.equals("createdAtDesc")) {
+                sortOrder = criteriaBuilder.desc(serviceRoot.get("createdAt"));
+            }
+        }
+
         criteriaQuery.where(predicates.toArray(new Predicate[predicates.size()]));
+
+        criteriaQuery.orderBy(sortOrder);
 
         TypedQuery<Service> query = entityManager.createQuery(criteriaQuery);
 

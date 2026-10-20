@@ -30,12 +30,16 @@ export default function SearchBar() {
     const description = String(formData.get("description"));
     const typeOfService = String(formData.get("typeOfService"));
     const location = String(formData.get("location"));
+    const page = "0";
+    const size = "6";
 
     description ? nextSearchParams.set("description", description) : false;
     typeOfService
       ? nextSearchParams.set("typeOfService", typeOfService)
       : false;
     location ? nextSearchParams.set("location", location) : false;
+    page ? nextSearchParams.set("page", page) : false;
+    size ? nextSearchParams.set("size", size) : false;
 
     navigate(
       {

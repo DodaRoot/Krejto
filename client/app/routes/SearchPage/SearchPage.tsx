@@ -28,9 +28,9 @@ export default function SearchPage() {
   const { state } = useLocation();
 
   const locationsAndTypes = state ? state : useLocationsAndTypesQuery();
-  console.log("🚀 ~ SearchPage ~ locationsAndTypes:", locationsAndTypes);
 
   const { data } = useFilterServicesQuery(searchParams.toString());
+  console.log("🚀 ~ SearchPage ~ data:", data);
   const [value, setValue] = useState<PriceRange>([0, 100]);
   const [t] = useTranslation();
   const locationsDTO = locationsAndTypes.locationsDTO;
@@ -43,11 +43,17 @@ export default function SearchPage() {
     const nextSearchParams = new URLSearchParams();
     const typeOfService = String(formData.get("typeOfService"));
     const location = String(formData.get("location"));
+    const sort = String(formData.get("sort"));
+    const page = "0";
+    const size = "6";
 
     typeOfService
       ? nextSearchParams.set("typeOfService", typeOfService)
       : false;
     location ? nextSearchParams.set("location", location) : false;
+    page ? nextSearchParams.set("page", page) : false;
+    size ? nextSearchParams.set("size", size) : false;
+    sort ? nextSearchParams.set("sort", sort) : false;
 
     navigate(
       {
@@ -136,7 +142,16 @@ export default function SearchPage() {
               <Label className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
                 {t("Sort by")}
               </Label>
-              <SearchCombobox name="sort-by" items={[]} placeholder="" />
+              <SearchCombobox
+                name="sort"
+                items={[
+                  "priceAsc",
+                  "priceDesc",
+                  "createdAtAsc",
+                  "createdAtDesc",
+                ]}
+                placeholder="createdAtDesc"
+              />
             </div>
             <div className="space-y-2 flex gap-4">
               <Button variant="outline" type="submit">
@@ -151,7 +166,7 @@ export default function SearchPage() {
 
         <section className="space-y-6">
           <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
-            {data?.map((service) => (
+            {data?.content?.map((service) => (
               <Card
                 key={service.id}
                 className="border border-border shadow-sm hover:shadow-md transition-shadow overflow-hidden"

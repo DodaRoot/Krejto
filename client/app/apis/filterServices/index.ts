@@ -2,7 +2,7 @@ import type { filterServicesData } from "./types.ts";
 
 export async function filterServices(
   query: string,
-): Promise<filterServicesData[]> {
+): Promise<filterServicesData> {
   const token = localStorage.getItem("token");
 
   const response = await fetch(
@@ -13,5 +13,5 @@ export async function filterServices(
       },
     },
   );
-  return (await response.json()) as filterServicesData[];
+  return (await response.json()) as filterServicesData;
 }
