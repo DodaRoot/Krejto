@@ -1,79 +1,241 @@
-import type { Route } from "./+types/ItemPage";
-import { useState, useEffect } from "react";
+import { ArrowLeft, Mail, MapPin, Phone, UserRound } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { Link, useLocation } from "react-router";
 
-import bannerOne from "../../assets/images/Banner.png";
-
+import type { FilterService } from "~/apis/filterServices/types";
+import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
+import { Badge } from "~/components/ui/badge";
+import { Button } from "~/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-  type CarouselApi,
-} from "../../components/ui/carousel";
-import type { CarouselProgress } from "./types";
+} from "~/components/ui/carousel";
+import { Separator } from "~/components/ui/separator";
+import { Skeleton } from "~/components/ui/skeleton";
+import type { Route } from "./+types/ItemPage";
+
+function isFilterService(value: unknown): value is FilterService {
+  if (typeof value !== "object" || value === null) {
+    return false;
+  }
+
+  const service = value as Partial<FilterService>;
+  return (
+    typeof service.id === "string" &&
+    typeof service.description === "string" &&
+    typeof service.price === "number" &&
+    (typeof service.address === "string" || service.address === null) &&
+    Array.isArray(service.getLocationsResponses) &&
+    service.getLocationsResponses.every(
+      (location) =>
+        typeof location === "object" &&
+        location !== null &&
+        typeof location.id === "string" &&
+        typeof location.location === "string",
+    ) &&
+    Array.isArray(service.serviceReviews) &&
+    typeof service.getTypeOfServiceResponse?.serviceName === "string" &&
+    typeof service.getTypeOfServiceResponse?.serviceDescription === "string" &&
+    typeof service.getUserResponse?.fullName === "string" &&
+    typeof service.getUserResponse?.email === "string" &&
+    typeof service.getUserResponse?.phoneNumber === "string" &&
+    typeof service.getUserResponse?.createdAt === "string"
+  );
+}
+
+const euroFormatter = new Intl.NumberFormat(undefined, {
+  style: "currency",
+  currency: "EUR",
+});
 
 export async function loader({ params }: Route.LoaderArgs) {
   return params.id;
 }
 
 export default function ItemPage({ loaderData }: Route.ComponentProps) {
-  const [api, setApi] = useState<CarouselApi>();
-  const [progress, setProgress] = useState<CarouselProgress>({
-    current: 0,
-    count: 0,
-  });
-  useEffect(() => {
-    if (!api) {
-      return;
-    }
-    setProgress({
-      count: api.scrollSnapList().length,
-      current: api.selectedScrollSnap() + 1,
-    });
-    api.on("select", () => {
-      setProgress((currentProgress) => ({
-        ...currentProgress,
-        current: api.selectedScrollSnap() + 1,
-      }));
-    });
-  }, [api]);
+  const location = useLocation();
+  const { t } = useTranslation();
+  const state = location.state as { service?: unknown } | null;
+  const service = isFilterService(state?.service) ? state.service : null;
+
+  if (!service || service.id !== loaderData) {
+    return (
+      <div className="mx-auto max-w-3xl py-8">
+        <Alert>
+          <AlertTitle>{t("Service details unavailable")}</AlertTitle>
+          <AlertDescription>
+            {t(
+              "Open this service from the search results to view its details.",
+            )}
+          </AlertDescription>
+        </Alert>
+        <Button asChild variant="outline" className="mt-4">
+          <Link to="/search">
+            <ArrowLeft aria-hidden="true" />
+            {t("Back to search results")}
+          </Link>
+        </Button>
+      </div>
+    );
+  }
+
+  const formattedMemberSince = new Date(
+    service.getUserResponse.createdAt,
+  ).toLocaleDateString();
+  const memberSince = Number.isNaN(
+    new Date(service.getUserResponse.createdAt).getTime(),
+  )
+    ? null
+    : formattedMemberSince;
 
   return (
-    <div className="flex gap-5 w-full">
-      <section className="w-2/3 h-90">
-        <Carousel
-          setApi={setApi}
-          className="w-full h-full flex justify-center items-center rounded-2xl"
-        >
-          <CarouselContent>
-            {Array.from({ length: 5 }).map((_, index) => (
-              <CarouselItem
-                key={index}
-                className={`flex items-center justify-center h-90 w-full bg-gray-400`}
-              >
-                <img src={bannerOne}></img>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <div className="absolute left-2 top-1/2 z-10">
+    <main className="mx-auto w-full max-w-6xl space-y-6 py-6">
+      <Button asChild variant="ghost" className="-ml-3">
+        <Link to="/search">
+          <ArrowLeft aria-hidden="true" />
+          {t("Back to search results")}
+        </Link>
+      </Button>
+
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(18rem,1fr)]">
+        <section className="space-y-6" aria-label={t("Service photos")}>
+          <Carousel opts={{ loop: false }} className="mx-12">
+            <CarouselContent>
+              {Array.from({ length: 3 }, (_, index) => (
+                <CarouselItem key={index}>
+                  <Skeleton
+                    className="aspect-[16/10] w-full rounded-xl"
+                    role="img"
+                    aria-label={t("Service photo placeholder {{number}}", {
+                      number: index + 1,
+                    })}
+                  />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
             <CarouselPrevious
-              variant="default"
-              className="relative left-0 translate-x-0"
+              variant="outline"
+              className="left-[-3rem]"
+              aria-label={t("Previous photo")}
             />
-          </div>
-          <div className="absolute right-2 top-1/2 z-10">
             <CarouselNext
-              variant="default"
-              className="relative right-0 translate-x-0"
+              variant="outline"
+              className="right-[-3rem]"
+              aria-label={t("Next photo")}
             />
-          </div>
-        </Carousel>
-        <div className="py-2 text-center text-sm text-muted-foreground">
-          Slide {progress.current} of {progress.count}
-        </div>
-      </section>
-      <aside className="w-1/3 bg-blue-400"></aside>
-    </div>
+          </Carousel>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>{t("About this service")}</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <h2 className="text-sm font-medium text-muted-foreground">
+                  {t("Description")}
+                </h2>
+                <p className="mt-1 whitespace-pre-wrap text-sm leading-relaxed">
+                  {service.description}
+                </p>
+              </div>
+              <Separator />
+              <div>
+                <h2 className="text-sm font-medium text-muted-foreground">
+                  {t("Category")}
+                </h2>
+                <p className="mt-1 text-sm">
+                  {service.getTypeOfServiceResponse.serviceName}
+                </p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {service.getTypeOfServiceResponse.serviceDescription}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+
+        <aside className="space-y-6">
+          <Card>
+            <CardHeader className="space-y-3">
+              <Badge variant="secondary" className="w-fit">
+                {service.getTypeOfServiceResponse.serviceName}
+              </Badge>
+              <CardTitle className="text-2xl">{service.description}</CardTitle>
+              <CardDescription className="flex items-center gap-2 text-lg font-semibold text-primary">
+                {euroFormatter.format(service.price)}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Separator />
+              <div className="space-y-2">
+                <h2 className="text-sm font-medium">{t("Locations")}</h2>
+                <p className="flex items-start gap-2 text-sm text-muted-foreground">
+                  <MapPin
+                    aria-hidden="true"
+                    className="mt-0.5 size-4 shrink-0"
+                  />
+                  <span>
+                    {service.getLocationsResponses.length > 0
+                      ? service.getLocationsResponses
+                          .map((location) => location.location)
+                          .join(", ")
+                      : t("Location not specified")}
+                    {service.address && ` · ${service.address}`}
+                  </span>
+                </p>
+                {service.address && (
+                  <p className="pl-6 text-sm text-muted-foreground">
+                    {t("Address")}: {service.address}
+                  </p>
+                )}
+              </div>
+              <Separator />
+              <div className="space-y-3">
+                <h2 className="flex items-center gap-2 text-sm font-medium">
+                  <UserRound aria-hidden="true" className="size-4" />
+                  {t("Provider")}
+                </h2>
+                <p className="text-sm font-medium">
+                  {service.getUserResponse.fullName}
+                </p>
+                <a
+                  className="flex items-center gap-2 text-sm text-muted-foreground underline-offset-4 hover:underline"
+                  href={`mailto:${service.getUserResponse.email}`}
+                >
+                  <Mail aria-hidden="true" className="size-4" />
+                  {service.getUserResponse.email}
+                </a>
+                <a
+                  className="flex items-center gap-2 text-sm text-muted-foreground underline-offset-4 hover:underline"
+                  href={`tel:${service.getUserResponse.phoneNumber}`}
+                >
+                  <Phone aria-hidden="true" className="size-4" />
+                  {service.getUserResponse.phoneNumber}
+                </a>
+                {memberSince && (
+                  <p className="text-sm text-muted-foreground">
+                    {t("Member since")}: {memberSince}
+                  </p>
+                )}
+              </div>
+              <Separator />
+              <Badge variant="outline">
+                {t("Service reviews")} ({service.serviceReviews.length})
+              </Badge>
+            </CardContent>
+          </Card>
+        </aside>
+      </div>
+    </main>
   );
 }

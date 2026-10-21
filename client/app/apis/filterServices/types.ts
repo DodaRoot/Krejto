@@ -1,22 +1,27 @@
-export interface filterServicesData {
-  content: {
-    address: string;
-    description: string;
-    getLocationsResponses: string[];
-    getTypeOfServiceResponse: {
-      serviceName: string;
-      serviceDescription: string;
-    };
-    getUserResponse: {
-      fullName: string;
-      email: string;
-      phoneNumber: string;
-      createdAt: string;
-    };
+export interface FilterService {
+  address: string | null;
+  description: string;
+  getLocationsResponses: {
     id: string;
-    price: number;
-    serviceReviews: string[];
+    location: string;
   }[];
+  getTypeOfServiceResponse: {
+    serviceName: string;
+    serviceDescription: string;
+  };
+  getUserResponse: {
+    fullName: string;
+    email: string;
+    phoneNumber: string;
+    createdAt: string;
+  };
+  id: string;
+  price: number;
+  serviceReviews: unknown[];
+}
+
+export interface filterServicesData {
+  content: FilterService[];
   empty: boolean;
   first: boolean;
   last: boolean;

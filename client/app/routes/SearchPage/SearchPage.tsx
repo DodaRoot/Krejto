@@ -349,6 +349,7 @@ export default function SearchPage() {
               <Link
                 key={service.id}
                 to={`/itemPage/${service.id}`}
+                state={{ service }}
                 className="group/search-result rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 <Card className="h-full overflow-hidden py-0 shadow-sm transition-shadow group-hover/search-result:shadow-md">
@@ -386,7 +387,9 @@ export default function SearchPage() {
                         />
                         <span className="truncate">
                           {service.getLocationsResponses.length > 0
-                            ? service.getLocationsResponses.join(", ")
+                            ? service.getLocationsResponses
+                                .map((location) => location.location)
+                                .join(", ")
                             : t("Location not specified")}
                           {service.address && ` · ${service.address}`}
                         </span>
