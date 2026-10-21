@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { Fragment, useEffect, type FormEvent } from "react";
 import {
   Image as ImageIcon,
   MapPin,
@@ -29,6 +29,15 @@ import {
   FieldSet,
 } from "~/components/ui/field";
 import { Input } from "~/components/ui/input";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "~/components/ui/pagination";
 import { Skeleton } from "~/components/ui/skeleton";
 import { useFilterServicesQuery } from "~/hooks/queries/useFilterServicesQuery";
 import { useLocationsAndTypesQuery } from "~/hooks/queries/useLocationsAndTypesQuery";
@@ -52,24 +61,37 @@ const euroFormatter = new Intl.NumberFormat(undefined, {
   currency: "EUR",
 });
 
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "~/components/ui/pagination";
+function getVisiblePages(currentPage: number, totalPages: number) {
+  const pages = new Set([0, totalPages - 1]);
+
+  for (
+    let page = Math.max(0, currentPage - 1);
+    page <= Math.min(totalPages - 1, currentPage + 1);
+    page += 1
+  ) {
+    pages.add(page);
+  }
+
+  return [...pages].sort((a, b) => a - b);
+}
 
 export default function SearchPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const parsedPage = Number(searchParams.get("page") ?? 0);
+  const pageIndex =
+    Number.isSafeInteger(parsedPage) && parsedPage >= 0 ? parsedPage : 0;
+  const parsedSize = Number(searchParams.get("size") ?? 6);
+  const pageSize =
+    Number.isSafeInteger(parsedSize) && parsedSize > 0 ? parsedSize : 6;
+  const requestSearchParams = new URLSearchParams(searchParams);
+  requestSearchParams.set("page", pageIndex.toString());
+  requestSearchParams.set("size", pageSize.toString());
 
   const { data: locationsAndTypes } = useLocationsAndTypesQuery();
 
   const { data, isLoading, isError } = useFilterServicesQuery(
-    searchParams.toString(),
+    requestSearchParams.toString(),
   );
   const { t } = useTranslation();
   const locationsDTO = locationsAndTypes?.locationDTO;
@@ -79,6 +101,31 @@ export default function SearchPage() {
     searchParams.get("description") || searchParams.get("location");
   const requestedSort = searchParams.get("sort");
   const selectedSort = sortOptions.find((option) => option === requestedSort);
+  const totalPages = data?.totalPages ?? 0;
+
+  useEffect(() => {
+    if (isLoading || isError || !data || pageIndex < data.totalPages) {
+      return;
+    }
+
+    const lastPage = Math.max(0, data.totalPages - 1);
+    if (pageIndex === lastPage) {
+      return;
+    }
+
+    const nextSearchParams = new URLSearchParams(searchParams);
+    nextSearchParams.set("page", lastPage.toString());
+    nextSearchParams.set("size", pageSize.toString());
+    navigate(
+      {
+        pathname: "/search",
+        search: `?${nextSearchParams.toString()}`,
+      },
+      { replace: true },
+    );
+  }, [data, isError, isLoading, navigate, pageIndex, pageSize, searchParams]);
+
+  const pageNumbers = getVisiblePages(pageIndex, totalPages);
 
   function onFormSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -121,13 +168,15 @@ export default function SearchPage() {
     });
   }
 
-  function paginate(page: number) {
-    searchParams.set("page", page.toString());
+  function getPageLocation(page: number) {
+    const nextSearchParams = new URLSearchParams(searchParams);
+    nextSearchParams.set("page", page.toString());
+    nextSearchParams.set("size", pageSize.toString());
 
-    navigate({
+    return {
       pathname: "/search",
-      search: `?${searchParams.toString()}`,
-    });
+      search: `?${nextSearchParams.toString()}`,
+    };
   }
 
   return (
@@ -396,94 +445,43 @@ export default function SearchPage() {
               </Card>
             )}
           </div>
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious
-                  onClick={() =>
-                    paginate(
-                      parseInt(searchParams.get("page") || "") > 0
-                        ? parseInt(searchParams.get("page") || "") - 1
-                        : 0,
-                    )
-                  }
-                />
-              </PaginationItem>
-              {parseInt(searchParams.get("page") || "") > 0 && (
+          {!isLoading && !isError && data && totalPages > 1 && (
+            <Pagination>
+              <PaginationContent>
                 <PaginationItem>
-                  <PaginationLink
-                    onClick={() =>
-                      paginate(parseInt(searchParams.get("page") || "") - 1)
-                    }
-                  >
-                    {parseInt(searchParams.get("page") || "")}
-                  </PaginationLink>
+                  <PaginationPrevious
+                    to={getPageLocation(Math.max(0, pageIndex - 1))}
+                    disabled={pageIndex === 0}
+                  />
                 </PaginationItem>
-              )}
-              <PaginationItem>
-                <PaginationLink
-                  onClick={() =>
-                    paginate(parseInt(searchParams.get("page") || ""))
-                  }
-                  isActive
-                >
-                  {parseInt(searchParams.get("page") || "") + 1}
-                </PaginationLink>
-              </PaginationItem>
-              {parseInt(searchParams.get("page") || "") <
-                (data?.totalPages || 0) - 2 && (
+                {pageNumbers.map((page, index, pages) => (
+                  <Fragment key={page}>
+                    {index > 0 && page - pages[index - 1] > 1 && (
+                      <PaginationItem>
+                        <PaginationEllipsis />
+                      </PaginationItem>
+                    )}
+                    <PaginationItem>
+                      <PaginationLink
+                        to={getPageLocation(page)}
+                        isActive={page === pageIndex}
+                      >
+                        {page + 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                  </Fragment>
+                ))}
                 <PaginationItem>
-                  <PaginationLink
-                    onClick={() =>
-                      paginate(parseInt(searchParams.get("page") || "") + 1)
-                    }
-                  >
-                    {parseInt(searchParams.get("page") || "") + 2}
-                  </PaginationLink>
+                  <PaginationNext
+                    to={getPageLocation(
+                      Math.min(totalPages - 1, pageIndex + 1),
+                    )}
+                    disabled={pageIndex >= totalPages - 1}
+                  />
                 </PaginationItem>
-              )}
-              {parseInt(searchParams.get("page") || "") <
-                (data?.totalPages || 0) - 3 && (
-                <PaginationItem>
-                  <PaginationLink
-                    onClick={() =>
-                      paginate(parseInt(searchParams.get("page") || "") + 2)
-                    }
-                  >
-                    {parseInt(searchParams.get("page") || "") + 3}
-                  </PaginationLink>
-                </PaginationItem>
-              )}
-              {parseInt(searchParams.get("page") || "") <
-                (data?.totalPages || 0) - 2 && (
-                <PaginationItem>
-                  <PaginationEllipsis />
-                </PaginationItem>
-              )}
-              {parseInt(searchParams.get("page") || "") <
-                (data?.totalPages || 0) - 1 && (
-                <PaginationItem>
-                  <PaginationLink
-                    onClick={() => paginate((data?.totalPages || 0) - 1)}
-                  >
-                    {data?.totalPages || 0}
-                  </PaginationLink>
-                </PaginationItem>
-              )}
-              <PaginationItem>
-                <PaginationNext
-                  onClick={() => {
-                    paginate(
-                      parseInt(searchParams.get("page") || "") <
-                        (data?.totalPages || 0) - 1
-                        ? parseInt(searchParams.get("page") || "") + 1
-                        : (data?.totalPages || 1) - 1,
-                    );
-                  }}
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+              </PaginationContent>
+            </Pagination>
+          )}
         </section>
       </div>
     </div>

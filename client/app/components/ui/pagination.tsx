@@ -1,5 +1,6 @@
 import * as React from "react";
 import { cn } from "cn";
+import { Link } from "react-router";
 
 import { Button } from "~/components/ui/button";
 import {
@@ -39,15 +40,38 @@ function PaginationItem({ ...props }: React.ComponentProps<"li">) {
 
 type PaginationLinkProps = {
   isActive?: boolean;
+  disabled?: boolean;
 } & Pick<React.ComponentProps<typeof Button>, "size"> &
-  React.ComponentProps<"a">;
+  Omit<React.ComponentProps<typeof Link>, "to"> & {
+    to: React.ComponentProps<typeof Link>["to"];
+  };
 
 function PaginationLink({
   className,
   isActive,
+  disabled,
   size = "icon",
+  to,
   ...props
 }: PaginationLinkProps) {
+  if (disabled) {
+    return (
+      <Button
+        type="button"
+        disabled
+        variant={isActive ? "outline" : "ghost"}
+        size={size}
+        className={cn(className)}
+        aria-label={props["aria-label"]}
+        aria-current={isActive ? "page" : undefined}
+        data-slot="pagination-link"
+        data-active={isActive}
+      >
+        {props.children}
+      </Button>
+    );
+  }
+
   return (
     <Button
       asChild
@@ -55,7 +79,8 @@ function PaginationLink({
       size={size}
       className={cn(className)}
     >
-      <a
+      <Link
+        to={to}
         aria-current={isActive ? "page" : undefined}
         data-slot="pagination-link"
         data-active={isActive}
