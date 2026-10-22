@@ -36,6 +36,7 @@ import {
   DropdownMenuLabel,
 } from "../../../components/ui/dropdown-menu";
 import { useEffect, useState } from "react";
+import { Button } from "~/components/ui/button";
 
 function NavItem({ icon, label, link, className }: NavItemProps) {
   return (
@@ -237,6 +238,7 @@ function ProfileMenu({
 export default function Navbar(preferences: NavbarPreferences) {
   const [t] = useTranslation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
   useEffect(() => {
     const token = localStorage.getItem("token");
     setIsLoggedIn(!!token);
@@ -251,32 +253,48 @@ export default function Navbar(preferences: NavbarPreferences) {
           </Link>
         </div>
 
-        <div className="flex space-x-4">
-          <NavItem
-            className="block md:hidden"
-            icon={<House />}
-            label={t("Home")}
-            link={"/"}
-          />
-          <NotificationsDropdown
-            icon={<Bell />}
-            label={t("Notifications")}
-            t={t}
-            isLoggedIn={isLoggedIn}
-          />
-          <NavItem
-            link={isLoggedIn ? "messages" : "loginOrRegister"}
-            icon={<MessageCircleCheck />}
-            label={t("Messages")}
-          />
-          <ProfileMenu
-            icon={<UserRound />}
-            label={t("Profile")}
-            t={t}
-            preferences={preferences}
-            isLoggedIn={isLoggedIn}
-            onLogout={() => setIsLoggedIn(false)}
-          />
+        <div className="flex space-x-4 items-center">
+          {!isLoggedIn ? (
+            <>
+              <Link to={"/"} className="md:hidden text-2xl">
+                {t("Title")}
+              </Link>
+              <Button
+                className="ml-2"
+                onClick={() => navigate("loginOrRegister")}
+              >
+                Register / Login
+              </Button>
+            </>
+          ) : (
+            <>
+              <NavItem
+                className="block md:hidden"
+                icon={<House />}
+                label={t("Home")}
+                link={"/"}
+              />
+              <NotificationsDropdown
+                icon={<Bell />}
+                label={t("Notifications")}
+                t={t}
+                isLoggedIn={isLoggedIn}
+              />
+              <NavItem
+                link={isLoggedIn ? "messages" : "loginOrRegister"}
+                icon={<MessageCircleCheck />}
+                label={t("Messages")}
+              />
+              <ProfileMenu
+                icon={<UserRound />}
+                label={t("Profile")}
+                t={t}
+                preferences={preferences}
+                isLoggedIn={isLoggedIn}
+                onLogout={() => setIsLoggedIn(false)}
+              />
+            </>
+          )}
         </div>
       </div>
     </nav>

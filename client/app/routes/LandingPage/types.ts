@@ -2,6 +2,7 @@ export interface CategoryCardProps {
   name: string;
   description: string;
   image: string;
+  navigate: any;
 }
 
 export interface ReviewCardProps {

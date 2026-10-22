@@ -37,14 +37,25 @@ import {
 
 import { useTopTypesOfServiceQuery } from "../../hooks/queries/useTopTypesOfServiceQuery";
 import { useSiteReviewsQuery } from "../../hooks/queries/useSiteReviewsQuery";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 
 const CAROUSEL_ITEMS = [bannerOne, bannerTwo, bannerThree, bannerFour];
 
-function CategoryCard({ name, description, image }: CategoryCardProps) {
+function CategoryCard({
+  name,
+  description,
+  image,
+  navigate,
+}: CategoryCardProps) {
   return (
     <Card
+      onClick={() => {
+        navigate({
+          pathname: "/search",
+          search: `?typeOfService=${name}`,
+        });
+      }}
       className="
         group mx-auto w-full max-w-sm overflow-hidden rounded-2xl
         border bg-card p-0 transition-all duration-300
@@ -139,6 +150,7 @@ export default function Landing() {
   const { data: topTypesOfServiceData } = useTopTypesOfServiceQuery();
   const { data: siteReviewsData } = useSiteReviewsQuery();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setIsLoggedIn(!!localStorage.getItem("token"));
@@ -198,6 +210,7 @@ export default function Landing() {
             name={typeOfService.serviceName}
             description={typeOfService.serviceDescription}
             image={""}
+            navigate={navigate}
           />
         ))}
       </section>
