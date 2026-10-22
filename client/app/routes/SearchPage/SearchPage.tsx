@@ -1,4 +1,4 @@
-import { Fragment, useEffect, type FormEvent } from "react";
+import { Fragment, useEffect, type SubmitEvent } from "react";
 import {
   Image as ImageIcon,
   MapPin,
@@ -41,19 +41,20 @@ import {
 import { Skeleton } from "~/components/ui/skeleton";
 import { useFilterServicesQuery } from "~/hooks/queries/useFilterServicesQuery";
 import { useLocationsAndTypesQuery } from "~/hooks/queries/useLocationsAndTypesQuery";
+import type { SearchFilterName, SearchSortOption } from "./types";
 
 const sortOptions = [
   "priceAsc",
   "priceDesc",
   "createdAtAsc",
   "createdAtDesc",
-] as const;
+] satisfies readonly SearchSortOption[];
 const filterNames = [
   "typeOfService",
   "location",
   "priceStart",
   "priceEnd",
-] as const;
+] satisfies readonly SearchFilterName[];
 const filterLabelClassName =
   "text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground";
 const euroFormatter = new Intl.NumberFormat(undefined, {
@@ -62,6 +63,10 @@ const euroFormatter = new Intl.NumberFormat(undefined, {
 });
 
 function getVisiblePages(currentPage: number, totalPages: number) {
+  if (totalPages <= 0) {
+    return [];
+  }
+
   const pages = new Set([0, totalPages - 1]);
 
   for (
@@ -127,7 +132,7 @@ export default function SearchPage() {
 
   const pageNumbers = getVisiblePages(pageIndex, totalPages);
 
-  function onFormSubmit(e: FormEvent<HTMLFormElement>) {
+  function onFormSubmit(e: SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
 
@@ -144,11 +149,10 @@ export default function SearchPage() {
       }
     }
 
-    const selectedSort = formData.get("sort");
-    if (
-      typeof selectedSort === "string" &&
-      sortOptions.some((option) => option === selectedSort)
-    ) {
+    const selectedSort = sortOptions.find(
+      (option) => option === formData.get("sort"),
+    );
+    if (selectedSort) {
       nextSearchParams.set("sort", selectedSort);
     }
 

@@ -23,33 +23,43 @@ import {
 import { Separator } from "~/components/ui/separator";
 import { Skeleton } from "~/components/ui/skeleton";
 import type { Route } from "./+types/ItemPage";
+import type { ItemPageLocationState } from "./types";
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
 
 function isFilterService(value: unknown): value is FilterService {
-  if (typeof value !== "object" || value === null) {
+  if (!isRecord(value)) {
     return false;
   }
 
-  const service = value as Partial<FilterService>;
+  const locations = value.getLocationsResponses;
+  const typeOfService = value.getTypeOfServiceResponse;
+  const user = value.getUserResponse;
+
   return (
-    typeof service.id === "string" &&
-    typeof service.description === "string" &&
-    typeof service.price === "number" &&
-    (typeof service.address === "string" || service.address === null) &&
-    Array.isArray(service.getLocationsResponses) &&
-    service.getLocationsResponses.every(
-      (location) =>
-        typeof location === "object" &&
-        location !== null &&
+    typeof value.id === "string" &&
+    typeof value.description === "string" &&
+    typeof value.price === "number" &&
+    Number.isFinite(value.price) &&
+    (typeof value.address === "string" || value.address === null) &&
+    Array.isArray(locations) &&
+    locations.every(
+      (location: unknown) =>
+        isRecord(location) &&
         typeof location.id === "string" &&
         typeof location.location === "string",
     ) &&
-    Array.isArray(service.serviceReviews) &&
-    typeof service.getTypeOfServiceResponse?.serviceName === "string" &&
-    typeof service.getTypeOfServiceResponse?.serviceDescription === "string" &&
-    typeof service.getUserResponse?.fullName === "string" &&
-    typeof service.getUserResponse?.email === "string" &&
-    typeof service.getUserResponse?.phoneNumber === "string" &&
-    typeof service.getUserResponse?.createdAt === "string"
+    Array.isArray(value.serviceReviews) &&
+    isRecord(typeOfService) &&
+    typeof typeOfService.serviceName === "string" &&
+    typeof typeOfService.serviceDescription === "string" &&
+    isRecord(user) &&
+    typeof user.fullName === "string" &&
+    typeof user.email === "string" &&
+    typeof user.phoneNumber === "string" &&
+    typeof user.createdAt === "string"
   );
 }
 
@@ -65,7 +75,7 @@ export async function loader({ params }: Route.LoaderArgs) {
 export default function ItemPage({ loaderData }: Route.ComponentProps) {
   const location = useLocation();
   const { t } = useTranslation();
-  const state = location.state as { service?: unknown } | null;
+  const state = location.state as ItemPageLocationState;
   const service = isFilterService(state?.service) ? state.service : null;
 
   if (!service || service.id !== loaderData) {
@@ -89,14 +99,10 @@ export default function ItemPage({ loaderData }: Route.ComponentProps) {
     );
   }
 
-  const formattedMemberSince = new Date(
-    service.getUserResponse.createdAt,
-  ).toLocaleDateString();
-  const memberSince = Number.isNaN(
-    new Date(service.getUserResponse.createdAt).getTime(),
-  )
+  const memberSinceDate = new Date(service.getUserResponse.createdAt);
+  const memberSince = Number.isNaN(memberSinceDate.getTime())
     ? null
-    : formattedMemberSince;
+    : memberSinceDate.toLocaleDateString();
 
   return (
     <main className="mx-auto w-full max-w-6xl space-y-6 py-6">

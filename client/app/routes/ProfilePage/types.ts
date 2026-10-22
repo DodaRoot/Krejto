@@ -1,7 +1,6 @@
-import type { MockService } from "../../mock";
+import type { GetMyServicesResponse } from "~/apis/getMyServices/types";
 
 export interface ProfileHeaderProps {
-  name: string;
   activeDate: string;
 }
 
@@ -12,18 +11,16 @@ export interface ProfileFormProps {
 }
 
 export interface ServiceCardProps {
-  service: Service;
+  service: GetMyServicesResponse;
 }
 
-export interface Service {
-  id: string;
-  getLocationsResponses: {
-    location: string;
-  }[];
-  getTypeOfServiceResponse: {
-    serviceName: string;
-  };
-  description: string;
-  price: number;
-  address: string;
+export interface ProfileFormValues {
+  name: string;
+  number: string;
+  email: string;
+  password: string;
 }
+
+export type ProfileFormErrors = Partial<
+  Record<keyof ProfileFormValues, string>
+>;

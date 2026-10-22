@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type SubmitEvent } from "react";
 import { ArrowLeft, ImagePlus, MapPin } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation, useNavigate, useParams } from "react-router";
@@ -60,7 +60,7 @@ export default function MyService() {
     setErrors({});
   }, [id, service?.getTypeOfServiceResponse?.serviceName]);
 
-  const handleSubmit = (event: any) => {
+  const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);

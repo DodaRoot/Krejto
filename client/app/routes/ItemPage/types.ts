@@ -1,4 +1,1 @@
-export interface CarouselProgress {
-  current: number;
-  count: number;
-}
+export type ItemPageLocationState = { service?: unknown } | null;

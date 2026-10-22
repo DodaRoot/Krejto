@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState, type SubmitEvent } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { AsYouType, parsePhoneNumberFromString } from "libphonenumber-js";
@@ -17,6 +17,8 @@ import {
 import { Input } from "../../components/ui/input";
 import type {
   ProfileFormProps,
+  ProfileFormErrors,
+  ProfileFormValues,
   ProfileHeaderProps,
   ServiceCardProps,
 } from "./types";
@@ -25,13 +27,6 @@ import { useGetMyServicesQuery } from "~/hooks/queries/useGetMyServicesQuery";
 import { useProfileDataQuery } from "~/hooks/queries/useProfileDataQuery";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-type ProfileFormErrors = {
-  name?: string;
-  number?: string;
-  email?: string;
-  password?: string;
-};
 
 function formatPhoneNumberInput(value: string) {
   if (!value) {
@@ -42,12 +37,7 @@ function formatPhoneNumberInput(value: string) {
 }
 
 function validateProfileForm(
-  values: {
-    name: string;
-    number: string;
-    email: string;
-    password: string;
-  },
+  values: ProfileFormValues,
   t: (key: string) => string,
 ): ProfileFormErrors {
   const errors: ProfileFormErrors = {};
@@ -112,7 +102,7 @@ function ProfileHeader({ activeDate }: ProfileHeaderProps) {
 
 function ProfileForm({ fullName, number, email }: ProfileFormProps) {
   const [t] = useTranslation();
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<ProfileFormValues>({
     name: fullName,
     number: number,
     email: email,
@@ -137,7 +127,7 @@ function ProfileForm({ fullName, number, email }: ProfileFormProps) {
     setErrors((previous) => ({ ...previous, [field]: currentError }));
   };
 
-  const handleSubmit = (event: any) => {
+  const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const nextErrors = validateProfileForm(formData, t);
@@ -301,8 +291,10 @@ function ServiceCard({ service }: ServiceCardProps) {
           {service.getTypeOfServiceResponse.serviceName}
         </p>
         <div className="flex">
-          {service.getLocationsResponses.map((e) => (
-            <p className="text-sm mr-2">{e.location}</p>
+          {service.getLocationsResponses.map((location) => (
+            <p key={location.id} className="text-sm mr-2">
+              {location.location}
+            </p>
           ))}
         </div>
       </div>
@@ -367,10 +359,7 @@ function ServicesSection() {
 
       <div className="grid grid-cols-1 gap-4">
         {data?.map((service) => (
-          <ServiceCard
-            key={service.getTypeOfServiceResponse.serviceName}
-            service={service}
-          />
+          <ServiceCard key={service.id} service={service} />
         ))}
       </div>
     </section>
@@ -379,15 +368,24 @@ function ServicesSection() {
 
 export default function Profile() {
   const { data, isFetching } = useProfileDataQuery();
-
   const navigate = useNavigate();
 
-  const formatDate = (value: string) => {
-    if (!value) return "—";
+  useEffect(() => {
+    if (!isFetching && !data) {
+      localStorage.removeItem("token");
+      navigate("/");
+    }
+  }, [data, isFetching, navigate]);
+
+  const formatDate = (value: string | undefined) => {
+    if (!value) {
+      return "—";
+    }
 
     const date = new Date(value);
-
-    if (Number.isNaN(date.getTime())) return "—";
+    if (Number.isNaN(date.getTime())) {
+      return "—";
+    }
 
     return new Intl.DateTimeFormat("en-GB", {
       day: "2-digit",
@@ -408,25 +406,21 @@ export default function Profile() {
   }
 
   if (!data) {
-    localStorage.removeItem("token");
-    navigate("/");
+    return null;
   }
 
   return (
     <div className="w-full space-y-6 p-2">
       <div className="grid grid-cols-1 gap-5 md:grid-cols-3 md:gap-8">
         <main className="space-y-6 md:col-span-1">
-          <ProfileHeader
-            name={data?.fullName || ""}
-            activeDate={formatDate(data?.createdAt || "") || ""}
-          />
+          <ProfileHeader activeDate={formatDate(data.createdAt)} />
         </main>
 
         <main className="space-y-6 md:col-span-2">
           <ProfileForm
-            fullName={data?.fullName || ""}
-            number={data?.phoneNumber || ""}
-            email={data?.email || ""}
+            fullName={data.fullName}
+            number={data.phoneNumber}
+            email={data.email}
           />
         </main>
       </div>

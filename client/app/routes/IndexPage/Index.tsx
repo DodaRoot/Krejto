@@ -16,7 +16,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 }
 
 export default function Index({ loaderData }: Route.ComponentProps) {
-  const [t, i18n] = useTranslation();
+  const [, i18n] = useTranslation();
   const { theme, lang } = loaderData;
   const location = useLocation();
   const hideNavbarRoutes = ["/loginOrRegister"];
@@ -24,11 +24,11 @@ export default function Index({ loaderData }: Route.ComponentProps) {
 
   useEffect(() => {
     i18n.changeLanguage(lang);
-  }, [lang]);
+  }, [i18n, lang]);
 
   useEffect(() => {
-    if (theme == "system" && typeof window !== "undefined") {
-      let systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
+    if (theme === "system" && typeof window !== "undefined") {
+      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
         .matches
         ? "dark"
         : "light";

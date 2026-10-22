@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type SubmitEvent } from "react";
 import { Star } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -16,18 +16,18 @@ import { FieldError } from "~/components/ui/field";
 import { Label } from "~/components/ui/label";
 import { Textarea } from "~/components/ui/textarea";
 import { useNavigate } from "react-router";
+import type { ReviewRating } from "./types";
 
 export default function LeaveReview() {
   const [t] = useTranslation();
-  const [rating, setRating] = useState(0);
+  const [rating, setRating] = useState<ReviewRating>(0);
   const [review, setReview] = useState("");
   const [ratingError, setRatingError] = useState("");
   const [reviewError, setReviewError] = useState("");
-  const [submitted, setSubmitted] = useState(false);
   const reviewMutation = usePostSiteReview();
   const navigate = useNavigate();
 
-  function handleSubmit(event: any) {
+  function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
 
     const nextRatingError = rating === 0 ? t("Rating is required.") : "";
@@ -73,33 +73,28 @@ export default function LeaveReview() {
               aria-describedby={ratingError ? "rating-error" : undefined}
               aria-invalid={Boolean(ratingError)}
             >
-              {Array.from({ length: 5 }, (_, index) => {
-                const value = index + 1;
-
-                return (
-                  <Button
-                    key={value}
-                    type="button"
-                    variant="ghost"
-                    size="icon-lg"
-                    className="size-12 text-amber-500 hover:text-amber-600"
-                    aria-label={t("Star {{count}}", { count: value })}
-                    aria-pressed={rating === value}
-                    onClick={() => {
-                      setRating(value);
-                      setRatingError("");
-                      setSubmitted(false);
-                    }}
-                  >
-                    <Star
-                      aria-hidden="true"
-                      className={`size-8 ${
-                        value <= rating ? "fill-current" : ""
-                      }`}
-                    />
-                  </Button>
-                );
-              })}
+              {([1, 2, 3, 4, 5] as const).map((value) => (
+                <Button
+                  key={value}
+                  type="button"
+                  variant="ghost"
+                  size="icon-lg"
+                  className="size-12 text-amber-500 hover:text-amber-600"
+                  aria-label={t("Star {{count}}", { count: value })}
+                  aria-pressed={rating === value}
+                  onClick={() => {
+                    setRating(value);
+                    setRatingError("");
+                  }}
+                >
+                  <Star
+                    aria-hidden="true"
+                    className={`size-8 ${
+                      value <= rating ? "fill-current" : ""
+                    }`}
+                  />
+                </Button>
+              ))}
             </div>
             <FieldError id="rating-error">{ratingError}</FieldError>
           </div>
@@ -124,7 +119,6 @@ export default function LeaveReview() {
               onChange={(event) => {
                 const value = event.target.value;
                 setReview(value);
-                setSubmitted(false);
 
                 if (value.trim()) {
                   setReviewError("");
@@ -151,14 +145,6 @@ export default function LeaveReview() {
               <FieldError>
                 {t("Unable to submit your review. Please try again.")}
               </FieldError>
-            )}
-            {submitted && (
-              <p
-                role="status"
-                className="text-sm text-muted-foreground sm:text-right"
-              >
-                {t("Review submitted.")}
-              </p>
             )}
           </div>
         </CardFooter>

@@ -48,7 +48,7 @@ function ConversationList({
           <Avatar className="h-10 w-10 shrink-0">
             <AvatarImage src={conversation.avatar} />
             <AvatarFallback>
-              {conversation.name.split(" ")[0][0]}
+              {conversation.name.split(" ")[0]?.[0] ?? ""}
             </AvatarFallback>
           </Avatar>
 
@@ -116,7 +116,9 @@ function ChatHeader({ conversation, onBack }: ChatHeaderProps) {
       )}
       <Avatar className="h-10 w-10">
         <AvatarImage src={conversation.avatar} />
-        <AvatarFallback>{conversation.name.split(" ")[0][0]}</AvatarFallback>
+        <AvatarFallback>
+          {conversation.name.split(" ")[0]?.[0] ?? ""}
+        </AvatarFallback>
       </Avatar>
       <div className="flex-1">
         <h2 className="text-sm font-semibold">{conversation.name}</h2>
@@ -171,7 +173,7 @@ function ChatView({ conversation, onBack }: ChatViewProps) {
 export default function Messages() {
   const [t] = useTranslation();
   const [selectedId, setSelectedId] = useState<number | null>(
-    CONVERSATIONS[0]?.id || null,
+    CONVERSATIONS[0]?.id ?? null,
   );
   const [isChatOpenMobile, setIsChatOpenMobile] = useState(false);
 

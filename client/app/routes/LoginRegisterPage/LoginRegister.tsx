@@ -2,7 +2,7 @@ import { LockKeyhole, Mail, Phone, UserRound } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 import { AsYouType } from "libphonenumber-js";
-import { useState } from "react";
+import { useState, type SubmitEvent } from "react";
 
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
@@ -102,7 +102,7 @@ export default function Login() {
     }));
   };
 
-  const handleLoginSubmit = (event: any) => {
+  const handleLoginSubmit = (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     const nextErrors = validateLoginForm(loginData, t);
     setLoginErrors(nextErrors);
@@ -122,7 +122,7 @@ export default function Login() {
     );
   };
 
-  const handleRegisterSubmit = (event: any) => {
+  const handleRegisterSubmit = (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const nextErrors = validateRegisterForm(registerData, t);
