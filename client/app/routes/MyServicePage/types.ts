@@ -6,11 +6,6 @@ export type ServiceFormValues = {
 };
 
 export type ServiceFormErrorKey =
-  | "serviceType"
-  | "price"
-  | "description"
-  | "locations";
+  "serviceType" | "price" | "description" | "locations";
 
-export type ServiceFormErrors = Partial<
-  Record<ServiceFormErrorKey, string>
->;
+export type ServiceFormErrors = Partial<Record<ServiceFormErrorKey, string>>;
