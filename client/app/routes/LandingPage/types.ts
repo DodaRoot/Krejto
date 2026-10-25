@@ -1,8 +1,9 @@
+import type { NavigateFunction } from "react-router";
 export interface CategoryCardProps {
   name: string;
   description: string;
   image: string;
-  navigate: any;
+  navigate: NavigateFunction;
 }
 
 export interface ReviewCardProps {

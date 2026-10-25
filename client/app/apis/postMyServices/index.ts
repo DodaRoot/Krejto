@@ -9,7 +9,7 @@ export default function useSaveMyService() {
   });
 }
 
-async function saveMyService({ id, ...serviceData }: SaveMyServiceVariables) {
+async function saveMyService({ ...serviceData }: SaveMyServiceVariables) {
   const token = localStorage.getItem("token");
 
   if (!token) {

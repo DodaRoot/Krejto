@@ -4,10 +4,10 @@ import { useTranslation } from "react-i18next";
 
 import SearchBar from "../../components/feature/SearchBar/SearchBar";
 
-import bannerOne from "../../assets/images/Banner.png";
-import bannerTwo from "../../assets/images/Banner2.png";
-import bannerThree from "../../assets/images/Banner3.png";
-import bannerFour from "../../assets/images/Banner4.png";
+import bannerOne from "/Banner.png";
+import bannerTwo from "/Banner2.png";
+import bannerThree from "/Banner3.png";
+import bannerFour from "/Banner4.png";
 import headerSvg from "../../assets/images/Header.svg";
 
 import {

@@ -1,6 +1,8 @@
-import { Form, useNavigate, useSearchParams } from "react-router";
+import { Form, useNavigate } from "react-router";
 import { Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
+
+import type { SubmitEvent } from "react";
 
 import { Button } from "../../ui/button";
 import {
@@ -21,7 +23,7 @@ export default function SearchBar() {
 
   const navigate = useNavigate();
 
-  function onFormSubmit(e: any) {
+  function onFormSubmit(e: SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
@@ -33,13 +35,11 @@ export default function SearchBar() {
     const page = "0";
     const size = "6";
 
-    description ? nextSearchParams.set("description", description) : false;
-    typeOfService
-      ? nextSearchParams.set("typeOfService", typeOfService)
-      : false;
-    location ? nextSearchParams.set("location", location) : false;
-    page ? nextSearchParams.set("page", page) : false;
-    size ? nextSearchParams.set("size", size) : false;
+    if (description) nextSearchParams.set("description", description);
+    if (typeOfService) nextSearchParams.set("typeOfService", typeOfService);
+    if (location) nextSearchParams.set("location", location);
+    if (page) nextSearchParams.set("page", page);
+    if (size) nextSearchParams.set("size", size);
 
     navigate(
       {
