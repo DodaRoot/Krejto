@@ -15,6 +15,7 @@ import type { Route } from "./+types/root";
 import "./app.css";
 import "./i18n";
 import { StrictMode } from "react";
+import { Spinner } from "./components/ui/spinner";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -89,8 +90,8 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
 
 export function HydrateFallback() {
   return (
-    <div>
-      <h1>Loading...</h1>
+    <div className="w-full h-96 flex justify-center items-center">
+      <Spinner className="size-10" />
     </div>
   );
 }

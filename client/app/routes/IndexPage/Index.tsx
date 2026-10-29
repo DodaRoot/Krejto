@@ -8,6 +8,7 @@ import Navbar from "../../components/feature/Navbar/Navbar";
 import Banner from "../../components/feature/Banner/Banner";
 import Footer from "../../components/feature/Footer/Footer";
 import type { PreferencesData } from "./types";
+import { Spinner } from "~/components/ui/spinner";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const cookieHeader = request.headers.get("Cookie");
@@ -16,7 +17,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 }
 
 export default function Index({ loaderData }: Route.ComponentProps) {
-  const [, i18n] = useTranslation();
+  const [t, i18n] = useTranslation();
   const { theme, lang } = loaderData;
   const location = useLocation();
   const hideNavbarRoutes = ["/loginOrRegister"];
@@ -42,8 +43,9 @@ export default function Index({ loaderData }: Route.ComponentProps) {
 
   if (navigation.state === "loading") {
     return (
-      <div>
-        <h1>Loading...</h1>
+      <div className="w-full h-96 flex justify-center items-center">
+        <Spinner className="size-10" />
+        {t("Loading...")}
       </div>
     );
   }
