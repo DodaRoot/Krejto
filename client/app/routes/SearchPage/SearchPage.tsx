@@ -62,7 +62,7 @@ const euroFormatter = new Intl.NumberFormat(undefined, {
   currency: "EUR",
 });
 
-function getVisiblePages(currentPage: number, totalPages: number) {
+export function getVisiblePages(currentPage: number, totalPages: number) {
   if (totalPages <= 0) {
     return [];
   }

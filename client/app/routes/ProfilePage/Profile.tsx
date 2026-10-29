@@ -36,7 +36,7 @@ function formatPhoneNumberInput(value: string) {
   return new AsYouType().input(value);
 }
 
-function validateProfileForm(
+export function validateProfileForm(
   values: ProfileFormValues,
   t: (key: string) => string,
 ): ProfileFormErrors {
