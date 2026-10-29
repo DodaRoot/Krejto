@@ -25,11 +25,11 @@ import { Skeleton } from "~/components/ui/skeleton";
 import type { Route } from "./+types/ItemPage";
 import type { ItemPageLocationState } from "./types";
 
-function isRecord(value: unknown): value is Record<string, unknown> {
+export function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }
 
-function isFilterService(value: unknown): value is FilterService {
+export function isFilterService(value: unknown): value is FilterService {
   if (!isRecord(value)) {
     return false;
   }
