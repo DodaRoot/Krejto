@@ -6,7 +6,7 @@ export async function filterServices(
   const token = localStorage.getItem("token");
 
   const response = await fetch(
-    "http://localhost:8080/api/v1/service?" + query,
+    "http://localhost:3000/api/v1/service?" + query,
     {
       headers: {
         Authorization: `Bearer ${token}`,

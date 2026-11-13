@@ -12,7 +12,7 @@ export default function postRegister() {
 export async function postRegisterFunction(
   registerData: RegisterData,
 ): Promise<string> {
-  const response = await fetch("http://localhost:8080/api/v1/users/register", {
+  const response = await fetch("http://localhost:3000/api/v1/users/register", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(registerData),

@@ -4,7 +4,7 @@ export async function getMyServices(): Promise<GetMyServicesResponse[]> {
   const token = localStorage.getItem("token");
 
   const response = await fetch(
-    "http://localhost:8080/api/v1/service/myServices",
+    "http://localhost:3000/api/v1/service/myServices",
     {
       headers: {
         Authorization: `Bearer ${token}`,

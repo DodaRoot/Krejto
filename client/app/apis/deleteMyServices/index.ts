@@ -19,7 +19,7 @@ async function deleteMyServiceFunction({
   }
 
   const response = await fetch(
-    `http://localhost:8080/api/v1/service/${encodeURIComponent(id)}`,
+    `http://localhost:3000/api/v1/service/${encodeURIComponent(id)}`,
     {
       method: "DELETE",
       headers: {

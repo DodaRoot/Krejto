@@ -18,7 +18,7 @@ async function postSiteReview({
     throw new Error("Authentication token is missing");
   }
 
-  const serviceUrl = "http://localhost:8080/api/v1/reviews/addSiteReview";
+  const serviceUrl = "http://localhost:3000/api/v1/reviews/addSiteReview";
   const response = await fetch(serviceUrl, {
     method: "POST",
     headers: {
