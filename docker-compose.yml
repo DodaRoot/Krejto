@@ -1,16 +1,37 @@
 services:
+  frontend:
+    build: ./client
+    ports:
+      - "8080:8080"
+
+  backend:
+    build: ./server
+    ports:
+      - "3000:3000"
+    environment:
+      SERVER_PORT: 3000
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/krejto_db
+      SPRING_DATASOURCE_USERNAME: krejto_user
+      SPRING_DATASOURCE_PASSWORD: krejto_password
+      JWT_SECRET: N+7qdAR2pXfVStBK+51p30Y8l/c5mVrvf/ub3PdKqoQ=
+      JWT_EXPIRATION: 1800000
+    depends_on:
+      postgres:
+        condition: service_healthy
+
   postgres:
-    image: postgres:latest
-    container_name: krejto-postgres
-    restart: unless-stopped
+    image: postgres:17
     environment:
       POSTGRES_DB: krejto_db
       POSTGRES_USER: krejto_user
       POSTGRES_PASSWORD: krejto_password
-    ports:
-      - "5000:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U krejto_user -d krejto_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
     volumes:
-      - postgres_data:/var/lib/postgresql/docker
+      - postgres_data:/var/lib/postgresql/data
 
 volumes:
   postgres_data:
